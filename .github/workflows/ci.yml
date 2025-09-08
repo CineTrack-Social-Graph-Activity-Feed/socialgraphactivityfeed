@@ -14,10 +14,20 @@ jobs:
         image: mongo:6.0
         ports:
           - 27017:27017
+        options: >-
+          --health-cmd="mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
       redis:
         image: redis:7-alpine
         ports:
           - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
     - name: Checkout code
@@ -28,16 +38,16 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: backend/package-lock.json
+        cache-dependency-path: servidor/package-lock.json
 
     - name: Install Dependencies
-      run: cd backend && npm ci
+      run: cd servidor && npm ci
 
     - name: Run Linter
-      run: cd backend && npm run lint
+      run: cd servidor && npm run lint
 
     - name: Run Unit Tests
-      run: cd backend && npm run test:unit
+      run: cd servidor && npm run test:unit
       env:
         NODE_ENV: test
         MONGODB_URI: mongodb://localhost:27017/social_graph_test
@@ -45,7 +55,7 @@ jobs:
         JWT_SECRET: super-secret-test-key
 
     - name: Run Integration Tests
-      run: cd backend && npm run test:integration
+      run: cd servidor && npm run test:integration
       env:
         NODE_ENV: test
         MONGODB_URI: mongodb://localhost:27017/social_graph_test
@@ -58,4 +68,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
-        projectBaseDir: backend
+        projectBaseDir: servidor
