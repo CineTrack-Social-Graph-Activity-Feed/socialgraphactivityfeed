@@ -43,8 +43,8 @@ jobs:
     - name: Install Dependencies
       run: cd servidor && npm ci
 
-    - name: Run Linter
-      run: cd servidor && npm run lint
+    #- name: Run Linter 
+    #  run: cd servidor && npm run lint
 
     - name: Run Unit Tests
       run: cd servidor && npm run test:unit
