@@ -1,0 +1,60 @@
+name: CI - Test and Lint
+
+on:
+  push:
+    branches: [ develop, main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
+
+    - name: Install Dependencies
+      run: cd backend && npm ci
+
+    - name: Run Linter
+      run: cd backend && npm run lint
+
+    - name: Run Unit Tests
+      run: cd backend && npm run test:unit
+      env:
+        NODE_ENV: test
+        MONGODB_URI: mongodb://localhost:27017/social_graph_test
+        REDIS_URL: redis://localhost:6379
+        JWT_SECRET: super-secret-test-key
+
+    - name: Run Integration Tests
+      run: cd backend && npm run test:integration
+      env:
+        NODE_ENV: test
+        MONGODB_URI: mongodb://localhost:27017/social_graph_test
+        REDIS_URL: redis://localhost:6379
+        JWT_SECRET: super-secret-test-key
+        - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: backend
