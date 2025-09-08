@@ -46,21 +46,13 @@ jobs:
     #- name: Run Linter 
     #  run: cd servidor && npm run lint
 
-    - name: Run Unit Tests
-      run: cd servidor && npm run test:unit
-      env:
-        NODE_ENV: test
-        MONGODB_URI: mongodb://localhost:27017/social_graph_test
-        REDIS_URL: redis://localhost:6379
-        JWT_SECRET: super-secret-test-key
-
-    - name: Run Integration Tests
-      run: cd servidor && npm run test:integration
-      env:
-        NODE_ENV: test
-        MONGODB_URI: mongodb://localhost:27017/social_graph_test
-        REDIS_URL: redis://localhost:6379
-        JWT_SECRET: super-secret-test-key
+    - name: Run Tests
+  run: cd servidor && npm test
+  env:
+    NODE_ENV: test
+    MONGODB_URI: mongodb://localhost:27017/social_graph_test
+    REDIS_URL: redis://localhost:6379
+    JWT_SECRET: super-secret-test-key
 
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
