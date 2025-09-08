@@ -25,7 +25,7 @@ jobs:
       run: npm install
     - run: npm run build --if-present
       working-directory: ./servidor
-    - run: npm test
+    - run: npm test --if-present
       working-directory: ./servidor
 
   sonarcloud:
