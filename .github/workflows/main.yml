@@ -124,9 +124,6 @@ jobs:
           # Node.js configuration
           cat > deployment/.ebextensions/nodejs.config << 'EOF'
           option_settings:
-            aws:elasticbeanstalk:container:nodejs:
-              NodeCommand: "npm start"
-              NodeVersion: "20"
             aws:elasticbeanstalk:application:environment:
               NODE_ENV: production
               PORT: 8080
