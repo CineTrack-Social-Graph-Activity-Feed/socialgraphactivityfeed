@@ -1,4 +1,4 @@
-name: Full-Stack CI/CD Pipeline
+name: CI/CD Pipeline
 
 on:
   pull_request:
