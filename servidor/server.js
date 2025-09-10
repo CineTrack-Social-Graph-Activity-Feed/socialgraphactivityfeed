@@ -56,6 +56,9 @@ mongoose.connection.on('disconnected', () => {
   console.log('🔌 Mongoose desconectado');
 });
 
+// Endpoint de health check para Elastic Beanstalk
+app.get('/health', (req, res) => res.sendStatus(200));
+
 // Rutas principales
 app.use('/', routes);
 
