@@ -159,15 +159,15 @@ jobs:
         run: |
           # Create application version
           VERSION_LABEL="v${{ github.run_number }}-${{ github.sha }}"
+
+          # Upload application bundle to S3 first
+          aws s3 cp app.zip s3://${{ secrets.EB_S3_BUCKET }}/versions/$VERSION_LABEL.zip
           
           aws elasticbeanstalk create-application-version \
             --application-name ${{ env.EB_APPLICATION_NAME }} \
             --version-label $VERSION_LABEL \
             --source-bundle S3Bucket="${{ secrets.EB_S3_BUCKET }}",S3Key="versions/$VERSION_LABEL.zip" \
             --description "Deploy from GitHub Actions - ${{ github.sha }}"
-            
-          # Upload application bundle to S3
-          aws s3 cp app.zip s3://${{ secrets.EB_S3_BUCKET }}/versions/$VERSION_LABEL.zip
           
           # Deploy to environment
           aws elasticbeanstalk update-environment \
