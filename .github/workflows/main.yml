@@ -185,8 +185,8 @@ jobs:
             --environment-names ${{ env.EB_ENVIRONMENT_NAME }} \
             --query "Environments[0].CNAME" --output text)
             
-          echo "🚀 Application deployed to: https://$ENVIRONMENT_URL"
-          echo "🏥 Health check: https://$ENVIRONMENT_URL/health"
+          echo "🚀 Application deployed to: http://$ENVIRONMENT_URL"
+          echo "🏥 Health check: http://$ENVIRONMENT_URL/health"
           
           # Basic health check
-          curl -f "https://$ENVIRONMENT_URL/health" || (echo "Health check failed" && exit 1)
+          curl -f "http://$ENVIRONMENT_URL/health" || (echo "Health check failed" && exit 1)
