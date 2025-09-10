@@ -9,7 +9,7 @@ on:
 env:
   NODE_VERSION: 20
   EB_APPLICATION_NAME: social-graph-app
-  EB_ENVIRONMENT_NAME: Social-graph-app-env  # Actual EB environment name
+  EB_ENVIRONMENT_NAME: Social-graph-app-env 
   AWS_REGION: us-east-2
 
 jobs:
@@ -109,7 +109,7 @@ jobs:
               "start": "node server.js"
             },
             "engines": {
-              "node": "20.x",
+              "node": "22.x",
               "npm": "10.x"
             }
           }
