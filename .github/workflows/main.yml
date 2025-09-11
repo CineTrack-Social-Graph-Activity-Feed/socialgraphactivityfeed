@@ -115,7 +115,7 @@ jobs:
             "dependencies": {
               "dotenv": "^16.0.0",
               "express": "^4.18.2",
-              "mongoose": "^8.0.0",
+              "mongoose": "^7.8.7",
               "cors": "^2.8.5"
             }
           }
@@ -123,7 +123,7 @@ jobs:
           
           # Install production dependencies
           cd deployment
-          npm ci --only=production
+          npm install --omit=dev
   
 
       - name: Create Elastic Beanstalk configuration
