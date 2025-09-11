@@ -136,11 +136,14 @@ jobs:
             aws:elasticbeanstalk:application:environment:
               NODE_ENV: production
               PORT: 8080
-              AWS_REGION: ${{ env.AWS_REGION }}
+              AWS_REGION: ${AWS_REGION}
             aws:elasticbeanstalk:environment:proxy:staticfiles:
               /public: public
+            aws:elasticbeanstalk:cloudwatch:logs:
+              StreamLogs: true
+
           Resources:
-            AWSEBSecretAccess:
+            AWSEBSecretPolicy:
               Type: AWS::IAM::ManagedPolicy
               Properties:
                 PolicyDocument:
@@ -158,34 +161,15 @@ jobs:
               group: root
               content: |
                 #!/bin/bash
-                # Get MongoDB URI from Secrets Manager
                 MONGODB_URI=$(aws secretsmanager get-secret-value \
                   --secret-id arn:aws:secretsmanager:us-east-2:857679140175:secret:social-graph-app/mongodb-nlr9xr \
                   --query SecretString \
                   --output text)
-                # Export it for the application
+                # Exportar para la aplicación y asegurarse que se preserve en reinicios
                 echo "export MONGODB_URI='$MONGODB_URI'" > /opt/elasticbeanstalk/deployment/env
-            aws:elasticbeanstalk:cloudwatch:logs:
-              StreamLogs: true
-            aws:elasticbeanstalk:application:environment:application:
-              AWS_REGION: ${{ env.AWS_REGION }}
-
-          Resources:
-            AWSEBAutoScalingGroup:
-              Metadata:
-                AWS::CloudFormation::Authentication:
-                  S3Auth:
-                    type: "s3"
-                    buckets: ["elasticbeanstalk-${{ env.AWS_REGION }}-${{ secrets.AWS_ACCOUNT_ID }}"]
-                    roleName: 
-                      "Fn::GetOptionSetting": 
-                        Namespace: "aws:autoscaling:launchconfiguration"
-                        OptionName: "IamInstanceProfile"
-                        DefaultValue: "aws-elasticbeanstalk-ec2-role"
+                echo "export MONGODB_URI='$MONGODB_URI'" >> /etc/profile.d/env.sh
           EOF
 
-          # No additional configuration needed as secrets are handled in nodejs.config
-          
           # Health check configuration
           cat > deployment/.ebextensions/healthcheck.config << 'EOF'
           option_settings:
