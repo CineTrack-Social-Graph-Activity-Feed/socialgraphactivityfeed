@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./routes');
-const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
 
 // Crear la aplicación Express
 const app = express();
@@ -49,35 +48,8 @@ app.use((req, res, next) => {
 // Conexión a MongoDB
 const connectDB = async (retryCount = 0, maxRetries = 10) => {
   try {
+    let mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/socialgraphactivityfeed';
     console.log('📝 Intentando conectar a MongoDB...');
-    
-    let mongoURI;
-    // Intentar obtener la URI de MongoDB desde AWS Secrets Manager
-    if (process.env.NODE_ENV === 'production') {
-      try {
-        const client = new SecretsManagerClient({
-          region: process.env.AWS_REGION || 'us-east-2'
-        });
-        
-        const response = await client.send(
-          new GetSecretValueCommand({
-            SecretId: 'social-graph-app/mongodb',
-            VersionStage: 'AWSCURRENT',
-          })
-        );
-        
-        mongoURI = response.SecretString;
-        console.log('✅ URI de MongoDB recuperada de Secrets Manager');
-      } catch (error) {
-        console.error('❌ Error al obtener el secreto de AWS:', error.message);
-        // Si falla Secrets Manager, intentar usar la variable de entorno
-        mongoURI = process.env.MONGODB_URI;
-      }
-    } else {
-      // En desarrollo, usar la variable de entorno o la URI local
-      mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/socialgraphactivityfeed';
-    }
-    
     console.log('💡 Variables de entorno disponibles:', Object.keys(process.env).sort());
     
     // Verificar y corregir el formato de la URI si es necesario

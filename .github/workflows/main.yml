@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  NODE_VERSION: 20
+  NODE_VERSION: 22
   EB_APPLICATION_NAME: social-graph-app
   EB_ENVIRONMENT_NAME: Social-graph-app-env 
   AWS_REGION: us-east-2
@@ -115,14 +115,15 @@ jobs:
             "dependencies": {
               "dotenv": "^16.0.0",
               "express": "^4.18.2",
-              "mongoose": "^8.0.0"
+              "mongoose": "^7.8.7",
+              "cors": "^2.8.5"
             }
           }
           EOF
           
           # Install production dependencies
           cd deployment
-          npm ci --only=production
+          npm install --omit=dev
   
 
       - name: Create Elastic Beanstalk configuration
@@ -135,8 +136,67 @@ jobs:
             aws:elasticbeanstalk:application:environment:
               NODE_ENV: production
               PORT: 8080
+              AWS_REGION: ${{ env.AWS_REGION }}
             aws:elasticbeanstalk:environment:proxy:staticfiles:
               /public: public
+          Resources:
+            AWSEBSecretAccess:
+              Type: AWS::IAM::ManagedPolicy
+              Properties:
+                PolicyDocument:
+                  Version: 2012-10-17
+                  Statement:
+                    - Effect: Allow
+                      Action:
+                        - secretsmanager:GetSecretValue
+                      Resource: arn:aws:secretsmanager:us-east-2:857679140175:secret:social-graph-app/mongodb-nlr9xr
+
+          files:
+            "/opt/elasticbeanstalk/hooks/appdeploy/pre/01_set_env.sh":
+              mode: "000755"
+              owner: root
+              group: root
+              content: |
+                #!/bin/bash
+                # Get MongoDB URI from Secrets Manager
+                MONGODB_URI=$(aws secretsmanager get-secret-value \
+                  --secret-id arn:aws:secretsmanager:us-east-2:857679140175:secret:social-graph-app/mongodb-nlr9xr \
+                  --query SecretString \
+                  --output text)
+                # Export it for the application
+                echo "export MONGODB_URI='$MONGODB_URI'" > /opt/elasticbeanstalk/deployment/env
+            aws:elasticbeanstalk:cloudwatch:logs:
+              StreamLogs: true
+            aws:elasticbeanstalk:application:environment:application:
+              AWS_REGION: ${{ env.AWS_REGION }}
+
+          Resources:
+            AWSEBAutoScalingGroup:
+              Metadata:
+                AWS::CloudFormation::Authentication:
+                  S3Auth:
+                    type: "s3"
+                    buckets: ["elasticbeanstalk-${{ env.AWS_REGION }}-${{ secrets.AWS_ACCOUNT_ID }}"]
+                    roleName: 
+                      "Fn::GetOptionSetting": 
+                        Namespace: "aws:autoscaling:launchconfiguration"
+                        OptionName: "IamInstanceProfile"
+                        DefaultValue: "aws-elasticbeanstalk-ec2-role"
+          EOF
+
+          # Permissions configuration
+          cat > deployment/.ebextensions/permissions.config << 'EOF'
+          files:
+            "/opt/elasticbeanstalk/hooks/appdeploy/pre/50_set_secrets.sh":
+              mode: "000755"
+              owner: root
+              group: root
+              content: |
+                #!/bin/bash
+                # Get MongoDB URI from Secrets Manager
+                MONGODB_URI=$(aws secretsmanager get-secret-value --secret-id arn:aws:secretsmanager:$AWS_REGION:$AWS_ACCOUNT_ID:secret:MONGODB_URI --region $AWS_REGION --query SecretString --output text)
+                # Export it as environment variable
+                echo "export MONGODB_URI=$MONGODB_URI" > /opt/elasticbeanstalk/deployment/env
           EOF
           
           # Health check configuration
