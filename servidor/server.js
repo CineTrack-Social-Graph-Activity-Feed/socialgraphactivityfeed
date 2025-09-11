@@ -85,6 +85,24 @@ mongoose.connection.on('disconnected', () => {
   console.log('🔌 Mongoose desconectado');
 });
 
+// Ruta raíz
+app.get('/', (req, res) => {
+  res.json({
+    message: 'API de Social Graph Activity Feed',
+    status: 'running',
+    endpoints: {
+      health: '/health',
+      users: '/api/user',
+      follow: '/api/follow',
+      unfollow: '/api/unfollow',
+      feed: '/api/feed',
+      publications: '/api/publication',
+      likes: '/api/like',
+      comments: '/api/comment'
+    }
+  });
+});
+
 // Rutas principales
 app.use('/', routes);
 
