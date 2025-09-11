@@ -30,19 +30,29 @@ app.use((req, res, next) => {
 });
 
 // Conexión a MongoDB
-const connectDB = async () => {
+const connectDB = async (retryCount = 0, maxRetries = 5) => {
   try {
     const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/socialgraphactivityfeed';
     
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000, // 5 second timeout
     });
     
     console.log('✅ Conectado a MongoDB');
+    return true;
   } catch (error) {
-    console.error('❌ Error conectando a MongoDB:', error.message);
-    process.exit(1);
+    console.error(`❌ Error conectando a MongoDB (intento ${retryCount + 1}/${maxRetries}):`, error.message);
+    
+    if (retryCount < maxRetries) {
+      console.log(`🔄 Reintentando conexión en 5 segundos...`);
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      return connectDB(retryCount + 1, maxRetries);
+    } else {
+      console.error('❌ Se agotaron los reintentos de conexión a MongoDB');
+      return false;
+    }
   }
 };
 
@@ -58,9 +68,6 @@ mongoose.connection.on('error', (error) => {
 mongoose.connection.on('disconnected', () => {
   console.log('🔌 Mongoose desconectado');
 });
-
-// Endpoint de health check para Elastic Beanstalk
-app.get('/health', (req, res) => res.sendStatus(200));
 
 // Rutas principales
 app.use('/', routes);
@@ -94,24 +101,30 @@ app.use((error, req, res, next) => {
 // Función para iniciar el servidor
 const startServer = async () => {
   try {
-    // Conectar a la base de datos
-    await connectDB();
-    
-    // Iniciar el servidor
-    app.listen(PORT, '0.0.0.0', () => {
+    // Iniciar el servidor primero para que el health check responda
+    const server = app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
       console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-      console.log('📝 Endpoints disponibles:');
-      console.log('   - POST /api/user (crear usuario)');
-      console.log('   - GET /api/user/:user_id (obtener usuario)');
-      console.log('   - POST /api/follow (seguir usuario)');
-      console.log('   - POST /api/unfollow (dejar de seguir)');
-      console.log('   - GET /api/feed (obtener feed)');
-      console.log('   - POST /api/publication (crear publicación)');
-      console.log('   - POST /api/like (dar like)');
-      console.log('   - POST /api/comment (comentar)');
     });
+
+    // Intentar conectar a la base de datos
+    const isConnected = await connectDB();
+    if (!isConnected) {
+      console.warn('⚠️ Servidor iniciado sin conexión a MongoDB - Algunos endpoints no funcionarán');
+      return; // El servidor sigue corriendo pero sin MongoDB
+    }
+    
+    // Solo mostrar los endpoints si MongoDB está conectado
+    console.log('📝 Endpoints disponibles:');
+    console.log('   - POST /api/user (crear usuario)');
+    console.log('   - GET /api/user/:user_id (obtener usuario)');
+    console.log('   - POST /api/follow (seguir usuario)');
+    console.log('   - POST /api/unfollow (dejar de seguir)');
+    console.log('   - GET /api/feed (obtener feed)');
+    console.log('   - POST /api/publication (crear publicación)');
+    console.log('   - POST /api/like (dar like)');
+    console.log('   - POST /api/comment (comentar)');
   } catch (error) {
     console.error('💥 Error iniciando el servidor:', error);
     process.exit(1);
