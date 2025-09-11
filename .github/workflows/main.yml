@@ -184,20 +184,7 @@ jobs:
                         DefaultValue: "aws-elasticbeanstalk-ec2-role"
           EOF
 
-          # Permissions configuration
-          cat > deployment/.ebextensions/permissions.config << 'EOF'
-          files:
-            "/opt/elasticbeanstalk/hooks/appdeploy/pre/50_set_secrets.sh":
-              mode: "000755"
-              owner: root
-              group: root
-              content: |
-                #!/bin/bash
-                # Get MongoDB URI from Secrets Manager
-                MONGODB_URI=$(aws secretsmanager get-secret-value --secret-id arn:aws:secretsmanager:$AWS_REGION:$AWS_ACCOUNT_ID:secret:MONGODB_URI --region $AWS_REGION --query SecretString --output text)
-                # Export it as environment variable
-                echo "export MONGODB_URI=$MONGODB_URI" > /opt/elasticbeanstalk/deployment/env
-          EOF
+          # No additional configuration needed as secrets are handled in nodejs.config
           
           # Health check configuration
           cat > deployment/.ebextensions/healthcheck.config << 'EOF'
