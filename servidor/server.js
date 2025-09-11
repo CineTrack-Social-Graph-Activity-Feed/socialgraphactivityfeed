@@ -10,6 +10,14 @@ const app = express();
 // Configuración del puerto
 const PORT = process.env.PORT || 3000;
 
+// Logging de variables de entorno (sin mostrar valores sensibles)
+console.log('🔧 Configuración:', {
+  NODE_ENV: process.env.NODE_ENV || 'development',
+  PORT: PORT,
+  MONGODB_URI: process.env.MONGODB_URI ? '******' : undefined,
+  CORS_ORIGIN: process.env.CORS_ORIGIN || '*'
+});
+
 // Middlewares
 app.use(cors({
   origin: process.env.CORS_ORIGIN || '*',
@@ -21,7 +29,15 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Endpoint de health check para Elastic Beanstalk
-app.get('/health', (req, res) => res.sendStatus(200));
+app.get('/health', (req, res) => {
+  const healthCheck = {
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    mongodbConnected: mongoose.connection.readyState === 1
+  };
+  res.status(200).json(healthCheck);
+});
 
 // Middleware de logging
 app.use((req, res, next) => {
@@ -100,12 +116,23 @@ app.use((error, req, res, next) => {
 
 // Función para iniciar el servidor
 const startServer = async () => {
+  // Variable para tracking del servidor HTTP
+  let server;
+  
   try {
     // Iniciar el servidor primero para que el health check responda
-    const server = app.listen(PORT, '0.0.0.0', () => {
+    server = app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
       console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+      console.log(`🔗 Health check: http://0.0.0.0:${PORT}/health`);
+    });
+
+    // Manejo de errores del servidor HTTP
+    server.on('error', (error) => {
+      console.error('💥 Error en el servidor HTTP:', error);
+      if (error.code === 'EADDRINUSE') {
+        console.error(`❌ El puerto ${PORT} está en uso`);
+      }
     });
 
     // Intentar conectar a la base de datos

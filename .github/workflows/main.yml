@@ -136,7 +136,6 @@ jobs:
             aws:elasticbeanstalk:application:environment:
               NODE_ENV: production
               PORT: 8080
-              MONGODB_URI: ${{ secrets.MONGODB_URI }}
             aws:elasticbeanstalk:environment:proxy:staticfiles:
               /public: public
           EOF
