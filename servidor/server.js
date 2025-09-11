@@ -46,14 +46,17 @@ app.use((req, res, next) => {
 });
 
 // Conexión a MongoDB
-const connectDB = async (retryCount = 0, maxRetries = 5) => {
+const connectDB = async (retryCount = 0, maxRetries = 10) => {
   try {
     const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/socialgraphactivityfeed';
+    console.log('📝 Intentando conectar a MongoDB...');
+    console.log('💡 Variables de entorno disponibles:', Object.keys(process.env).sort());
+    console.log('🔍 MONGODB_URI está definido:', !!process.env.MONGODB_URI);
     
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000, // 5 second timeout
+      serverSelectionTimeoutMS: 10000, // 10 second timeout
     });
     
     console.log('✅ Conectado a MongoDB');
