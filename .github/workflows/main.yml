@@ -137,46 +137,14 @@ jobs:
               NODE_ENV: production
               PORT: 8080
               AWS_REGION: ${AWS_REGION}
+              # Colocar aquí tu string de conexión de MongoDB (reemplaza con tu URI real)
+              MONGODB_URI: "mongodb+srv://nicolasaversa1_db_user:4mSvF4VaOswSKngJ@socialgraph-activityfee.reute35.mongodb.net/?retryWrites=true&w=majority&appName=SocialGraph-ActivityFeed"
             aws:elasticbeanstalk:environment:proxy:staticfiles:
               /public: public
             aws:elasticbeanstalk:cloudwatch:logs:
               StreamLogs: true
 
-          Resources:
-            AWSEBSecretPolicy:
-              Type: "AWS::IAM::ManagedPolicy"
-              Properties:
-                PolicyDocument:
-                  Version: "2012-10-17"
-                  Statement:
-                    - Effect: "Allow"
-                      Action:
-                        - "secretsmanager:GetSecretValue"
-                      Resource: "arn:aws:secretsmanager:us-east-2:857679140175:secret:social-graph-app/mongodb-nlr9xr"
-
-          files:
-            "/opt/elasticbeanstalk/hooks/appdeploy/pre/01_set_env.sh":
-              mode: "000755"
-              owner: root
-              group: root
-              content: |
-                #!/bin/bash
-                # Get raw secret value
-                SECRET_VALUE=$(aws secretsmanager get-secret-value \
-                  --secret-id arn:aws:secretsmanager:us-east-2:857679140175:secret:social-graph-app/mongodb-nlr9xr \
-                  --query SecretString \
-                  --output text)
-                
-                # Remove any surrounding quotes if present
-                SECRET_VALUE=$(echo "$SECRET_VALUE" | sed -e 's/^"//' -e 's/"$//')
-                
-                # Write directly to .env file in app directory
-                echo "MONGODB_URI=$SECRET_VALUE" > /var/app/current/.env
-                # Also set system environment variables
-                echo "export MONGODB_URI=\"$SECRET_VALUE\"" > /opt/elasticbeanstalk/deployment/env
-                
-                # Log for debugging (without showing sensitive information)
-                echo "MongoDB URI configured in .env file and environment"
+          # Sin necesidad de recursos adicionales o scripts - configuración directa en variables de entorno
           EOF
 
           # Health check configuration
