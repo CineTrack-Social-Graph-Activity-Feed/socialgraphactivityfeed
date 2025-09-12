@@ -13,8 +13,7 @@ const commentSchema = new mongoose.Schema({
     lowercase: true
   },
   target_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Publication',
+    type: String, // Ahora acepta IDs externos (por ejemplo, de películas/series)
     required: true
   },
   comment: {
