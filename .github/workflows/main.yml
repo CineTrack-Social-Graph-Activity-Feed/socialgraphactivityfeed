@@ -144,15 +144,15 @@ jobs:
 
           Resources:
             AWSEBSecretPolicy:
-              Type: AWS::IAM::ManagedPolicy
+              Type: "AWS::IAM::ManagedPolicy"
               Properties:
                 PolicyDocument:
-                  Version: 2012-10-17
+                  Version: "2012-10-17"
                   Statement:
-                    - Effect: Allow
+                    - Effect: "Allow"
                       Action:
-                        - secretsmanager:GetSecretValue
-                      Resource: arn:aws:secretsmanager:us-east-2:857679140175:secret:social-graph-app/mongodb-nlr9xr
+                        - "secretsmanager:GetSecretValue"
+                      Resource: "arn:aws:secretsmanager:us-east-2:857679140175:secret:social-graph-app/mongodb-nlr9xr"
 
           files:
             "/opt/elasticbeanstalk/hooks/appdeploy/pre/01_set_env.sh":
