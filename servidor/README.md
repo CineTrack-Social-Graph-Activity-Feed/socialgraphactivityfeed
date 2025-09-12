@@ -52,6 +52,8 @@ npm start
 - `POST /api/follow` - Seguir usuario
 - `POST /api/unfollow` - Dejar de seguir usuario
 - `GET /api/feed?user_id=...` - Obtener feed de actividad
+- `GET /api/followed?user_id=...` - Obtener usuarios que sigues (seguidos)
+- `GET /api/followers?user_id=...` - Obtener usuarios que te siguen (seguidores)
 
 ### Publicaciones
 - `POST /api/publication` - Crear publicación
