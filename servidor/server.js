@@ -52,19 +52,25 @@ const connectDB = async (retryCount = 0, maxRetries = 10) => {
     console.log('📝 Intentando conectar a MongoDB...');
     console.log('💡 Variables de entorno disponibles:', Object.keys(process.env).sort());
     
-    // Verificar y corregir el formato de la URI si es necesario
-    if (mongoURI && !mongoURI.startsWith('mongodb://') && !mongoURI.startsWith('mongodb+srv://')) {
-      console.log('⚠️ MONGODB_URI no tiene el prefijo correcto, intentando corregir...');
-      // Asumimos mongodb+srv:// si no tiene prefijo
-      mongoURI = `mongodb+srv://${mongoURI}`;
-    }
+    // Verificar y limpiar la URI de comillas extra si existen
+    mongoURI = mongoURI.replace(/^['"](.+)['"]$/, '$1');
     
-    console.log('🔍 MONGODB_URI está definido:', !!process.env.MONGODB_URI);
+    // Log para debugging (sin mostrar credenciales)
+    const uriParts = mongoURI.split('@');
+    const hostPart = uriParts[1] || 'localhost';
+    console.log('🔍 URI Format Check:', {
+      hasPrefix: mongoURI.startsWith('mongodb://') || mongoURI.startsWith('mongodb+srv://'),
+      host: hostPart,
+      length: mongoURI.length
+    });
     
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       serverSelectionTimeoutMS: 10000, // 10 second timeout
+      retryWrites: true,
+      w: 'majority',
+      ssl: true
     });
     
     console.log('✅ Conectado a MongoDB');
