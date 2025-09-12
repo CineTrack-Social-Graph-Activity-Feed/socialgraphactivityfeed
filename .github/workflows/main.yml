@@ -130,19 +130,81 @@ jobs:
         run: |
           mkdir -p deployment/.ebextensions
           
-          # Node.js configuration using dynamic Secrets Manager reference
+          # Node.js configuration
           cat > deployment/.ebextensions/nodejs.config << 'EOF'
           option_settings:
             aws:elasticbeanstalk:application:environment:
               NODE_ENV: production
               PORT: 8080
               AWS_REGION: ${AWS_REGION}
-              # Resolve the MongoDB URI from Secrets Manager JSON key MONGODB_URI
-              MONGODB_URI: "{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-2:857679140175:secret:social-graph-app/mongodb-nlr9xr:SecretString:MONGODB_URI}}"
             aws:elasticbeanstalk:environment:proxy:staticfiles:
               /public: public
             aws:elasticbeanstalk:cloudwatch:logs:
               StreamLogs: true
+
+          Resources:
+            AWSEBSecretPolicy:
+              Type: "AWS::IAM::ManagedPolicy"
+              Properties:
+                PolicyDocument:
+                  Version: "2012-10-17"
+                  Statement:
+                    - Effect: "Allow"
+                      Action:
+                        - "secretsmanager:GetSecretValue"
+                      Resource: "arn:aws:secretsmanager:us-east-2:857679140175:secret:social-graph-app/mongodb-nlr9xr"
+
+          files:
+            "/opt/elasticbeanstalk/hooks/appdeploy/pre/01_set_env.sh":
+              mode: "000755"
+              owner: root
+              group: root
+              content: |
+                #!/bin/bash
+                # Get raw secret value
+                SECRET_VALUE=$(aws secretsmanager get-secret-value \
+                  --secret-id arn:aws:secretsmanager:us-east-2:857679140175:secret:social-graph-app/mongodb-nlr9xr \
+                  --query SecretString \
+                  --output text)
+                
+                # Function to URL encode string
+                urlencode() {
+                  local string="$1"
+                  local length="${#string}"
+                  local encoded=""
+                  for (( i = 0; i < length; i++ )); do
+                    local c="${string:i:1}"
+                    case $c in
+                      [a-zA-Z0-9.~_-]) encoded="$encoded$c" ;;
+                      *) encoded="$encoded$(printf '%%%02X' "'$c")" ;;
+                    esac
+                  done
+                  echo "$encoded"
+                }
+                
+                # Parse and encode URI parts
+                if [[ "$SECRET_VALUE" =~ ^mongodb(\+srv)?://([^:]+):([^@]+)@(.+) ]]; then
+                  PROTO="${BASH_REMATCH[1]}"
+                  USER="$(urlencode "${BASH_REMATCH[2]}")"
+                  PASS="$(urlencode "${BASH_REMATCH[3]}")"
+                  REST="${BASH_REMATCH[4]}"
+                  MONGODB_URI="mongodb${PROTO}://${USER}:${PASS}@${REST}"
+                elif [[ "$SECRET_VALUE" =~ ^([^:]+):([^@]+)@(.+) ]]; then
+                  USER="$(urlencode "${BASH_REMATCH[1]}")"
+                  PASS="$(urlencode "${BASH_REMATCH[2]}")"
+                  REST="${BASH_REMATCH[3]}"
+                  MONGODB_URI="mongodb+srv://${USER}:${PASS}@${REST}"
+                else
+                  echo "Error: Invalid MongoDB URI format"
+                  exit 1
+                fi
+                
+                # Export it for the application and ensure it persists across restarts
+                echo "export MONGODB_URI=\"$MONGODB_URI\"" > /opt/elasticbeanstalk/deployment/env
+                echo "export MONGODB_URI=\"$MONGODB_URI\"" >> /etc/profile.d/env.sh
+                
+                # Log for debugging (without showing sensitive information)
+                echo "MongoDB URI processed and encoded successfully"
           EOF
 
           # Health check configuration
