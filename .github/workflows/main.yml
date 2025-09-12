@@ -161,13 +161,27 @@ jobs:
               group: root
               content: |
                 #!/bin/bash
-                MONGODB_URI=$(aws secretsmanager get-secret-value \
+                # Get raw secret value
+                SECRET_VALUE=$(aws secretsmanager get-secret-value \
                   --secret-id arn:aws:secretsmanager:us-east-2:857679140175:secret:social-graph-app/mongodb-nlr9xr \
                   --query SecretString \
                   --output text)
-                # Exportar para la aplicación y asegurarse que se preserve en reinicios
+                
+                # Check if it already has mongodb:// or mongodb+srv:// prefix
+                if [[ "$SECRET_VALUE" != mongodb://* ]] && [[ "$SECRET_VALUE" != mongodb+srv://* ]]; then
+                  # Add mongodb+srv:// prefix if not present
+                  MONGODB_URI="mongodb+srv://$SECRET_VALUE"
+                else
+                  # Use as is if prefix is present
+                  MONGODB_URI="$SECRET_VALUE"
+                fi
+                
+                # Export it for the application and ensure it persists across restarts
                 echo "export MONGODB_URI='$MONGODB_URI'" > /opt/elasticbeanstalk/deployment/env
                 echo "export MONGODB_URI='$MONGODB_URI'" >> /etc/profile.d/env.sh
+                
+                # Log for debugging (without showing the full URI)
+                echo "MongoDB URI prefix check completed. URI starts with: $(echo $MONGODB_URI | cut -d'/' -f1)"
           EOF
 
           # Health check configuration
