@@ -167,21 +167,44 @@ jobs:
                   --query SecretString \
                   --output text)
                 
-                # Check if it already has mongodb:// or mongodb+srv:// prefix
-                if [[ "$SECRET_VALUE" != mongodb://* ]] && [[ "$SECRET_VALUE" != mongodb+srv://* ]]; then
-                  # Add mongodb+srv:// prefix if not present
-                  MONGODB_URI="mongodb+srv://$SECRET_VALUE"
+                # Function to URL encode string
+                urlencode() {
+                  local string="$1"
+                  local length="${#string}"
+                  local encoded=""
+                  for (( i = 0; i < length; i++ )); do
+                    local c="${string:i:1}"
+                    case $c in
+                      [a-zA-Z0-9.~_-]) encoded="$encoded$c" ;;
+                      *) encoded="$encoded$(printf '%%%02X' "'$c")" ;;
+                    esac
+                  done
+                  echo "$encoded"
+                }
+                
+                # Parse and encode URI parts
+                if [[ "$SECRET_VALUE" =~ ^mongodb(\+srv)?://([^:]+):([^@]+)@(.+) ]]; then
+                  PROTO="${BASH_REMATCH[1]}"
+                  USER="$(urlencode "${BASH_REMATCH[2]}")"
+                  PASS="$(urlencode "${BASH_REMATCH[3]}")"
+                  REST="${BASH_REMATCH[4]}"
+                  MONGODB_URI="mongodb${PROTO}://${USER}:${PASS}@${REST}"
+                elif [[ "$SECRET_VALUE" =~ ^([^:]+):([^@]+)@(.+) ]]; then
+                  USER="$(urlencode "${BASH_REMATCH[1]}")"
+                  PASS="$(urlencode "${BASH_REMATCH[2]}")"
+                  REST="${BASH_REMATCH[3]}"
+                  MONGODB_URI="mongodb+srv://${USER}:${PASS}@${REST}"
                 else
-                  # Use as is if prefix is present
-                  MONGODB_URI="$SECRET_VALUE"
+                  echo "Error: Invalid MongoDB URI format"
+                  exit 1
                 fi
                 
                 # Export it for the application and ensure it persists across restarts
-                echo "export MONGODB_URI='$MONGODB_URI'" > /opt/elasticbeanstalk/deployment/env
-                echo "export MONGODB_URI='$MONGODB_URI'" >> /etc/profile.d/env.sh
+                echo "export MONGODB_URI=\"$MONGODB_URI\"" > /opt/elasticbeanstalk/deployment/env
+                echo "export MONGODB_URI=\"$MONGODB_URI\"" >> /etc/profile.d/env.sh
                 
-                # Log for debugging (without showing the full URI)
-                echo "MongoDB URI prefix check completed. URI starts with: $(echo $MONGODB_URI | cut -d'/' -f1)"
+                # Log for debugging (without showing sensitive information)
+                echo "MongoDB URI processed and encoded successfully"
           EOF
 
           # Health check configuration
