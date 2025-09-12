@@ -39,6 +39,9 @@ npm start
 
 ## 📡 API Endpoints
 
+### SWAGGER Documentation
+- `GET /doc` - Despliega documentacion Swagger
+
 ### Health Check
 - `GET /health` - Verificar estado del servidor
 

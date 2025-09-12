@@ -4,6 +4,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const routes = require('./routes');
 
+const swaggerUI = require('swagger-ui-express');
+const swaggerDocumentation = require( './swagger.json');
+
+
 // Crear la aplicación Express
 const app = express();
 
@@ -56,8 +60,13 @@ mongoose.connection.on('disconnected', () => {
   console.log('🔌 Mongoose desconectado');
 });
 
+
+// Ruta Swagger / Documentación API
+app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocumentation));
+
 // Rutas principales
 app.use('/', routes);
+
 
 // Middleware de manejo de errores
 app.use((error, req, res, next) => {
@@ -96,11 +105,14 @@ const startServer = async () => {
       console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
       console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+      console.log(`📜 Swagger Documentation: http://localhost:${PORT}/doc`);
       console.log('📝 Endpoints disponibles:');
       console.log('   - POST /api/user (crear usuario)');
       console.log('   - GET /api/user/:user_id (obtener usuario)');
       console.log('   - POST /api/follow (seguir usuario)');
       console.log('   - POST /api/unfollow (dejar de seguir)');
+      console.log('   - GET /api/followed (obtener seguidos)');
+      console.log('   - GET /api/followers (obtener seguidores)');
       console.log('   - GET /api/feed (obtener feed)');
       console.log('   - POST /api/publication (crear publicación)');
       console.log('   - POST /api/like (dar like)');
