@@ -167,44 +167,16 @@ jobs:
                   --query SecretString \
                   --output text)
                 
-                # Function to URL encode string
-                urlencode() {
-                  local string="$1"
-                  local length="${#string}"
-                  local encoded=""
-                  for (( i = 0; i < length; i++ )); do
-                    local c="${string:i:1}"
-                    case $c in
-                      [a-zA-Z0-9.~_-]) encoded="$encoded$c" ;;
-                      *) encoded="$encoded$(printf '%%%02X' "'$c")" ;;
-                    esac
-                  done
-                  echo "$encoded"
-                }
+                # Remove any surrounding quotes if present
+                SECRET_VALUE=$(echo "$SECRET_VALUE" | sed -e 's/^"//' -e 's/"$//')
                 
-                # Parse and encode URI parts
-                if [[ "$SECRET_VALUE" =~ ^mongodb(\+srv)?://([^:]+):([^@]+)@(.+) ]]; then
-                  PROTO="${BASH_REMATCH[1]}"
-                  USER="$(urlencode "${BASH_REMATCH[2]}")"
-                  PASS="$(urlencode "${BASH_REMATCH[3]}")"
-                  REST="${BASH_REMATCH[4]}"
-                  MONGODB_URI="mongodb${PROTO}://${USER}:${PASS}@${REST}"
-                elif [[ "$SECRET_VALUE" =~ ^([^:]+):([^@]+)@(.+) ]]; then
-                  USER="$(urlencode "${BASH_REMATCH[1]}")"
-                  PASS="$(urlencode "${BASH_REMATCH[2]}")"
-                  REST="${BASH_REMATCH[3]}"
-                  MONGODB_URI="mongodb+srv://${USER}:${PASS}@${REST}"
-                else
-                  echo "Error: Invalid MongoDB URI format"
-                  exit 1
-                fi
-                
-                # Export it for the application and ensure it persists across restarts
-                echo "export MONGODB_URI=\"$MONGODB_URI\"" > /opt/elasticbeanstalk/deployment/env
-                echo "export MONGODB_URI=\"$MONGODB_URI\"" >> /etc/profile.d/env.sh
+                # Write directly to .env file in app directory
+                echo "MONGODB_URI=$SECRET_VALUE" > /var/app/current/.env
+                # Also set system environment variables
+                echo "export MONGODB_URI=\"$SECRET_VALUE\"" > /opt/elasticbeanstalk/deployment/env
                 
                 # Log for debugging (without showing sensitive information)
-                echo "MongoDB URI processed and encoded successfully"
+                echo "MongoDB URI configured in .env file and environment"
           EOF
 
           # Health check configuration
