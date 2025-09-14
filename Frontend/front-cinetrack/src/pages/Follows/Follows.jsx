@@ -1,6 +1,6 @@
-import Navbar from "../../compenents/Navbar/Navbar";
+import Navbar from "../../compenents/navbar/Navbar";
 import SideBar from "../../compenents/feedPrincipal/sidebar/SideBar";
-import Footer from "../../compenents/Footer/Footer";
+import Footer from "../../compenents/footer/Footer";
 import React, { useState } from "react";
 import Tabs from "../../compenents/tabBar/TabBar";
 import ListaFollows from "../../compenents/listaFollows/ListaFollows";

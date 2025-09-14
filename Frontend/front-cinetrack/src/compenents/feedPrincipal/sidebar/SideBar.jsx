@@ -9,7 +9,7 @@ function SideBar() {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/user/${userId}`)
+    fetch(`/api/user/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Usuario recibido:", data);

@@ -11,7 +11,7 @@ const ListaFollowers = () => {
   const [confirmUnfollow, setConfirmUnfollow] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/user/${userId}`)
+  fetch(`/api/user/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Usuario recibido:", data);
@@ -23,7 +23,7 @@ const ListaFollowers = () => {
   // Traigo los usuarios que me siguen
   useEffect(() => {
     const fetchData = () => {
-      fetch(`http://localhost:3000/api/followers?user_id=${userId}`)
+  fetch(`/api/followers?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => setSeguidores(data.followers));
     };
@@ -41,7 +41,7 @@ const ListaFollowers = () => {
 
   // Traigo los usuarios que sigo
   useEffect(() => {
-    fetch(`http://localhost:3000/api/followed?user_id=${userId}`)
+  fetch(`/api/followed?user_id=${userId}`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Followers data:", data);
@@ -54,9 +54,7 @@ const ListaFollowers = () => {
   const toggleFollow = async (targetId) => {
     const isFollowing = seguidos.includes(targetId);
 
-    const url = isFollowing
-      ? "http://localhost:3000/api/unfollow"
-      : "http://localhost:3000/api/follow";
+    const url = isFollowing ? "/api/unfollow" : "/api/follow";
 
     const res = await fetch(url, {
       method: "POST",

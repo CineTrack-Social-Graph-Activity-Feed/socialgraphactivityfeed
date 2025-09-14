@@ -16,7 +16,7 @@ function Navbar() {
   const searchRef = useRef(null);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/user/${userId}`)
+    fetch(`/api/user/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Usuario recibido:", data);
@@ -34,7 +34,7 @@ function Navbar() {
 
     const delayDebounce = setTimeout(() => {
       setLoading(true);
-      fetch(`http://localhost:3000/api/user/search?q=${query}&limit=5`)
+  fetch(`/api/user/search?q=${query}&limit=5`)
         .then((res) => res.json())
         .then((data) => {
           if (data.users) {
@@ -69,7 +69,7 @@ function Navbar() {
 
   // Traigo los usuarios que sigo
   useEffect(() => {
-    fetch(`http://localhost:3000/api/followed?user_id=${userId}`)
+  fetch(`/api/followed?user_id=${userId}`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Followers data:", data);
@@ -82,9 +82,7 @@ function Navbar() {
   const toggleFollow = async (targetId) => {
     const isFollowing = seguidores.includes(targetId);
 
-    const url = isFollowing
-      ? "http://localhost:3000/api/unfollow"
-      : "http://localhost:3000/api/follow";
+    const url = isFollowing ? "/api/unfollow" : "/api/follow";
 
     const res = await fetch(url, {
       method: "POST",

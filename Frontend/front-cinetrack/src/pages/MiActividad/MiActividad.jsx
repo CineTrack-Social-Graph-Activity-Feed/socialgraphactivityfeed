@@ -1,6 +1,6 @@
-import Navbar from "../../compenents/Navbar/Navbar";
+import Navbar from "../../compenents/navbar/Navbar";
 import SideBar from "../../compenents/feedPrincipal/sidebar/SideBar";
-import Footer from "../../compenents/Footer/Footer";
+import Footer from "../../compenents/footer/Footer";
 
 function MiActividad() {
   return (

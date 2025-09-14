@@ -14,7 +14,7 @@ function Followed() {
   const handleUnfollow = (idUser) => {
     setOpenMenu(null);
     // 👇 acá podrías llamar al backend para realmente dejar de seguir
-    fetch(`http://localhost:3000/api/unfollow`, {
+  fetch(`/api/unfollow`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -30,7 +30,7 @@ function Followed() {
 
   useEffect(() => {
     const fetchData = () => {
-      fetch(`http://localhost:3000/api/followed?user_id=${userId}`)
+  fetch(`/api/followed?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => setSeguidores(data.followed));
     };
