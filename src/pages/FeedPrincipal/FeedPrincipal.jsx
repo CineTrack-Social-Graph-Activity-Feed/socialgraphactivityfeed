@@ -21,7 +21,7 @@ function FeedPrincipal() {
         </div>
         <main className="main bkg-especial">
           <div className="title-section">
-            <h2>Feed</h2>
+            <h2>¡Bienvenido! Esto es lo que tus amigos han estado viendo…</h2>
           </div>
           <div className="feed-stack">
             {items.map((i) => (
