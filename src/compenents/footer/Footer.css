@@ -1,0 +1,28 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 90px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.footer-links a:hover {
+  color: lightgray;
+  transform: scale(1.05);
+  transition: 0.5s;
+}
+
+.footer-text {
+  font-size: 13px;
+  color: gray;
+}
