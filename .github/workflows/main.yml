@@ -40,10 +40,19 @@ jobs:
         
       - name: Fix import paths for case sensitivity
         run: |
-          # Corregir importación en MiActividad.jsx
-          sed -i 's/compenents\/Navbar\/Navbar/compenents\/navbar\/Navbar/g' src/pages/MiActividad/MiActividad.jsx
-          # Corregir cualquier otra referencia a "Footer" con mayúscula
-          sed -i 's/compenents\/Footer\/Footer/compenents\/footer\/Footer/g' src/pages/MiActividad/MiActividad.jsx
+          # En lugar de modificar todos los archivos, creamos enlaces simbólicos para solucionar el problema de capitalización
+          mkdir -p src/compenents/Navbar
+          mkdir -p src/compenents/Footer
+          
+          # Crear enlaces simbólicos para directorios con capitalización incorrecta
+          ln -s ../navbar/Navbar.jsx src/compenents/Navbar/Navbar.jsx
+          ln -s ../navbar/Navbar.css src/compenents/Navbar/Navbar.css
+          ln -s ../footer/Footer.jsx src/compenents/Footer/Footer.jsx
+          ln -s ../footer/Footer.css src/compenents/Footer/Footer.css
+          
+          # Verificar que los enlaces se crearon correctamente
+          ls -la src/compenents/Navbar/
+          ls -la src/compenents/Footer/
           
       - name: Build frontend
         run: npm run build
