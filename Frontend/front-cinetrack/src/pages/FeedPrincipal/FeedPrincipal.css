@@ -1,0 +1,74 @@
+:root {
+  --nav-h: 80px;
+  --foot-h: 90px;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.title-section {
+  text-align: center;
+  color: white;
+  padding: 10px 0;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.navbar-container {
+  height: var(--nav-h);
+}
+
+.content {
+  height: calc(100svh - var(--nav-h) - var(--foot-h));
+  display: flex; /* tu row */
+  min-height: 0; /* importante para que los hijos puedan hacer overflow */
+}
+
+.sidebar-feed {
+  flex: 0 0 15.5%;
+  overflow: hidden;
+  background: #3e5c78;
+}
+
+.main {
+  flex: 0 0 65%;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.followed {
+  flex: 1; /* ocupa todo lo que sobra */
+  background: #e5e7eb;
+}
+
+.bkg-especial {
+  background: linear-gradient(to bottom, #1d2d44, #0d1321);
+}
+
+/* Estilos para el footer */
+
+.footer-container {
+  position: absolute;
+  bottom: 0;
+  background-color: #1d2d44;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  height: var(--foot-h);
+  width: 100%;
+}
+
+.main::-webkit-scrollbar {
+  display: none;
+}
