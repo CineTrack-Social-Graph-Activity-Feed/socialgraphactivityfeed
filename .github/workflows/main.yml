@@ -195,10 +195,10 @@ jobs:
 
           # Nginx config (server context) for API proxy + SPA fallback
           # Only affects the deployment bundle, doesn't add files to the repo
-          mkdir -p deployment/.platform/nginx/conf.d/server
-          cat > deployment/.platform/nginx/conf.d/server/spa.conf << 'EOF'
+          mkdir -p deployment/.platform/nginx/conf.d/elasticbeanstalk
+          cat > deployment/.platform/nginx/conf.d/elasticbeanstalk/spa.conf << 'EOF'
           # Proxy API to Node app
-          location /api/ {
+          location ^~ /api/ {
             proxy_pass          http://nodejs;
             proxy_http_version  1.1;
             proxy_set_header    Connection "keep-alive";
@@ -209,8 +209,8 @@ jobs:
             proxy_set_header    X-Forwarded-Proto $scheme;
           }
 
-          # Serve SPA from /public with HTML5 history fallback
-          location / {
+          # Serve SPA (anything that's NOT /api) from /public with HTML5 history fallback
+          location ~* ^/(?!api/).* {
             root   /var/app/current/public;
             try_files $uri $uri/ /index.html;
           }
