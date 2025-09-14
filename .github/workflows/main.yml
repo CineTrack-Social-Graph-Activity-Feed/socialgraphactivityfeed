@@ -186,19 +186,18 @@ jobs:
               AWS_REGION: ${AWS_REGION}
               # Colocar aquí tu string de conexión de MongoDB (reemplaza con tu URI real)
               MONGODB_URI: "mongodb+srv://nicolasaversa1_db_user:4mSvF4VaOswSKngJ@socialgraph-activityfee.reute35.mongodb.net/?retryWrites=true&w=majority&appName=SocialGraph-ActivityFeed"
-            aws:elasticbeanstalk:environment:proxy:staticfiles:
-              /: public
+            # Remove staticfiles mapping; we'll configure Nginx server block below
             aws:elasticbeanstalk:cloudwatch:logs:
               StreamLogs: true
 
           # Sin necesidad de recursos adicionales o scripts - configuración directa en variables de entorno
           EOF
 
-          # Optional: Nginx config for SPA fallback to index.html (non-API routes)
+          # Nginx config (server context) for API proxy + SPA fallback
           # Only affects the deployment bundle, doesn't add files to the repo
-          mkdir -p deployment/.platform/nginx/conf.d
-          cat > deployment/.platform/nginx/conf.d/spa_rewrite.conf << 'EOF'
-          # Serve frontend from /public as root, keep /api proxied to Node
+          mkdir -p deployment/.platform/nginx/conf.d/server
+          cat > deployment/.platform/nginx/conf.d/server/spa.conf << 'EOF'
+          # Proxy API to Node app
           location /api/ {
             proxy_pass          http://nodejs;
             proxy_http_version  1.1;
@@ -210,9 +209,10 @@ jobs:
             proxy_set_header    X-Forwarded-Proto $scheme;
           }
 
+          # Serve SPA from /public with HTML5 history fallback
           location / {
             root   /var/app/current/public;
-            try_files $uri /index.html;
+            try_files $uri $uri/ /index.html;
           }
           EOF
 
@@ -273,5 +273,11 @@ jobs:
           echo "🚀 Application deployed to: http://$ENVIRONMENT_URL"
           echo "🏥 Health check: http://$ENVIRONMENT_URL/health"
           
-          # Basic health check
-          curl -f "http://$ENVIRONMENT_URL/health" || (echo "Health check failed" && exit 1)
+          # Basic health check with retries (env may take a few seconds to warm up)
+          for i in {1..10}; do
+            if curl -fsS "http://$ENVIRONMENT_URL/health" > /dev/null; then
+              echo "✅ Health check OK"; exit 0;
+            fi
+            echo "⏳ Health not ready yet (attempt $i/10). Waiting 10s..."; sleep 10;
+          done
+          echo "❌ Health check failed after retries"; exit 1
