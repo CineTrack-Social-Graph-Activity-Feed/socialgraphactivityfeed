@@ -12,34 +12,34 @@ env:
   EB_ENVIRONMENT_NAME: Social-graph-app-env 
   AWS_REGION: us-east-2
 
-  jobs:
-    # Frontend Build and Test
-    frontend:
-      runs-on: ubuntu-latest
-      defaults:
-        run:
-          working-directory: ./Frontend/front-cinetrack
-      steps:
-        - uses: actions/checkout@v4
-        - uses: actions/setup-node@v4
-          with:
-            node-version: ${{ env.NODE_VERSION }}
-            cache: npm
-            cache-dependency-path: Frontend/front-cinetrack/package-lock.json
-        - name: Install frontend dependencies
-          run: npm ci
-        - name: Lint frontend
-          run: npm run lint --if-present
-        - name: Test frontend
-          run: npm run test --if-present
-        - name: Build frontend
-          run: npm run build
-        - name: Upload frontend build
-          uses: actions/upload-artifact@v4
-          with:
-            name: frontend-build
-            path: Frontend/front-cinetrack/dist
-            retention-days: 1
+jobs:
+  # Frontend Build and Test
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Frontend/front-cinetrack
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: Frontend/front-cinetrack/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Lint frontend
+        run: npm run lint --if-present
+      - name: Test frontend
+        run: npm run test --if-present
+      - name: Build frontend
+        run: npm run build
+      - name: Upload frontend build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: Frontend/front-cinetrack/dist
+          retention-days: 1
 jobs:
   # Backend Build and Test
   backend:
