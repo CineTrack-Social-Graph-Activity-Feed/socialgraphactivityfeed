@@ -1,0 +1,245 @@
+body {
+  background-color: #0d1117;
+  color: white;
+  font-family: Arial, sans-serif;  
+}
+.bkg-especial{
+  overflow-y: auto;   /* scroll solo dentro de la lista */
+  scrollbar-width: none;
+}
+
+.members-container {
+  margin: 0 auto;
+  padding: 20px;
+}
+.setions{
+
+    padding-top: 30px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 30px;
+  color: #a0a7ad;
+}
+
+.section-title {
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #8b959e;
+  margin: 20px 0 12px;
+border-bottom: 1px solid #333; /* línea gris */
+
+}
+
+.members-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.member-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 140px;
+  text-align: center;
+}
+
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.status-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.status-icon.add {
+  color: white;
+  background-color: #1f242c;
+}
+
+.status-icon.following {
+  color: #1db954;
+  background-color: #1f242c;
+}
+
+.member-info {
+  margin-top: 8px;
+}
+
+.member-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.member-stats {
+  font-size: 12px;
+  color: #a0a7ad;
+  margin-top: 2px;
+}
+
+.films-row {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.film-thumb {
+  width: 28px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* container */
+.container {
+  padding: 20px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #e6eef8;
+}
+
+/* table-like wrapper */
+.list-table {
+  display: block;
+}
+
+/* Use the same grid for header and every row to keep alignment */
+.table-header,
+.user-row {
+  display: grid;
+  grid-template-columns: 1fr 100px 70px 120px 40px; /* ajustar anchos */
+  align-items: center;
+  gap: 12px;
+}
+
+/* header style */
+.table-header {
+  padding: 10px 14px;
+  color: #8b959e;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* row list spacing */
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+    max-height: 70vh;   /* altura máxima visible */
+  overflow-y: auto;   /* scroll solo dentro de la lista */
+  padding-right: 6px; /* espacio para la barra de scroll */
+  scrollbar-width: none;
+}
+
+/* each row card */
+.user-row {
+  
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(2, 6, 10, 0.5);
+}
+
+/* column basics */
+.col {
+  display: flex;
+  align-items: center;
+}
+
+/* make numeric columns align to right */
+.numeric {
+  justify-content: flex-end;
+}
+
+/* name column content */
+.user-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.followers {
+  font-size: 12px;
+  color: #a0a7ad;
+  margin-top: 4px;
+}
+
+/* stat inside numeric column with icon + number */
+.stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #e6eef8;
+}
+
+/* icons default color (inherit), you can override if wanted */
+.stat svg {
+  opacity: 0.95;
+}
+
+/* check column center */
+.col.check {
+  justify-content: center;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 10px 40px 10px 10px;
+  background: white;
+  color: #0d1117;
+  border-radius: 7px;
+  border: none;
+  font-size: 14px;
+}
+
+.search-container .search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* small responsive tweak */
+@media (max-width: 700px) {
+  .table-header,
+  .user-row {
+    grid-template-columns: 1fr 70px 60px 80px 36px;
+  }
+
+  .container {
+    padding: 12px;
+  }
+}

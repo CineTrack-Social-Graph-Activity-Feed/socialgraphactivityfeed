@@ -225,9 +225,20 @@ const updateUser = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("username email avatar_url created_at");
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error al obtener usuarios:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
 module.exports = {
   createUser,
   getUser,
   searchUsers,
-  updateUser
+  updateUser,
+  getAllUsers
 };

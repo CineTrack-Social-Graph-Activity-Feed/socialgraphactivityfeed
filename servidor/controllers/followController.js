@@ -196,8 +196,123 @@ const getFeed = async (req, res) => {
   }
 };
 
+/**
+ * Obtener todos los usuarios que tú sigues
+ * GET /api/followed?user_id=...
+ */
+const getFollowedUsers = async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 25;
+    const skip = (page - 1) * limit;
+    
+    if (!user_id) {
+      return res.status(400).json({ error: 'user_id es requerido' });
+    }
+
+    // Buscar los follows donde el usuario es el follower
+    const followedUsers = await Follow.find({
+      follower_user_id: user_id
+    }).select('followed_user_id');
+
+    const followedUserIds = followedUsers.map(f => f.followed_user_id);
+
+    // Obtener los datos de los usuarios seguidos
+    const users = await User.find({
+      _id: { $in: followedUserIds }
+    }).select('username avatar_url')
+    .sort({created_at: -1})
+    .skip(skip)
+    .limit(limit);
+
+    // Obtener total de seguidos para paginación
+    const totalFollowedUsers = await Follow.countDocuments({
+      follower_user_id: user_id
+    });
+
+    const totalPages = Math.ceil(totalFollowedUsers / limit);
+
+    res.status(200).json({
+      followed: users,
+      pagination: {
+        current_page: page,
+        total_pages: totalPages,
+        total_items: totalFollowedUsers,
+        items_per_page: limit,
+        has_next: page < totalPages,
+        has_prev: page > 1
+      }
+    });
+
+  } catch (error) {
+    console.error('Error en getFollowedUsers:', error);
+    res.status(500).json({ 
+      error: 'Error interno del servidor' 
+    });
+  }
+};
+
+
+/**
+ * Obtener todos los usuarios que te siguen
+ * GET /api/followers?user_id=...
+ */
+const getFollowersUsers = async (req, res) => {
+  try {
+    const { user_id } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 25;
+    const skip = (page - 1) * limit;
+    
+    if (!user_id) {
+      return res.status(400).json({ error: 'user_id es requerido' });
+    }
+
+    // Buscar los follows donde el usuario es el seguido
+    const followers = await Follow.find({
+      followed_user_id: user_id
+    }).select('follower_user_id');
+
+    const followerUserIds = followers.map(f => f.follower_user_id);
+
+    // Obtener los datos de los usuarios seguidos
+    const users = await User.find({
+      _id: { $in: followerUserIds }
+    }).select('username avatar_url')
+    .sort({created_at: -1})
+    .skip(skip)
+    .limit(limit);
+
+    // Obtener total de seguidos para paginación
+    const totalFollowersUsers = await Follow.countDocuments({
+      follower_user_id: user_id
+    });
+
+    const totalPages = Math.ceil(totalFollowersUsers / limit);
+
+    res.status(200).json({
+      followers: users,
+      pagination: {
+        current_page: page,
+        total_pages: totalPages,
+        total_items: totalFollowersUsers,
+        items_per_page: limit,
+        has_next: page < totalPages,
+        has_prev: page > 1
+      }
+    });
+
+  } catch (error) {
+    console.error('Error en getFollowersUsers:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
 module.exports = {
   followUser,
   unfollowUser,
-  getFeed
+  getFeed,
+  getFollowedUsers,
+  getFollowersUsers
 };

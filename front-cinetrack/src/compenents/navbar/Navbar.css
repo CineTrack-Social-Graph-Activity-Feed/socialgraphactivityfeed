@@ -1,0 +1,116 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  background-color: #0d1321;
+  padding: 20px;
+}
+
+.logo {
+  margin-left: 35px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+.icon {
+  display: flex;
+  width: 40px;
+  height: 30px;
+}
+.triangle {
+  flex: 1;
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+}
+.triangle.left {
+  background: #ef0b37;
+  margin-right: 5px;
+}
+.triangle.right {
+  background: #00d4d4;
+  transform: rotate(180deg);
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 20px;
+  gap: 15px;
+}
+
+.user-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.username {
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: white;
+  margin-right: 30px;
+}
+
+.search-wrap {
+  position: relative;
+  width: 260px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 44px 10px 14px;
+  background: white;
+  border-radius: 7px;
+  outline: none;
+  font-size: 14px;
+  border: none;
+  color: black;
+}
+.search-input::placeholder {
+  color: gray;
+}
+
+.search-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  color: gray;
+}
+
+.logout-btn {
+  background-color: #ef0b37;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 43px;
+  height: 36px;
+}
+
+.logout-btn:hover {
+  background-color: #c1072a;
+}
+
+.logout-btn svg {
+  width: 23px;
+  height: 23px;
+  fill: white;
+}

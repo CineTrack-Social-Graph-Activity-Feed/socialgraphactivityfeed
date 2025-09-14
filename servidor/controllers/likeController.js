@@ -1,7 +1,7 @@
-const Like = require('../models/Like');
-const Publication = require('../models/Publication');
-const User = require('../models/User');
-const { createLikeEvent, createUnlikeEvent } = require('../utils/events');
+const Like = require("../models/Like");
+const Publication = require("../models/Publication");
+const User = require("../models/User");
+const { createLikeEvent, createUnlikeEvent } = require("../utils/events");
 
 /**
  * Dar like a una publicación
@@ -14,15 +14,15 @@ const addLike = async (req, res) => {
     // Validaciones básicas
     if (!user_id || !target_id || !target_type) {
       return res.status(400).json({
-        error: 'user_id, target_id y target_type son requeridos'
+        error: "user_id, target_id y target_type son requeridos",
       });
     }
 
     // Validar target_type
-    const validTargetTypes = ['review', 'rating', 'list'];
+    const validTargetTypes = ["review", "rating", "list"];
     if (!validTargetTypes.includes(target_type)) {
       return res.status(400).json({
-        error: 'target_type debe ser: review, rating o list'
+        error: "target_type debe ser: review, rating o list",
       });
     }
 
@@ -30,19 +30,19 @@ const addLike = async (req, res) => {
     const user = await User.findById(user_id);
     if (!user) {
       return res.status(404).json({
-        error: 'Usuario no encontrado'
+        error: "Usuario no encontrado",
       });
     }
 
     // Verificar que la publicación exista y sea del tipo correcto
     const publication = await Publication.findOne({
       _id: target_id,
-      type: target_type
-    }).populate('author_id', 'username');
+      type: target_type,
+    }).populate("author_id", "username");
 
     if (!publication) {
       return res.status(404).json({
-        error: 'Publicación no encontrada o tipo incorrecto'
+        error: "Publicación no encontrada o tipo incorrecto",
       });
     }
 
@@ -50,12 +50,12 @@ const addLike = async (req, res) => {
     const existingLike = await Like.findOne({
       user_id,
       target_id,
-      target_type
+      target_type,
     });
 
     if (existingLike) {
       return res.status(409).json({
-        error: 'Ya has dado like a esta publicación'
+        error: "Ya has dado like a esta publicación",
       });
     }
 
@@ -63,7 +63,7 @@ const addLike = async (req, res) => {
     const like = new Like({
       user_id,
       target_id,
-      target_type
+      target_type,
     });
 
     await like.save();
@@ -72,26 +72,25 @@ const addLike = async (req, res) => {
     createLikeEvent(user_id, target_id, target_type);
 
     res.status(201).json({
-      message: 'Like agregado exitosamente',
+      message: "Like agregado exitosamente",
       like: {
         id: like._id,
         user: {
           id: user._id,
-          username: user.username
+          username: user.username,
         },
         target: {
           id: publication._id,
           type: publication.type,
-          author: publication.author_id.username
+          author: publication.author_id.username,
         },
-        created_at: like.created_at
-      }
+        created_at: like.created_at,
+      },
     });
-
   } catch (error) {
-    console.error('Error en addLike:', error);
+    console.error("Error en addLike:", error);
     res.status(500).json({
-      error: 'Error interno del servidor'
+      error: "Error interno del servidor",
     });
   }
 };
@@ -107,13 +106,13 @@ const removeLike = async (req, res) => {
 
     if (!like_id) {
       return res.status(400).json({
-        error: 'like_id es requerido'
+        error: "like_id es requerido",
       });
     }
 
     if (!user_id) {
       return res.status(400).json({
-        error: 'user_id es requerido para verificar permisos'
+        error: "user_id es requerido para verificar permisos",
       });
     }
 
@@ -121,14 +120,14 @@ const removeLike = async (req, res) => {
     const like = await Like.findById(like_id);
     if (!like) {
       return res.status(404).json({
-        error: 'Like no encontrado'
+        error: "Like no encontrado",
       });
     }
 
     // Verificar que el usuario que quiere eliminar el like sea el propietario
     if (like.user_id.toString() !== user_id) {
       return res.status(403).json({
-        error: 'No tienes permisos para eliminar este like'
+        error: "No tienes permisos para eliminar este like",
       });
     }
 
@@ -139,13 +138,12 @@ const removeLike = async (req, res) => {
     createUnlikeEvent(like.user_id, like.target_id, like.target_type);
 
     res.status(200).json({
-      message: 'Like eliminado exitosamente'
+      message: "Like eliminado exitosamente",
     });
-
   } catch (error) {
-    console.error('Error en removeLike:', error);
+    console.error("Error en removeLike:", error);
     res.status(500).json({
-      error: 'Error interno del servidor'
+      error: "Error interno del servidor",
     });
   }
 };
@@ -163,7 +161,7 @@ const getPublicationLikes = async (req, res) => {
 
     if (!publication_id) {
       return res.status(400).json({
-        error: 'publication_id es requerido'
+        error: "publication_id es requerido",
       });
     }
 
@@ -171,13 +169,13 @@ const getPublicationLikes = async (req, res) => {
     const publication = await Publication.findById(publication_id);
     if (!publication) {
       return res.status(404).json({
-        error: 'Publicación no encontrada'
+        error: "Publicación no encontrada",
       });
     }
 
     // Obtener likes con información del usuario
     const likes = await Like.find({ target_id: publication_id })
-      .populate('user_id', 'username avatar_url')
+      .populate("user_id", "username avatar_url")
       .sort({ created_at: -1 })
       .skip(skip)
       .limit(limit);
@@ -186,28 +184,27 @@ const getPublicationLikes = async (req, res) => {
     const totalLikes = await Like.countDocuments({ target_id: publication_id });
 
     res.status(200).json({
-      likes: likes.map(like => ({
+      likes: likes.map((like) => ({
         id: like._id,
         user: {
           id: like.user_id._id,
           username: like.user_id.username,
-          avatar_url: like.user_id.avatar_url
+          avatar_url: like.user_id.avatar_url,
         },
-        created_at: like.created_at
+        created_at: like.created_at,
       })),
       total_likes: totalLikes,
       pagination: {
         current_page: page,
         total_pages: Math.ceil(totalLikes / limit),
         total_items: totalLikes,
-        items_per_page: limit
-      }
+        items_per_page: limit,
+      },
     });
-
   } catch (error) {
-    console.error('Error en getPublicationLikes:', error);
+    console.error("Error en getPublicationLikes:", error);
     res.status(500).json({
-      error: 'Error interno del servidor'
+      error: "Error interno del servidor",
     });
   }
 };
@@ -215,5 +212,5 @@ const getPublicationLikes = async (req, res) => {
 module.exports = {
   addLike,
   removeLike,
-  getPublicationLikes
+  getPublicationLikes,
 };
