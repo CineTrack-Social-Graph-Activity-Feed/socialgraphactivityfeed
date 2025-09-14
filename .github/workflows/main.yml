@@ -38,6 +38,13 @@ jobs:
       - name: Lint frontend
         run: npm run lint --if-present || true
         
+      - name: Fix import paths for case sensitivity
+        run: |
+          # Corregir importación en MiActividad.jsx
+          sed -i 's/compenents\/Navbar\/Navbar/compenents\/navbar\/Navbar/g' src/pages/MiActividad/MiActividad.jsx
+          # Corregir cualquier otra referencia a "Footer" con mayúscula
+          sed -i 's/compenents\/Footer\/Footer/compenents\/footer\/Footer/g' src/pages/MiActividad/MiActividad.jsx
+          
       - name: Build frontend
         run: npm run build
         
