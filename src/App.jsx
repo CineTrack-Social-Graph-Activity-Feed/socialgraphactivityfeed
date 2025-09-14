@@ -7,7 +7,7 @@ import BuscarAmigos from "./pages/BuscarAmigos/BuscarAmigos";
 import { UserContext } from "../UserContex";
 
 function App() {
-  const testUserId = "68c38ea990da6680f3814a1d"; // ID de usuario de prueba
+  const testUserId = "68c363128ebed5110d10e09f"; // ID de usuario de prueba
 
   return (
     <>

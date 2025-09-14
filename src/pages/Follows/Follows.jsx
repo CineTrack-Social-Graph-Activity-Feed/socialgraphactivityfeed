@@ -6,7 +6,6 @@ import Tabs from "../../compenents/tabBar/TabBar";
 import ListaFollows from "../../compenents/listaFollows/ListaFollows";
 import ListaFollowers from "../../compenents/listaFollowers/ListaFollowers";
 
-
 function Follows() {
       const [currentTab, setCurrentTab] = useState("SEGUIDOS");
   

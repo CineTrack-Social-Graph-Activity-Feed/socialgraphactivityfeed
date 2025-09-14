@@ -1,7 +1,8 @@
-import "./ListaFollowers.css";
+import "./ListaUsuarios.css";
 import { Eye, List, Heart, CheckCircle } from "lucide-react";
 import { use, useEffect, useState } from "react";
 import { useUser } from "../../../UserContex";
+
 
 const ListaFollowers = () => {
   const { userId } = useUser();
