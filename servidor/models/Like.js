@@ -13,7 +13,7 @@ const likeSchema = new mongoose.Schema({
     lowercase: true
   },
   target_id: {
-    type: String, // Ahora acepta IDs externos (por ejemplo, de reviews, películas, etc.)
+    type: String, 
     required: true
   },
   created_at: {
