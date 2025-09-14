@@ -40,6 +40,182 @@ jobs:
           name: frontend-build
           path: Frontend/front-cinetrack/dist
           retention-days: 1
+
+  # Backend Build and Test
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+    defaults:
+      run:
+        working-directory: ./servidor
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: servidor/package-lock.json
+      - name: Install backend dependencies
+        run: npm ci
+      - name: Lint backend
+        run: npm run lint --if-present
+      - name: Test backend
+        run: npm run test --if-present
+        env:
+          NODE_ENV: test
+          MONGODB_URI: mongodb://localhost:27017/test
+      - name: Upload backend code
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-code
+          path: servidor
+          retention-days: 1
+
+  # Code Quality Analysis
+  sonar:
+    runs-on: ubuntu-latest
+    needs: [backend]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.test.inclusions=**/*.test.js,**/*.spec.js
+            -Dsonar.exclusions=node_modules/**,dist/**,.output/**,coverage/**
+
+  # Deploy to Elastic Beanstalk
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend, sonar]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: main-aws
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download backend code
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-code
+          path: ./servidor
+      - name: Download frontend build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: ./Frontend/front-cinetrack/dist
+      - name: Setup deployment structure
+        run: |
+          # Create deployment directory
+          mkdir -p deployment
+          # Copy backend files
+          cp -r servidor/* deployment/
+          # Copy frontend build to backend public folder
+          mkdir -p deployment/public
+          cp -r Frontend/front-cinetrack/dist/* deployment/public/
+          # Create or update package.json for production
+          cat > deployment/package.json << EOF
+          {
+            "name": "social-graph-app",
+            "version": "1.0.0",
+            "description": "Social Graph Activity Feed Full-Stack App",
+            "main": "server.js",
+            "scripts": {
+              "start": "node server.js"
+            },
+            "engines": {
+              "node": "22.x",
+              "npm": "10.x"
+            },
+            "dependencies": {
+              "dotenv": "^16.0.0",
+              "express": "^4.18.2",
+              "mongoose": "^7.8.7",
+              "cors": "^2.8.5"
+            }
+          }
+          EOF
+          # Install production dependencies
+          cd deployment
+          npm install --omit=dev
+      - name: Create Elastic Beanstalk configuration
+        run: |
+          mkdir -p deployment/.ebextensions
+          # Node.js configuration
+          cat > deployment/.ebextensions/nodejs.config << 'EOF'
+          option_settings:
+            aws:elasticbeanstalk:application:environment:
+              NODE_ENV: production
+              PORT: 8080
+              AWS_REGION: ${AWS_REGION}
+              # Colocar aquí tu string de conexión de MongoDB (reemplaza con tu URI real)
+              MONGODB_URI: "mongodb+srv://nicolasaversa1_db_user:4mSvF4VaOswSKngJ@socialgraph-activityfee.reute35.mongodb.net/?retryWrites=true&w=majority&appName=SocialGraph-ActivityFeed"
+            aws:elasticbeanstalk:environment:proxy:staticfiles:
+              /public: public
+            aws:elasticbeanstalk:cloudwatch:logs:
+              StreamLogs: true
+          # Sin necesidad de recursos adicionales o scripts - configuración directa en variables de entorno
+          EOF
+          # Health check configuration
+          cat > deployment/.ebextensions/healthcheck.config << 'EOF'
+          option_settings:
+            aws:elasticbeanstalk:healthreporting:system:
+              SystemType: enhanced
+            aws:elasticbeanstalk:application:
+              Application Healthcheck URL: /health
+          EOF
+      - name: Create deployment package
+        run: |
+          cd deployment
+          zip -r ../app.zip . -x ".git/*"
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          # Create application version
+          VERSION_LABEL="v${{ github.run_number }}-${{ github.sha }}"
+          # Upload application bundle to S3 first
+          aws s3 cp app.zip s3://${{ secrets.EB_S3_BUCKET }}/versions/$VERSION_LABEL.zip
+          aws elasticbeanstalk create-application-version \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --version-label $VERSION_LABEL \
+            --source-bundle S3Bucket="${{ secrets.EB_S3_BUCKET }}",S3Key="versions/$VERSION_LABEL.zip" \
+            --description "Deploy from GitHub Actions - ${{ github.sha }}"
+          # Deploy to environment
+          aws elasticbeanstalk update-environment \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --environment-name ${{ env.EB_ENVIRONMENT_NAME }} \
+            --version-label $VERSION_LABEL
+          # Wait for deployment to complete
+          aws elasticbeanstalk wait environment-updated \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --environment-name ${{ env.EB_ENVIRONMENT_NAME }}
+      - name: Verify deployment
+        run: |
+          # Get environment URL
+          ENVIRONMENT_URL=$(aws elasticbeanstalk describe-environments \
+            --application-name ${{ env.EB_APPLICATION_NAME }} \
+            --environment-names ${{ env.EB_ENVIRONMENT_NAME }} \
+            --query "Environments[0].CNAME" --output text)
+          echo "🚀 Application deployed to: http://$ENVIRONMENT_URL"
+          echo "🏥 Health check: http://$ENVIRONMENT_URL/health"
+          # Basic health check
+          curl -f "http://$ENVIRONMENT_URL/health" || (echo "Health check failed" && exit 1)
 jobs:
   # Backend Build and Test
   backend:
