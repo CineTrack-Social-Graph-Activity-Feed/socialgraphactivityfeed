@@ -1,5 +1,5 @@
 const express = require('express');
-const { followUser, unfollowUser, getFeed } = require('../controllers/followController');
+const { followUser, unfollowUser, getFeed, getFollowed, getFollowers } = require('../controllers/followController');
 
 const router = express.Router();
 
@@ -9,5 +9,9 @@ router.post('/unfollow', unfollowUser);
 
 // Ruta del feed
 router.get('/feed', getFeed);
+
+// Listas de seguidos y seguidores
+router.get('/followed', getFollowed);
+router.get('/followers', getFollowers);
 
 module.exports = router;

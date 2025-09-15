@@ -2,6 +2,7 @@ const Comment = require('../models/Comment');
 const Publication = require('../models/Publication');
 const User = require('../models/User');
 const { createCommentEvent, createDeleteCommentEvent } = require('../utils/events');
+const mongoose = require('mongoose');
 
 /**
  * Agregar comentario a una publicación
@@ -173,12 +174,13 @@ const getPublicationComments = async (req, res) => {
       });
     }
 
-    // Verificar que la publicación exista
+    // Validar ObjectId y verificar que la publicación exista
+    if (!mongoose.Types.ObjectId.isValid(publication_id)) {
+      return res.status(200).json({ comments: [], total_comments: 0, pagination: { current_page: page, total_pages: 0, total_items: 0, items_per_page: limit } });
+    }
     const publication = await Publication.findById(publication_id);
     if (!publication) {
-      return res.status(404).json({
-        error: 'Publicación no encontrada'
-      });
+      return res.status(200).json({ comments: [], total_comments: 0, pagination: { current_page: page, total_pages: 0, total_items: 0, items_per_page: limit } });
     }
 
     // Obtener comentarios con información del usuario

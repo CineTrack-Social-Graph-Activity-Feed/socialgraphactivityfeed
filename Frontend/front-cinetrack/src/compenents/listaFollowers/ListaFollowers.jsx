@@ -24,8 +24,9 @@ const ListaFollowers = () => {
   useEffect(() => {
     const fetchData = () => {
   fetch(`/api/followers?user_id=${userId}`)
-        .then((res) => res.json())
-        .then((data) => setSeguidores(data.followers));
+    .then((res) => (res.ok ? res.json() : Promise.resolve({ followers: [] })))
+    .then((data) => setSeguidores(Array.isArray(data.followers) ? data.followers : []))
+    .catch(() => setSeguidores([]));
     };
 
     // Primera carga
@@ -42,12 +43,14 @@ const ListaFollowers = () => {
   // Traigo los usuarios que sigo
   useEffect(() => {
   fetch(`/api/followed?user_id=${userId}`)
-      .then((response) => response.json())
+      .then((response) => (response.ok ? response.json() : Promise.resolve({ followed: [] })))
       .then((data) => {
         console.log("Followers data:", data);
         // 👇 extraemos solo los _id en un array
-        setSeguidos(data.followed.map((u) => u._id));
-      });
+        const arr = Array.isArray(data.followed) ? data.followed : [];
+        setSeguidos(arr.map((u) => u._id));
+      })
+      .catch(() => setSeguidos([]));
   }, [userId]);
 
   // Función para seguir/dejar de seguir

@@ -123,18 +123,21 @@ function Post({ post }) {
     const fetchLikes = async () => {
       const results = await Promise.all(
         posts.map(async (p) => {
-          const res = await fetch(
-            `/api/like/publication/${p.id}`
-          );
-
-          const data = await res.json();
-
+          let data = { likes: [], total_likes: 0 };
+          try {
+            const res = await fetch(`/api/like/publication/${p.id}`);
+            if (res.ok) {
+              data = await res.json();
+            }
+          } catch (e) {
+            console.error('Error fetching likes for', p.id, e);
+          }
           return [
             p.id,
             {
-              total_likes: data.total_likes,
-              liked: data.likes.some((l) => l.user.id === userId), // check si yo estoy en la lista
-              like_id: data.likes.find((l) => l.user.id === userId)?.id || null,
+              total_likes: data?.total_likes ?? 0,
+              liked: Array.isArray(data?.likes) ? data.likes.some((l) => l.user?.id === userId) : false,
+              like_id: Array.isArray(data?.likes) ? (data.likes.find((l) => l.user?.id === userId)?.id || null) : null,
             },
           ];
         })
@@ -219,10 +222,15 @@ function Post({ post }) {
 
   // 🔹 traer likes y estado actualizado desde el back
   const refreshLikes = async (postId) => {
-    const res = await fetch(
-      `/api/like/publication/${postId}`
-    );
-    const data = await res.json();
+    let data = { likes: [], total_likes: 0 };
+    try {
+      const res = await fetch(`/api/like/publication/${postId}`);
+      if (res.ok) {
+        data = await res.json();
+      }
+    } catch (e) {
+      console.error('Error refreshing likes for', postId, e);
+    }
 
     console.log("Post", postId, "-> Likes:", data);
 
@@ -230,9 +238,9 @@ function Post({ post }) {
     const total = data.total_likes ?? 0;
 
     // Buscar si el usuario actual está en el array
-    const myLike = (data.likes || []).find(
-      (l) => String(l.user.id) === String(userId)
-    );
+    const myLike = Array.isArray(data.likes)
+      ? data.likes.find((l) => String(l.user?.id) === String(userId))
+      : null;
 
     setLikesByPost((prev) => ({
       ...prev,

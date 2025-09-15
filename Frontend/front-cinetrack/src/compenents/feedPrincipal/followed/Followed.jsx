@@ -30,9 +30,10 @@ function Followed() {
 
   useEffect(() => {
     const fetchData = () => {
-  fetch(`/api/followed?user_id=${userId}`)
-        .then((res) => res.json())
-        .then((data) => setSeguidores(data.followed));
+      fetch(`/api/followed?user_id=${userId}`)
+        .then((res) => (res.ok ? res.json() : Promise.resolve({ followed: [] })))
+        .then((data) => setSeguidores(Array.isArray(data.followed) ? data.followed : []))
+        .catch(() => setSeguidores([]));
     };
 
     // Primera carga

@@ -2,6 +2,7 @@ const Follow = require('../models/Follow');
 const User = require('../models/User');
 const Publication = require('../models/Publication');
 const { createFollowEvent, createUnfollowEvent } = require('../utils/events');
+const mongoose = require('mongoose');
 
 /**
  * Seguir a un usuario
@@ -199,5 +200,65 @@ const getFeed = async (req, res) => {
 module.exports = {
   followUser,
   unfollowUser,
-  getFeed
+  getFeed,
+  /**
+   * Obtener lista de usuarios que SIGUE un usuario
+   * GET /api/followed?user_id=...
+   */
+  async getFollowed(req, res) {
+    try {
+      const { user_id } = req.query;
+      if (!user_id) {
+        return res.status(400).json({ error: 'user_id es requerido' });
+      }
+
+      if (!mongoose.Types.ObjectId.isValid(user_id)) {
+        return res.status(200).json({ followed: [] });
+      }
+
+      const follows = await Follow.find({ follower_user_id: user_id })
+        .populate('followed_user_id', 'username avatar_url');
+
+      // Normalizar a arreglo de usuarios
+      const followed = follows
+        .map(f => f.followed_user_id)
+        .filter(Boolean)
+        .map(u => ({ _id: u._id, username: u.username, avatar_url: u.avatar_url }));
+
+      res.status(200).json({ followed });
+    } catch (error) {
+      console.error('Error en getFollowed:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  },
+
+  /**
+   * Obtener lista de usuarios que SIGUEN a un usuario
+   * GET /api/followers?user_id=...
+   */
+  async getFollowers(req, res) {
+    try {
+      const { user_id } = req.query;
+      if (!user_id) {
+        return res.status(400).json({ error: 'user_id es requerido' });
+      }
+
+      if (!mongoose.Types.ObjectId.isValid(user_id)) {
+        return res.status(200).json({ followers: [] });
+      }
+
+      const follows = await Follow.find({ followed_user_id: user_id })
+        .populate('follower_user_id', 'username avatar_url');
+
+      const followers = follows
+        .map(f => f.follower_user_id)
+        .filter(Boolean)
+        .map(u => ({ _id: u._id, username: u.username, avatar_url: u.avatar_url }));
+
+      res.status(200).json({ followers });
+    } catch (error) {
+      console.error('Error en getFollowers:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  }
 };

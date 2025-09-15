@@ -2,6 +2,7 @@ const Like = require('../models/Like');
 const Publication = require('../models/Publication');
 const User = require('../models/User');
 const { createLikeEvent, createUnlikeEvent } = require('../utils/events');
+const mongoose = require('mongoose');
 
 /**
  * Dar like a una publicación
@@ -167,12 +168,13 @@ const getPublicationLikes = async (req, res) => {
       });
     }
 
-    // Verificar que la publicación exista
+    // Validar ObjectId y verificar que la publicación exista
+    if (!mongoose.Types.ObjectId.isValid(publication_id)) {
+      return res.status(200).json({ likes: [], total_likes: 0, pagination: { current_page: page, total_pages: 0, total_items: 0, items_per_page: limit } });
+    }
     const publication = await Publication.findById(publication_id);
     if (!publication) {
-      return res.status(404).json({
-        error: 'Publicación no encontrada'
-      });
+      return res.status(200).json({ likes: [], total_likes: 0, pagination: { current_page: page, total_pages: 0, total_items: 0, items_per_page: limit } });
     }
 
     // Obtener likes con información del usuario

@@ -70,12 +70,14 @@ function Navbar() {
   // Traigo los usuarios que sigo
   useEffect(() => {
   fetch(`/api/followed?user_id=${userId}`)
-      .then((response) => response.json())
+      .then((response) => (response.ok ? response.json() : Promise.resolve({ followed: [] })))
       .then((data) => {
         console.log("Followers data:", data);
         // 👇 extraemos solo los _id en un array
-        setSeguidores(data.followed.map((u) => u._id));
-      });
+        const arr = Array.isArray(data.followed) ? data.followed : [];
+        setSeguidores(arr.map((u) => u._id));
+      })
+      .catch(() => setSeguidores([]));
   }, [userId]);
 
   // Función para seguir/dejar de seguir
