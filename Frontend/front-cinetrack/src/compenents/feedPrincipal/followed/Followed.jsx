@@ -14,7 +14,11 @@ function Followed() {
   const handleUnfollow = (idUser) => {
     setOpenMenu(null);
     // 👇 acá podrías llamar al backend para realmente dejar de seguir
+<<<<<<< HEAD
     fetch(`http://localhost:3000/api/unfollow`, {
+=======
+  fetch(`/api/unfollow`, {
+>>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -30,9 +34,16 @@ function Followed() {
 
   useEffect(() => {
     const fetchData = () => {
+<<<<<<< HEAD
       fetch(`http://localhost:3000/api/followed?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => setSeguidores(data.followed));
+=======
+      fetch(`/api/followed?user_id=${userId}`)
+        .then((res) => (res.ok ? res.json() : Promise.resolve({ followed: [] })))
+        .then((data) => setSeguidores(Array.isArray(data.followed) ? data.followed : []))
+        .catch(() => setSeguidores([]));
+>>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
     };
 
     // Primera carga

@@ -10,7 +10,11 @@ const ListaFollows = () => {
 
   const unfollowUser = async (targetId) => {
     try {
+<<<<<<< HEAD
       const res = await fetch("http://localhost:3000/api/unfollow", {
+=======
+  const res = await fetch("/api/unfollow", {
+>>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -33,7 +37,11 @@ const ListaFollows = () => {
 
   useEffect(() => {
     const fetchData = () => {
+<<<<<<< HEAD
       fetch(`http://localhost:3000/api/followed?user_id=${userId}`)
+=======
+  fetch(`/api/followed?user_id=${userId}`)
+>>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
         .then((res) => res.json())
         .then((data) => setSeguidores(data.followed));
     };
