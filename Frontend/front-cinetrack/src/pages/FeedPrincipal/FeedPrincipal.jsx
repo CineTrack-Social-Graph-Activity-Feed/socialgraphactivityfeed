@@ -25,6 +25,7 @@ function FeedPrincipal() {
               ¡Bienvenido! Estos es lo que tus amigos han estado viendo...
             </h2>
           </div>
+          <PostCreate />
           <div className="feed-stack">
             {items.map((i) => (
               <Post key={i} />

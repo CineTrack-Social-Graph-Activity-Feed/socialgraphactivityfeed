@@ -15,6 +15,7 @@ function Post({ post }) {
   const [commentsByPost, setCommentsByPost] = useState({});
   const [showAllComments, setShowAllComments] = useState({});
   const [likesByPost, setLikesByPost] = useState({});
+  const [posts, setPosts] = useState([]);
 
   /* Obtengo los datos del usuario logueado */
   useEffect(() => {
@@ -33,7 +34,7 @@ function Post({ post }) {
     if (!comment.trim()) return;
 
     try {
-  const res = await fetch("/api/comment", {
+      const res = await fetch("/api/comment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,6 +46,11 @@ function Post({ post }) {
           comment,
         }),
       });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "No se pudo crear el comentario");
+      }
 
       //después del POST, vuelvo a pedir todos los comentarios del post asi cuando agrego uno nuevo se actualiza la lista
       const resComments = await fetch(
@@ -67,59 +73,48 @@ function Post({ post }) {
     }
   };
 
-  /**
-   * Posts de ejemplo
-   * Esto es los que nos pasaria el modulo de reviews, tambien seguramente de peliculas y usuarios
-   */
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      type: "review",
-      author: {
-        name: "Paul Rudd",
-        username: "antman_wasp",
-        avatar: "https://i.pravatar.cc/60?img=15",
-      },
-      createdAt: "4h ago",
-      pelicula_name: "The Conjuring: Last Rites",
-      text: "The Conjuring: Last Rites me sorprendió bastante. Tiene un montón de sustos bien logrados y la atmósfera es súper tensa. Me gustó mucho cómo cerraron la historia de los Warren, se siente más personal y emotiva que otras entregas. Eso sí, en algunas partes el ritmo decae un poco y la trama se vuelve predecible, pero en general salí conforme. Creo que es un buen final para la saga.",
-      puntuacion: 4.5,
-      image:
-        "https://a.ltrbxd.com/resized/film-poster/9/3/6/0/6/5/936065-the-conjuring-last-rites-0-1000-0-1500-crop.jpg?v=597eedcd06",
-    },
-    {
-      id: 2,
-      type: "review",
-      author: {
-        name: "Jane Foster",
-        username: "jane_foster",
-        avatar: "https://i.pravatar.cc/60?img=10",
-      },
-      createdAt: "1 day ago",
-      pelicula_name: "Superman",
-      text: "Superman (2025) me dejó con sentimientos encontrados. Por un lado, las escenas de acción son impresionantes y la cinematografía es de primera, realmente capturan la grandeza del personaje. Sin embargo, siento que la historia no estuvo a la altura de las expectativas; algunos giros fueron bastante predecibles y los personajes secundarios no tuvieron mucho desarrollo. Aun así, disfruté viendo a Superman en pantalla",
-      puntuacion: 3,
-      image:
-        "https://a.ltrbxd.com/resized/film-poster/9/5/7/0/5/0/957050-superman-2025-0-1000-0-1500-crop.jpg?v=54e41a55ff",
-    },
-    {
-      id: 3,
-      type: "review",
-      author: {
-        name: "Jane Foster",
-        username: "jane_foster",
-        avatar: "https://i.pravatar.cc/60?img=10",
-      },
-      createdAt: "1 day ago",
-      pelicula_name: "F1",
-      text: "F1 (2024) es una película que realmente captura la emoción y la adrenalina del automovilismo. Las escenas de carrera son espectaculares, con tomas que te hacen sentir como si estuvieras en el asiento del conductor. Además, la historia detrás de los pilotos añade una capa emocional que me mantuvo enganchado. Sin embargo, creo que algunos personajes podrían haberse desarrollado más para darle mayor profundidad a la trama. En general, es una película emocionante que cualquier fanático de la Fórmula 1 debería ver.",
-      puntuacion: 5,
-      image:
-        "https://a.ltrbxd.com/resized/film-poster/8/1/7/9/7/7/817977-f1-the-movie-0-1000-0-1500-crop.jpg?v=f5ae2b99b9",
-    },
-  ]);
+  // Cargar feed real desde el backend para usar IDs válidos de publicación
+  const loadFeed = async () => {
+    try {
+      const res = await fetch(`/api/feed?user_id=${userId}&limit=20`);
+      if (!res.ok) {
+        throw new Error(`Feed no disponible (${res.status})`);
+      }
+      const data = await res.json();
+      const pubs = Array.isArray(data.feed) ? data.feed : [];
+      // Normalizar publicaciones a la forma esperada por el UI
+      const normalized = pubs.map((pub) => ({
+        id: pub._id || pub.id,
+        type: pub.type,
+        author: {
+          name: pub.author_id?.username || "Usuario",
+          username: pub.author_id?.username || "usuario",
+          avatar: pub.author_id?.avatar_url || "https://i.pravatar.cc/60?img=1",
+        },
+        createdAt: pub.created_at,
+        pelicula_name: pub.target_id, // usamos target_id como título
+        text: pub.content,
+        puntuacion: pub.rating,
+        image: null,
+      }));
+      setPosts(normalized);
+    } catch (err) {
+      console.error("Error al cargar feed:", err);
+      setPosts([]);
+    }
+  };
 
   useEffect(() => {
+    loadFeed();
+    const onPubCreated = () => {
+      loadFeed();
+    };
+    window.addEventListener('publication:created', onPubCreated);
+    return () => window.removeEventListener('publication:created', onPubCreated);
+  }, [userId]);
+
+  useEffect(() => {
+    if (!posts || posts.length === 0) return;
     const fetchLikes = async () => {
       const results = await Promise.all(
         posts.map(async (p) => {
@@ -150,6 +145,7 @@ function Post({ post }) {
   }, [posts, userId]);
 
   useEffect(() => {
+    if (!posts || posts.length === 0) return;
     const loadComments = async () => {
       try {
         const results = await Promise.all(
@@ -176,7 +172,7 @@ function Post({ post }) {
     };
 
     loadComments();
-  }, []); // solo al montar
+  }, [posts]);
 
   const handleLike = async (post) => {
     try {
