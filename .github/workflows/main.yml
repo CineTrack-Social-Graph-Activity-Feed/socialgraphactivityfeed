@@ -54,44 +54,6 @@ jobs:
           path: servidor
           retention-days: 1
 
-  # Frontend Build (no tests/lint, just build artifact)
-  frontend:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./Frontend/front-cinetrack
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: Frontend/front-cinetrack/package-lock.json
-
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Make API URLs relative (remove localhost hardcodes)
-        shell: bash
-        run: |
-          # Replace absolute localhost URLs with relative paths so the app hits the same host
-          grep -RIl --include='*.{js,jsx,ts,tsx}' 'http://localhost:3000' src || true
-          find src -type f \( -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' \) -print0 \
-            | xargs -0 sed -i 's#http://localhost:3000##g'
-
-      - name: Build frontend
-        run: npm run build
-
-      - name: Upload frontend build
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-dist
-          path: Frontend/front-cinetrack/dist
-          retention-days: 1
-
   # Code Quality Analysis
   sonar:
     runs-on: ubuntu-latest
@@ -116,7 +78,7 @@ jobs:
   # Deploy to Elastic Beanstalk
   deploy:
     runs-on: ubuntu-latest
-    needs: [backend, frontend, sonar]
+    needs: [backend, sonar]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: main-aws
     steps:
@@ -127,12 +89,6 @@ jobs:
         with:
           name: backend-code
           path: ./servidor
-      
-      - name: Download frontend build
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist
-          path: ./frontend-dist
           
       - name: Setup deployment structure
         run: |
@@ -141,15 +97,6 @@ jobs:
           
           # Copy backend files
           cp -r servidor/* deployment/
-
-          # Prepare static frontend into deployment/public
-          mkdir -p deployment/public
-          cp -r frontend-dist/* deployment/public/
-
-          # Duplicate assets to root so absolute /assets paths resolve
-          if [ -d "deployment/public/assets" ]; then
-            cp -r deployment/public/assets deployment/assets
-          fi
           
           # Create or update package.json for production
           cat > deployment/package.json << EOF
@@ -207,26 +154,6 @@ jobs:
               SystemType: enhanced
             aws:elasticbeanstalk:application:
               Application Healthcheck URL: /health
-          EOF
-
-          # Nginx config to serve SPA at root and proxy /api to Node
-          mkdir -p deployment/.platform/nginx/conf.d
-          cat > deployment/.platform/nginx/conf.d/spa_proxy.conf << 'EOF'
-          # Ensure API routes go to Node app
-          location /api/ {
-            proxy_pass          http://127.0.0.1:8080;
-            proxy_http_version  1.1;
-            proxy_set_header    Upgrade $http_upgrade;
-            proxy_set_header    Connection 'upgrade';
-            proxy_set_header    Host $host;
-            proxy_cache_bypass  $http_upgrade;
-          }
-
-          # Serve static frontend from /public and fallback to index.html
-          location / {
-            root /var/app/current;
-            try_files $uri /public/index.html;
-          }
           EOF
 
       - name: Create deployment package
