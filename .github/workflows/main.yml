@@ -54,7 +54,7 @@ jobs:
           path: servidor
           retention-days: 1
 
-  # Frontend Build (Vite React)
+  # Frontend Build (no tests/lint, just build artifact)
   frontend:
     runs-on: ubuntu-latest
     defaults:
@@ -69,17 +69,18 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          # If there is no lockfile, caching still works but install will fallback
-          cache-dependency-path: |
-            Frontend/front-cinetrack/package-lock.json
+          cache-dependency-path: Frontend/front-cinetrack/package-lock.json
 
       - name: Install frontend dependencies
-        run: |
-          npm ci || npm install
+        run: npm ci
 
-      - name: Lint frontend
-        run: npm run lint --if-present
-        continue-on-error: true
+      - name: Make API URLs relative (remove localhost hardcodes)
+        shell: bash
+        run: |
+          # Replace absolute localhost URLs with relative paths so the app hits the same host
+          grep -RIl --include='*.{js,jsx,ts,tsx}' 'http://localhost:3000' src || true
+          find src -type f \( -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' \) -print0 \
+            | xargs -0 sed -i 's#http://localhost:3000##g'
 
       - name: Build frontend
         run: npm run build
@@ -126,7 +127,7 @@ jobs:
         with:
           name: backend-code
           path: ./servidor
-
+      
       - name: Download frontend build
         uses: actions/download-artifact@v4
         with:
@@ -141,9 +142,14 @@ jobs:
           # Copy backend files
           cp -r servidor/* deployment/
 
-          # Copy frontend build into public directory
+          # Prepare static frontend into deployment/public
           mkdir -p deployment/public
           cp -r frontend-dist/* deployment/public/
+
+          # Duplicate assets to root so absolute /assets paths resolve
+          if [ -d "deployment/public/assets" ]; then
+            cp -r deployment/public/assets deployment/assets
+          fi
           
           # Create or update package.json for production
           cat > deployment/package.json << EOF
@@ -186,35 +192,12 @@ jobs:
               AWS_REGION: ${AWS_REGION}
               # Colocar aquí tu string de conexión de MongoDB (reemplaza con tu URI real)
               MONGODB_URI: "mongodb+srv://nicolasaversa1_db_user:4mSvF4VaOswSKngJ@socialgraph-activityfee.reute35.mongodb.net/?retryWrites=true&w=majority&appName=SocialGraph-ActivityFeed"
-            # Remove staticfiles mapping; we'll configure Nginx server block below
+            aws:elasticbeanstalk:environment:proxy:staticfiles:
+              /public: public
             aws:elasticbeanstalk:cloudwatch:logs:
               StreamLogs: true
 
           # Sin necesidad de recursos adicionales o scripts - configuración directa en variables de entorno
-          EOF
-
-          # Nginx config (server context) for API proxy + SPA fallback
-          # Only affects the deployment bundle, doesn't add files to the repo
-          mkdir -p deployment/.platform/nginx/conf.d/elasticbeanstalk
-          cat > deployment/.platform/nginx/conf.d/elasticbeanstalk/spa.conf << 'EOF'
-          # Proxy API to Node app
-          location ^~ /api/ {
-            # Be explicit: EB's Node app listens on 127.0.0.1:8080
-            proxy_pass          http://127.0.0.1:8080;
-            proxy_http_version  1.1;
-            proxy_set_header    Connection "keep-alive";
-            proxy_set_header    Host $host;
-            proxy_cache_bypass  $http_upgrade;
-            proxy_set_header    Upgrade $http_upgrade;
-            proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header    X-Forwarded-Proto $scheme;
-          }
-
-          # Serve SPA (anything that's NOT /api) from /public with HTML5 history fallback
-          location ~* ^/(?!api/).* {
-            root   /var/app/current/public;
-            try_files $uri $uri/ /index.html;
-          }
           EOF
 
           # Health check configuration
@@ -224,6 +207,26 @@ jobs:
               SystemType: enhanced
             aws:elasticbeanstalk:application:
               Application Healthcheck URL: /health
+          EOF
+
+          # Nginx config to serve SPA at root and proxy /api to Node
+          mkdir -p deployment/.platform/nginx/conf.d
+          cat > deployment/.platform/nginx/conf.d/spa_proxy.conf << 'EOF'
+          # Ensure API routes go to Node app
+          location /api/ {
+            proxy_pass          http://127.0.0.1:8080;
+            proxy_http_version  1.1;
+            proxy_set_header    Upgrade $http_upgrade;
+            proxy_set_header    Connection 'upgrade';
+            proxy_set_header    Host $host;
+            proxy_cache_bypass  $http_upgrade;
+          }
+
+          # Serve static frontend from /public and fallback to index.html
+          location / {
+            root /var/app/current;
+            try_files $uri /public/index.html;
+          }
           EOF
 
       - name: Create deployment package
@@ -274,11 +277,5 @@ jobs:
           echo "🚀 Application deployed to: http://$ENVIRONMENT_URL"
           echo "🏥 Health check: http://$ENVIRONMENT_URL/health"
           
-          # Basic health check with retries (env may take a few seconds to warm up)
-          for i in {1..10}; do
-            if curl -fsS "http://$ENVIRONMENT_URL/health" > /dev/null; then
-              echo "✅ Health check OK"; exit 0;
-            fi
-            echo "⏳ Health not ready yet (attempt $i/10). Waiting 10s..."; sleep 10;
-          done
-          echo "❌ Health check failed after retries"; exit 1
+          # Basic health check
+          curl -f "http://$ENVIRONMENT_URL/health" || (echo "Health check failed" && exit 1)
