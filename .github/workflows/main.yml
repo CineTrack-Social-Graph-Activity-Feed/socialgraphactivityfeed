@@ -199,7 +199,8 @@ jobs:
           cat > deployment/.platform/nginx/conf.d/elasticbeanstalk/spa.conf << 'EOF'
           # Proxy API to Node app
           location ^~ /api/ {
-            proxy_pass          http://nodejs;
+            # Be explicit: EB's Node app listens on 127.0.0.1:8080
+            proxy_pass          http://127.0.0.1:8080;
             proxy_http_version  1.1;
             proxy_set_header    Connection "keep-alive";
             proxy_set_header    Host $host;
