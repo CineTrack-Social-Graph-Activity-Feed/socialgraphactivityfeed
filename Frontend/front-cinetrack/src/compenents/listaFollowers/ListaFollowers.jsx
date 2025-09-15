@@ -11,11 +11,7 @@ const ListaFollowers = () => {
   const [confirmUnfollow, setConfirmUnfollow] = useState(null);
 
   useEffect(() => {
-<<<<<<< HEAD
     fetch(`http://localhost:3000/api/user/${userId}`)
-=======
-  fetch(`/api/user/${userId}`)
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
       .then((res) => res.json())
       .then((data) => {
         console.log("Usuario recibido:", data);
@@ -27,16 +23,9 @@ const ListaFollowers = () => {
   // Traigo los usuarios que me siguen
   useEffect(() => {
     const fetchData = () => {
-<<<<<<< HEAD
       fetch(`http://localhost:3000/api/followers?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => setSeguidores(data.followers));
-=======
-  fetch(`/api/followers?user_id=${userId}`)
-    .then((res) => (res.ok ? res.json() : Promise.resolve({ followers: [] })))
-    .then((data) => setSeguidores(Array.isArray(data.followers) ? data.followers : []))
-    .catch(() => setSeguidores([]));
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
     };
 
     // Primera carga
@@ -52,7 +41,6 @@ const ListaFollowers = () => {
 
   // Traigo los usuarios que sigo
   useEffect(() => {
-<<<<<<< HEAD
     fetch(`http://localhost:3000/api/followed?user_id=${userId}`)
       .then((response) => response.json())
       .then((data) => {
@@ -60,30 +48,15 @@ const ListaFollowers = () => {
         // 👇 extraemos solo los _id en un array
         setSeguidos(data.followed.map((u) => u._id));
       });
-=======
-  fetch(`/api/followed?user_id=${userId}`)
-      .then((response) => (response.ok ? response.json() : Promise.resolve({ followed: [] })))
-      .then((data) => {
-        console.log("Followers data:", data);
-        // 👇 extraemos solo los _id en un array
-        const arr = Array.isArray(data.followed) ? data.followed : [];
-        setSeguidos(arr.map((u) => u._id));
-      })
-      .catch(() => setSeguidos([]));
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
   }, [userId]);
 
   // Función para seguir/dejar de seguir
   const toggleFollow = async (targetId) => {
     const isFollowing = seguidos.includes(targetId);
 
-<<<<<<< HEAD
     const url = isFollowing
       ? "http://localhost:3000/api/unfollow"
       : "http://localhost:3000/api/follow";
-=======
-    const url = isFollowing ? "/api/unfollow" : "/api/follow";
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
 
     const res = await fetch(url, {
       method: "POST",

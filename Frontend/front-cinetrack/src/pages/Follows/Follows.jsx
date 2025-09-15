@@ -1,12 +1,6 @@
-<<<<<<< HEAD
 import Navbar from "../../compenents/Navbar/Navbar";
 import SideBar from "../../compenents/feedPrincipal/sidebar/SideBar";
 import Footer from "../../compenents/Footer/Footer";
-=======
-import Navbar from "../../compenents/navbar/Navbar";
-import SideBar from "../../compenents/feedPrincipal/sidebar/SideBar";
-import Footer from "../../compenents/footer/Footer";
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
 import React, { useState } from "react";
 import Tabs from "../../compenents/tabBar/TabBar";
 import ListaFollows from "../../compenents/listaFollows/ListaFollows";

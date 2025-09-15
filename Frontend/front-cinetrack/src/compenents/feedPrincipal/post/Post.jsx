@@ -15,18 +15,10 @@ function Post({ post }) {
   const [commentsByPost, setCommentsByPost] = useState({});
   const [showAllComments, setShowAllComments] = useState({});
   const [likesByPost, setLikesByPost] = useState({});
-<<<<<<< HEAD
 
   /* Obtengo los datos del usuario logueado */
   useEffect(() => {
     fetch(`http://localhost:3000/api/user/${userId}`)
-=======
-  const [posts, setPosts] = useState([]);
-
-  /* Obtengo los datos del usuario logueado */
-  useEffect(() => {
-    fetch(`/api/user/${userId}`)
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
       .then((res) => res.json())
       .then((data) => {
         setUser(data.user);
@@ -41,11 +33,7 @@ function Post({ post }) {
     if (!comment.trim()) return;
 
     try {
-<<<<<<< HEAD
       const res = await fetch("http://localhost:3000/api/comment", {
-=======
-      const res = await fetch("/api/comment", {
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,20 +46,9 @@ function Post({ post }) {
         }),
       });
 
-<<<<<<< HEAD
       //después del POST, vuelvo a pedir todos los comentarios del post asi cuando agrego uno nuevo se actualiza la lista
       const resComments = await fetch(
         `http://localhost:3000/api/comment/publication/${post.id}`
-=======
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || "No se pudo crear el comentario");
-      }
-
-      //después del POST, vuelvo a pedir todos los comentarios del post asi cuando agrego uno nuevo se actualiza la lista
-      const resComments = await fetch(
-        `/api/comment/publication/${post.id}`
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
       );
       const dataComments = await resComments.json();
 
@@ -90,7 +67,6 @@ function Post({ post }) {
     }
   };
 
-<<<<<<< HEAD
   /**
    * Posts de ejemplo
    * Esto es los que nos pasaria el modulo de reviews, tambien seguramente de peliculas y usuarios
@@ -159,68 +135,6 @@ function Post({ post }) {
               total_likes: data.total_likes,
               liked: data.likes.some((l) => l.user.id === userId), // check si yo estoy en la lista
               like_id: data.likes.find((l) => l.user.id === userId)?.id || null,
-=======
-  // Cargar feed real desde el backend para usar IDs válidos de publicación
-  const loadFeed = async () => {
-    try {
-      const res = await fetch(`/api/feed?user_id=${userId}&limit=20`);
-      if (!res.ok) {
-        throw new Error(`Feed no disponible (${res.status})`);
-      }
-      const data = await res.json();
-      const pubs = Array.isArray(data.feed) ? data.feed : [];
-      // Normalizar publicaciones a la forma esperada por el UI
-      const normalized = pubs.map((pub) => ({
-        id: pub._id || pub.id,
-        type: pub.type,
-        author: {
-          name: pub.author_id?.username || "Usuario",
-          username: pub.author_id?.username || "usuario",
-          avatar: pub.author_id?.avatar_url || "https://i.pravatar.cc/60?img=1",
-        },
-        createdAt: pub.created_at,
-        pelicula_name: pub.target_id, // usamos target_id como título
-        text: pub.content,
-        puntuacion: pub.rating,
-        image: null,
-      }));
-      setPosts(normalized);
-    } catch (err) {
-      console.error("Error al cargar feed:", err);
-      setPosts([]);
-    }
-  };
-
-  useEffect(() => {
-    loadFeed();
-    const onPubCreated = () => {
-      loadFeed();
-    };
-    window.addEventListener('publication:created', onPubCreated);
-    return () => window.removeEventListener('publication:created', onPubCreated);
-  }, [userId]);
-
-  useEffect(() => {
-    if (!posts || posts.length === 0) return;
-    const fetchLikes = async () => {
-      const results = await Promise.all(
-        posts.map(async (p) => {
-          let data = { likes: [], total_likes: 0 };
-          try {
-            const res = await fetch(`/api/like/publication/${p.id}`);
-            if (res.ok) {
-              data = await res.json();
-            }
-          } catch (e) {
-            console.error('Error fetching likes for', p.id, e);
-          }
-          return [
-            p.id,
-            {
-              total_likes: data?.total_likes ?? 0,
-              liked: Array.isArray(data?.likes) ? data.likes.some((l) => l.user?.id === userId) : false,
-              like_id: Array.isArray(data?.likes) ? (data.likes.find((l) => l.user?.id === userId)?.id || null) : null,
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
             },
           ];
         })
@@ -233,19 +147,11 @@ function Post({ post }) {
   }, [posts, userId]);
 
   useEffect(() => {
-<<<<<<< HEAD
-=======
-    if (!posts || posts.length === 0) return;
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
     const loadComments = async () => {
       try {
         const results = await Promise.all(
           posts.map((p) =>
-<<<<<<< HEAD
             fetch(`http://localhost:3000/api/comment/publication/${p.id}`)
-=======
-            fetch(`/api/comment/publication/${p.id}`)
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
               .then((res) => res.json())
               .then((data) => {
                 console.log("Post", p.id, "-> Comentarios:", data.comments);
@@ -267,11 +173,7 @@ function Post({ post }) {
     };
 
     loadComments();
-<<<<<<< HEAD
   }, []); // solo al montar
-=======
-  }, [posts]);
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
 
   const handleLike = async (post) => {
     try {
@@ -279,11 +181,7 @@ function Post({ post }) {
 
       if (!state.liked) {
         // 👉 Dar like
-<<<<<<< HEAD
         const res = await fetch("http://localhost:3000/api/like", {
-=======
-  const res = await fetch("/api/like", {
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -301,11 +199,7 @@ function Post({ post }) {
       } else {
         // 👉 Quitar like
         const res = await fetch(
-<<<<<<< HEAD
           `http://localhost:3000/api/like/${state.like_id}`,
-=======
-          `/api/like/${state.like_id}`,
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
           {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
@@ -325,22 +219,10 @@ function Post({ post }) {
 
   // 🔹 traer likes y estado actualizado desde el back
   const refreshLikes = async (postId) => {
-<<<<<<< HEAD
     const res = await fetch(
       `http://localhost:3000/api/like/publication/${postId}`
     );
     const data = await res.json();
-=======
-    let data = { likes: [], total_likes: 0 };
-    try {
-      const res = await fetch(`/api/like/publication/${postId}`);
-      if (res.ok) {
-        data = await res.json();
-      }
-    } catch (e) {
-      console.error('Error refreshing likes for', postId, e);
-    }
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
 
     console.log("Post", postId, "-> Likes:", data);
 
@@ -348,15 +230,9 @@ function Post({ post }) {
     const total = data.total_likes ?? 0;
 
     // Buscar si el usuario actual está en el array
-<<<<<<< HEAD
     const myLike = (data.likes || []).find(
       (l) => String(l.user.id) === String(userId)
     );
-=======
-    const myLike = Array.isArray(data.likes)
-      ? data.likes.find((l) => String(l.user?.id) === String(userId))
-      : null;
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
 
     setLikesByPost((prev) => ({
       ...prev,
@@ -371,11 +247,7 @@ function Post({ post }) {
   const handleDeleteComment = async (commentId, postId) => {
     try {
       const res = await fetch(
-<<<<<<< HEAD
         `http://localhost:3000/api/comment/${commentId}`,
-=======
-        `/api/comment/${commentId}`,
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
         {
           method: "DELETE",
           headers: {
@@ -394,11 +266,7 @@ function Post({ post }) {
 
       // 👇 refrescar comentarios del post
       const resComments = await fetch(
-<<<<<<< HEAD
         `http://localhost:3000/api/comment/publication/${postId}`
-=======
-        `/api/comment/publication/${postId}`
->>>>>>> c027e27338d9d05ca2456cbd5219ffc4b9312a89
       );
       const dataComments = await resComments.json();
 
