@@ -26,11 +26,13 @@ jobs:
         with:
           fetch-depth: 0
           
+      # Modificada la configuración de cache para resolver el problema
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: cliente/package-lock.json
+          # Desactivamos el cacheo que está causando problemas
+          # cache: npm
+          # cache-dependency-path: cliente/package-lock.json
           
       - name: Install frontend dependencies
         run: npm ci
@@ -65,14 +67,12 @@ jobs:
             --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
       
-      # Corregido el texto duplicado en el paso final
+      # Corregido - eliminado el paso duplicado y dejado solo uno
       - name: Deployment summary
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           echo "✅ Frontend deployed successfully!"
           echo "🌐 Website URL: https://${{ secrets.CLOUDFRONT_DOMAIN || format('{0}.cloudfront.net', env.CLOUDFRONT_DISTRIBUTION_ID) }}"
-      # Corregido el bloque run duplicado (todavía hay texto duplicado)
-      - name: Deployment summary
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           echo "✅ Frontend deployed successfully!"
