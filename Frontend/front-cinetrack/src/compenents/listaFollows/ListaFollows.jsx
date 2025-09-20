@@ -1,5 +1,4 @@
 import "./ListaFollows.css";
-import { Eye, List, Heart, CheckCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useUser } from "../../../UserContex";
 
@@ -10,7 +9,7 @@ const API_URL =
 
 console.log("API URL configurada:", API_URL);
 
-const ListaFollows = () => {
+function ListaFollows() {
   const { userId } = useUser();
   const [seguidores, setSeguidores] = useState([]);
   const [confirmUnfollow, setConfirmUnfollow] = useState(null);
@@ -34,12 +33,11 @@ const ListaFollows = () => {
       console.log("Respuesta del servidor:", res.status);
 
       if (res.ok) {
-        // Se actualiza inmediatamente la lista
         setSeguidores((prev) => prev.filter((u) => u._id !== targetId));
       } else {
-        const error = await res.json().catch(() => ({ message: "Error desconocido" }));
-        console.error("Error al dejar de seguir:", error);
-        setError(`Error al dejar de seguir: ${error.message || res.status}`);
+        const errorData = await res.json().catch(() => ({ message: "Error desconocido" }));
+        console.error("Error al dejar de seguir:", errorData);
+        setError(`Error al dejar de seguir: ${errorData.message || res.status}`);
       }
     } catch (err) {
       console.error("Error en unfollowUser:", err);
@@ -72,43 +70,40 @@ const ListaFollows = () => {
       }
     };
 
-    // Primera carga
     if (userId) {
       fetchData();
     }
 
-    // Escuchar cambios globales
     window.addEventListener("followersUpdated", fetchData);
-
     return () => {
       window.removeEventListener("followersUpdated", fetchData);
     };
   }, [userId]);
 
-  // Mostrar estado de carga o error
   if (loading) {
     return <div className="loading">Cargando seguidores...</div>;
   }
   
   if (error) {
-    return <div className="error-message">
-      <h3>Error de conexión</h3>
-      <p>{error}</p>
-      <button onClick={() => window.location.reload()}>Reintentar</button>
-    </div>;
+    return (
+      <div className="error-message">
+        <h3>Error de conexión</h3>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Reintentar</button>
+      </div>
+    );
   }
 
   return (
     <div className="container">
       <div className="list-table">
-        {/* Rows */}
         <div className="user-list">
           {seguidores.map((user) => (
             <div key={user._id} className="user-row">
               <div>
                 <a className="followed-user">
                   <img
-                    src={user.avatar_url}
+                    src={user.avatar_url || "https://via.placeholder.com/50"}
                     alt="avatar user"
                     className="avatar-post"
                     style={{ width: "50px", height: "50px" }}
@@ -140,6 +135,7 @@ const ListaFollows = () => {
           ))}
         </div>
       </div>
+      
       {confirmUnfollow && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -169,6 +165,10 @@ const ListaFollows = () => {
         </div>
       )}
     </div>
+  );
+}
+
+export default ListaFollows;
   );
 };
 
