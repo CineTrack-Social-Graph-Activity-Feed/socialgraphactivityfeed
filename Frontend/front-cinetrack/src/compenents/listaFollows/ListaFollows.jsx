@@ -2,6 +2,7 @@ import "./ListaFollows.css";
 import { Eye, List, Heart, CheckCircle } from "lucide-react";
 import { use, useEffect, useState } from "react";
 import { useUser } from "../../../UserContex";
+import { apiClient } from "../../config/api";
 
 const ListaFollows = () => {
   const { userId } = useUser();
@@ -10,32 +11,26 @@ const ListaFollows = () => {
 
   const unfollowUser = async (targetId) => {
     try {
-      const res = await fetch("http://localhost:3000/api/unfollow", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          follower_user_id: userId,
-          followed_user_id: targetId,
-        }),
+      await apiClient.post("/api/unfollow", {
+        follower_user_id: userId,
+        followed_user_id: targetId,
       });
 
-      if (res.ok) {
-        // Se actualiza inmediatamente la lista
-        setSeguidores((prev) => prev.filter((u) => u._id !== targetId));
-      } else {
-        const error = await res.json();
-        console.error("Error al dejar de seguir:", error);
-      }
+      // Se actualiza inmediatamente la lista
+      setSeguidores((prev) => prev.filter((u) => u._id !== targetId));
     } catch (err) {
       console.error("Error en unfollowUser:", err);
     }
   };
 
   useEffect(() => {
-    const fetchData = () => {
-      fetch(`http://localhost:3000/api/followed?user_id=${userId}`)
-        .then((res) => res.json())
-        .then((data) => setSeguidores(data.followed));
+    const fetchData = async () => {
+      try {
+        const data = await apiClient.get(`/api/followed?user_id=${userId}`);
+        setSeguidores(data.followed);
+      } catch (err) {
+        console.error("Error al obtener seguidores:", err);
+      }
     };
 
     // Primera carga
@@ -116,6 +111,16 @@ const ListaFollows = () => {
                 }}
               >
                 Dejar de seguir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ListaFollows;
               </button>
             </div>
           </div>
