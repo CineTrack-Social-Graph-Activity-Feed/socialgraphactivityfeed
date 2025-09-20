@@ -18,31 +18,51 @@ console.log('🔧 Configuración:', {
   CORS_ORIGIN: process.env.CORS_ORIGIN || '*'
 });
 
-// Configuración de CORS - CRUCIAL para la comunicación con el frontend
-const allowedOrigins = process.env.CORS_ORIGINS ? 
-  process.env.CORS_ORIGINS.split(',') : 
-  ['https://d2kbc0fhzrcwo7.cloudfront.net', 'https://dj07hexl3m0a6.cloudfront.net', 'http://localhost:5173'];
-
-app.use(cors({
+// Agregar configuración CORS específica y explícita
+const corsOptions = {
   origin: function(origin, callback) {
-    // Permitir solicitudes sin origen (como las peticiones desde Postman o curl)
-    if (!origin) return callback(null, true);
+    // Lista de orígenes permitidos
+    const allowedOrigins = [
+      'https://d2kbc0fhzrcwo7.cloudfront.net', 
+      'https://dj07hexl3m0a6.cloudfront.net',
+      'http://localhost:5173'
+    ];
     
-    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+    // Para solicitudes sin origen (como curl o Postman)
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    console.log(`Solicitud recibida desde origen: ${origin}`);
+    
+    if (allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
       callback(null, true);
     } else {
-      console.log(`Origen bloqueado por CORS: ${origin}`);
-      callback(null, false);
+      console.warn(`Origen rechazado por CORS: ${origin}`);
+      // Durante desarrollo/depuración, permitir todos los orígenes temporalmente:
+      callback(null, true); 
+      // En producción: callback(new Error('No permitido por CORS'));
     }
   },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
-  credentials: true
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+};
+
+// Configuración de CORS - CRUCIAL para la comunicación con el frontend
+app.use(cors(corsOptions));
 
 // Middleware para logging
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin || 'unknown'}`);
+  next();
+});
+
+// Middleware para logs de depuración
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - Origen: ${req.headers.origin || 'Desconocido'}`);
   next();
 });
 

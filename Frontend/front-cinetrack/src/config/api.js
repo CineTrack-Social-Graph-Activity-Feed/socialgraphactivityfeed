@@ -2,71 +2,83 @@
  * Configuración centralizada para la API
  */
 
-// URL base de la API desde las variables de entorno o fallback a Elastic Beanstalk
-export const API_URL = import.meta.env.VITE_API_URL || 'https://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com';
+// URL base de la API desde las variables de entorno o fallback
+export const API_URL = import.meta.env.VITE_API_URL || 'http://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com';
 
-// Log para depuración
-console.log('API URL configurada:', API_URL);
-
-/**
- * Función para construir una URL completa a la API
- */
-export const apiUrl = (endpoint) => {
-  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  return `${API_URL}${normalizedEndpoint}`;
-};
+// Logs para depuración
+console.log('API configurada en:', API_URL);
 
 /**
- * Cliente de API básico
+ * Cliente API para realizar peticiones al backend
  */
 export const apiClient = {
+  /**
+   * Realiza una solicitud GET a la API
+   */
   async get(endpoint, options = {}) {
+    const url = endpoint.startsWith('/') ? `${API_URL}${endpoint}` : `${API_URL}/${endpoint}`;
+    
+    console.log(`Realizando GET a ${url}`);
+    
     try {
-      console.log(`Realizando petición GET a: ${apiUrl(endpoint)}`);
-      const response = await fetch(apiUrl(endpoint), {
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          // Importante: Necesario para CORS
+          'Origin': window.location.origin,
           ...options.headers
         },
+        // No incluir credenciales a menos que se necesiten específicamente
+        // credentials: 'include',
         ...options
       });
       
       console.log(`Respuesta de ${endpoint}:`, response.status);
       
       if (!response.ok) {
-        throw new Error(`Error en petición GET: ${response.status}`);
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
       
       return await response.json();
     } catch (error) {
-      console.error(`Error en apiClient.get(${endpoint}):`, error);
+      console.error(`Error en GET ${endpoint}:`, error);
       throw error;
     }
   },
   
+  /**
+   * Realiza una solicitud POST a la API
+   */
   async post(endpoint, data, options = {}) {
+    const url = endpoint.startsWith('/') ? `${API_URL}${endpoint}` : `${API_URL}/${endpoint}`;
+    
+    console.log(`Realizando POST a ${url}`, data);
+    
     try {
-      console.log(`Realizando petición POST a: ${apiUrl(endpoint)}`, data);
-      const response = await fetch(apiUrl(endpoint), {
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          // Importante: Necesario para CORS
+          'Origin': window.location.origin,
           ...options.headers
         },
         body: JSON.stringify(data),
+        // No incluir credenciales a menos que se necesiten específicamente
+        // credentials: 'include',
         ...options
       });
       
       console.log(`Respuesta de ${endpoint}:`, response.status);
       
       if (!response.ok) {
-        throw new Error(`Error en petición POST: ${response.status}`);
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
       
       return await response.json();
     } catch (error) {
-      console.error(`Error en apiClient.post(${endpoint}):`, error);
+      console.error(`Error en POST ${endpoint}:`, error);
       throw error;
     }
   }
