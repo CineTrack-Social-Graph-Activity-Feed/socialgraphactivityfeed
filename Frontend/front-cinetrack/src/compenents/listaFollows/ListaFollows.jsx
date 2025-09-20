@@ -2,7 +2,11 @@ import "./ListaFollows.css";
 import { Eye, List, Heart, CheckCircle } from "lucide-react";
 import { use, useEffect, useState } from "react";
 import { useUser } from "../../../UserContex";
-import { apiClient } from "../../config/api";
+
+// URL base de la API desde las variables de entorno
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "http://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com";
 
 const ListaFollows = () => {
   const { userId } = useUser();
@@ -11,26 +15,32 @@ const ListaFollows = () => {
 
   const unfollowUser = async (targetId) => {
     try {
-      await apiClient.post("/api/unfollow", {
-        follower_user_id: userId,
-        followed_user_id: targetId,
+      const res = await fetch(`${API_URL}/api/unfollow`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          follower_user_id: userId,
+          followed_user_id: targetId,
+        }),
       });
 
-      // Se actualiza inmediatamente la lista
-      setSeguidores((prev) => prev.filter((u) => u._id !== targetId));
+      if (res.ok) {
+        // Se actualiza inmediatamente la lista
+        setSeguidores((prev) => prev.filter((u) => u._id !== targetId));
+      } else {
+        const error = await res.json();
+        console.error("Error al dejar de seguir:", error);
+      }
     } catch (err) {
       console.error("Error en unfollowUser:", err);
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await apiClient.get(`/api/followed?user_id=${userId}`);
-        setSeguidores(data.followed);
-      } catch (err) {
-        console.error("Error al obtener seguidores:", err);
-      }
+    const fetchData = () => {
+      fetch(`${API_URL}/api/followed?user_id=${userId}`)
+        .then((res) => res.json())
+        .then((data) => setSeguidores(data.followed));
     };
 
     // Primera carga
@@ -111,16 +121,6 @@ const ListaFollows = () => {
                 }}
               >
                 Dejar de seguir
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default ListaFollows;
               </button>
             </div>
           </div>
