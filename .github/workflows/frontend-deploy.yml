@@ -32,7 +32,7 @@ jobs:
           npm ci
           npm run build
           
-      # Agregar paso para verificar los directorios de salida
+      # Verificar directorios de salida
       - name: Verify build output
         run: |
           echo "Verificando directorio de salida de la construcción..."
@@ -43,6 +43,16 @@ jobs:
             echo "✅ Directorio 'dist/' encontrado (Vite):"
             ls -la dist
             echo "OUTPUT_DIR=dist" >> $GITHUB_ENV
+            
+            # Verificar y corregir index.html
+            echo "Verificando rutas en index.html..."
+            cat dist/index.html
+            
+            # Corregir rutas en index.html si es necesario
+            sed -i 's/\.\/assets\//\/assets\//g' dist/index.html
+            echo "Archivo index.html actualizado:"
+            cat dist/index.html
+            
           elif [ -d "build" ]; then
             echo "✅ Directorio 'build/' encontrado (Create React App):"
             ls -la build
@@ -61,15 +71,40 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
       
-      - name: Deploy to S3 and invalidate CloudFront
+      - name: Deploy to S3 with correct content types
         run: |
-          echo "🚀 Deploying to S3 from ${{ env.OUTPUT_DIR }}/ directory..."
+          echo "🚀 Desplegando a S3 desde ${{ env.OUTPUT_DIR }}/ ..."
+          
+          # Subir HTML con tipo de contenido específico
+          find ${{ env.OUTPUT_DIR }} -name "*.html" -type f -exec aws s3 cp {} s3://${{ env.S3_BUCKET_NAME }}/{} \
+            --content-type "text/html" \
+            --cache-control "no-cache" \;
+          
+          # Subir JS con tipo de contenido específico
+          find ${{ env.OUTPUT_DIR }} -name "*.js" -type f -exec aws s3 cp {} s3://${{ env.S3_BUCKET_NAME }}/{} \
+            --content-type "application/javascript" \
+            --cache-control "max-age=31536000" \;
+          
+          # Subir CSS con tipo de contenido específico
+          find ${{ env.OUTPUT_DIR }} -name "*.css" -type f -exec aws s3 cp {} s3://${{ env.S3_BUCKET_NAME }}/{} \
+            --content-type "text/css" \
+            --cache-control "max-age=31536000" \;
+          
+          # Subir SVG con tipo de contenido específico
+          find ${{ env.OUTPUT_DIR }} -name "*.svg" -type f -exec aws s3 cp {} s3://${{ env.S3_BUCKET_NAME }}/{} \
+            --content-type "image/svg+xml" \
+            --cache-control "max-age=31536000" \;
+          
+          # Subir todo lo demás
           aws s3 sync ${{ env.OUTPUT_DIR }}/ s3://${{ env.S3_BUCKET_NAME }} --delete
           
-          echo "🔄 Invalidating CloudFront cache..."
+      - name: Invalidate CloudFront cache
+        run: |
+          echo "🔄 Invalidando caché de CloudFront..."
           aws cloudfront create-invalidation \
             --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
           
-          echo "✅ Deployment listo!"
-          echo "🌐 Website: https://d2kbc0fhzrcwo7.cloudfront.net"
+          echo "✅ Despliegue completado!"
+          echo "🌐 Website via CloudFront: https://d2kbc0fhzrcwo7.cloudfront.net"
+          echo "⚠️ IMPORTANTE: No uses el enlace directo de S3. Accede siempre a través de CloudFront."
