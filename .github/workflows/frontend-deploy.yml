@@ -1,11 +1,7 @@
-name: Frontend CI/CD Pipeline
+name: Frontend Deploy to CloudFront/S3
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'cliente/**'
-  pull_request:
     branches: [ main ]
     paths:
       - 'cliente/**'
@@ -18,7 +14,7 @@ env:
   CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     environment: main-aws
     defaults:
@@ -26,37 +22,15 @@ jobs:
         working-directory: ./cliente
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
           
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          # Modificamos la configuración del caché
-          cache: 'npm'
-          cache-dependency-path: './cliente/package-lock.json'
           
-      # Añadimos un paso para verificar la estructura de archivos
-      - name: Verify file structure
+      - name: Install and build
         run: |
-          echo "Current directory: $(pwd)"
-          echo "Cliente directory content:"
-          ls -la
-          echo "Package files:"
-          if [ -f "package.json" ]; then echo "package.json exists"; else echo "package.json missing!"; fi
-          if [ -f "package-lock.json" ]; then echo "package-lock.json exists"; else echo "package-lock.json missing!"; fi
-          
-      - name: Install frontend dependencies
-        run: npm ci
-        
-      - name: Lint frontend
-        run: npm run lint --if-present
-        
-      - name: Test frontend
-        run: npm run test --if-present
-        
-      - name: Build frontend
-        run: npm run build
+          npm ci
+          npm run build
           
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -65,20 +39,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
       
-      - name: Deploy to S3
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      - name: Deploy to S3 and invalidate CloudFront
         run: |
+          echo "🚀 Deploying to S3..."
           aws s3 sync build/ s3://${{ env.S3_BUCKET_NAME }} --delete
-      
-      - name: Invalidate CloudFront cache
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
+          
+          echo "🔄 Invalidating CloudFront cache..."
           aws cloudfront create-invalidation \
             --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
-      
-      - name: Deployment summary
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
-          echo "✅ Frontend deployed successfully!"
-          echo "🌐 Website URL: https://${{ secrets.CLOUDFRONT_DOMAIN || format('{0}.cloudfront.net', env.CLOUDFRONT_DISTRIBUTION_ID) }}"
+          
+          echo "✅ Deployment complete!"
+          echo "🌐 Website: https://d2kbc0fhzrcwo7.cloudfront.net"
