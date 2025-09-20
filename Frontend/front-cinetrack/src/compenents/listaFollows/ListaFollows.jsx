@@ -20,7 +20,7 @@ const ListaFollows = () => {
       });
 
       if (res.ok) {
-        // ✅ Se actualiza inmediatamente la lista
+        // Se actualiza inmediatamente la lista
         setSeguidores((prev) => prev.filter((u) => u._id !== targetId));
       } else {
         const error = await res.json();
