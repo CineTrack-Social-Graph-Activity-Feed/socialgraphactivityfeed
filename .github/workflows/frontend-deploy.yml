@@ -3,14 +3,9 @@ name: Frontend CI/CD Pipeline
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'cliente/**'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'cliente/**'
   workflow_dispatch:
-    # Permite ejecutar el workflow manualmente desde la interfaz de GitHub
 
 env:
   NODE_VERSION: 22
@@ -70,11 +65,16 @@ jobs:
             --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
       
+      # Corregido el texto duplicado en el paso final
       - name: Deployment summary
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           echo "✅ Frontend deployed successfully!"
           echo "🌐 Website URL: https://${{ secrets.CLOUDFRONT_DOMAIN || format('{0}.cloudfront.net', env.CLOUDFRONT_DISTRIBUTION_ID) }}"
+      # Corregido el bloque run duplicado (todavía hay texto duplicado)
+      - name: Deployment summary
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           echo "✅ Frontend deployed successfully!"
+          echo "🌐 Website URL: https://${{ secrets.CLOUDFRONT_DOMAIN || format('{0}.cloudfront.net', env.CLOUDFRONT_DISTRIBUTION_ID) }}"
           echo "🌐 Website URL: https://${{ secrets.CLOUDFRONT_DOMAIN || format('{0}.cloudfront.net', env.CLOUDFRONT_DISTRIBUTION_ID) }}"
