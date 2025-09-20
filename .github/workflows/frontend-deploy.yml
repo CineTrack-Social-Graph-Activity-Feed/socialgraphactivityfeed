@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'cliente/**'
+      - 'Frontend/**'
   workflow_dispatch:
 
 env:
@@ -19,7 +19,7 @@ jobs:
     environment: main-aws
     defaults:
       run:
-        working-directory: ./cliente
+        working-directory: ./Frontend/front-cinetrack
     steps:
       - uses: actions/checkout@v4
           
