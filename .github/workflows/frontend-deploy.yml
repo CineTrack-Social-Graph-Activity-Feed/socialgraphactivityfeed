@@ -32,8 +32,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: cliente/package-lock.json
+          # Modificamos la configuración del caché
+          cache: 'npm'
+          cache-dependency-path: './cliente/package-lock.json'
+          
+      # Añadimos un paso para verificar la estructura de archivos
+      - name: Verify file structure
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Cliente directory content:"
+          ls -la
+          echo "Package files:"
+          if [ -f "package.json" ]; then echo "package.json exists"; else echo "package.json missing!"; fi
+          if [ -f "package-lock.json" ]; then echo "package-lock.json exists"; else echo "package-lock.json missing!"; fi
           
       - name: Install frontend dependencies
         run: npm ci
