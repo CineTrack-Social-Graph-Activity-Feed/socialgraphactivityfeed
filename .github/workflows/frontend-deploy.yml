@@ -71,10 +71,3 @@ jobs:
         run: |
           echo "✅ Frontend deployed successfully!"
           echo "🌐 Website URL: https://${{ secrets.CLOUDFRONT_DOMAIN || format('{0}.cloudfront.net', env.CLOUDFRONT_DISTRIBUTION_ID) }}"
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
-          echo "✅ Frontend deployed successfully!"
-          echo "🌐 Website URL: https://${{ secrets.CLOUDFRONT_DOMAIN || format('{0}.cloudfront.net', env.CLOUDFRONT_DISTRIBUTION_ID) }}"
-        run: |
-          echo "✅ Frontend deployed successfully!"
-          echo "🌐 Website URL: https://${{ secrets.CLOUDFRONT_DOMAIN || format('{0}.cloudfront.net', env.CLOUDFRONT_DISTRIBUTION_ID) }}"
