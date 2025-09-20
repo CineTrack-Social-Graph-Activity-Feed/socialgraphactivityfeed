@@ -1,20 +1,16 @@
-name: Frontend Deploy to CloudFront/S3
+name: CI/CD Frontend
 
 on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
   push:
     branches: [ main ]
     paths:
       - 'Frontend/**'
-  workflow_dispatch:
-
-env:
-  NODE_VERSION: 22
-  AWS_REGION: us-east-2
-  S3_BUCKET_NAME: cloudfront-files-socialgraph
-  CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
 
 jobs:
-  deploy:
+  ci:
     runs-on: ubuntu-latest
     environment: main-aws
     defaults:
@@ -22,89 +18,100 @@ jobs:
         working-directory: ./Frontend/front-cinetrack
     steps:
       - uses: actions/checkout@v4
-          
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION || 22 }}
+          cache: npm
+          cache-dependency-path: Frontend/front-cinetrack/package-lock.json
           
-      - name: Install and build
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build frontend
+        run: npm run build
+        env: 
+          # Agrega cualquier variable de entorno que necesites para la construcción
+          VITE_API_URL: ${{ secrets.API_URL || 'https://social-graph-app-env.eba-4azcc3ub.us-east-2.elasticbeanstalk.com' }}
+          
+      - name: Verify output directory
         run: |
-          npm ci
-          npm run build
-          
-      # Verificar directorios de salida
-      - name: Verify build output
-        run: |
-          echo "Verificando directorio de salida de la construcción..."
-          ls -la
-          echo "Contenido de posibles directorios de salida:"
-          
           if [ -d "dist" ]; then
-            echo "✅ Directorio 'dist/' encontrado (Vite):"
-            ls -la dist
+            echo "✅ Build output encontrado en dist/"
             echo "OUTPUT_DIR=dist" >> $GITHUB_ENV
-            
-            # Verificar y corregir index.html
-            echo "Verificando rutas en index.html..."
-            cat dist/index.html
-            
-            # Corregir rutas en index.html si es necesario
-            sed -i 's/\.\/assets\//\/assets\//g' dist/index.html
-            echo "Archivo index.html actualizado:"
-            cat dist/index.html
-            
-          elif [ -d "build" ]; then
-            echo "✅ Directorio 'build/' encontrado (Create React App):"
-            ls -la build
-            echo "OUTPUT_DIR=build" >> $GITHUB_ENV
           else
-            echo "❌ No se encontró ningún directorio de salida conocido"
-            echo "Listando todos los archivos en el directorio actual:"
-            find . -type d -maxdepth 2
+            echo "❌ No se encontró el directorio de salida"
+            ls -la
             exit 1
           fi
+          
+      - name: Upload production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: Frontend/front-cinetrack/${{ env.OUTPUT_DIR }}
+          retention-days: 1
+          
+  deploy:
+    runs-on: ubuntu-latest
+    needs: ci
+    environment: main-aws
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Download production build
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: ./build-output
           
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-      
+          aws-region: us-east-2
+          
       - name: Deploy to S3 with correct content types
         run: |
-          echo "🚀 Desplegando a S3 desde ${{ env.OUTPUT_DIR }}/ ..."
+          echo "🚀 Desplegando a S3 desde build-output/ ..."
           
           # Subir HTML con tipo de contenido específico
-          find ${{ env.OUTPUT_DIR }} -name "*.html" -type f -exec aws s3 cp {} s3://${{ env.S3_BUCKET_NAME }}/{} \
+          find build-output -name "*.html" -type f -exec aws s3 cp {} s3://${{ secrets.S3_BUCKET || 'cloudfront-files-socialgraph' }}/{} \
             --content-type "text/html" \
             --cache-control "no-cache" \;
           
           # Subir JS con tipo de contenido específico
-          find ${{ env.OUTPUT_DIR }} -name "*.js" -type f -exec aws s3 cp {} s3://${{ env.S3_BUCKET_NAME }}/{} \
+          find build-output -name "*.js" -type f -exec aws s3 cp {} s3://${{ secrets.S3_BUCKET || 'cloudfront-files-socialgraph' }}/{} \
             --content-type "application/javascript" \
             --cache-control "max-age=31536000" \;
           
           # Subir CSS con tipo de contenido específico
-          find ${{ env.OUTPUT_DIR }} -name "*.css" -type f -exec aws s3 cp {} s3://${{ env.S3_BUCKET_NAME }}/{} \
+          find build-output -name "*.css" -type f -exec aws s3 cp {} s3://${{ secrets.S3_BUCKET || 'cloudfront-files-socialgraph' }}/{} \
             --content-type "text/css" \
             --cache-control "max-age=31536000" \;
           
           # Subir SVG con tipo de contenido específico
-          find ${{ env.OUTPUT_DIR }} -name "*.svg" -type f -exec aws s3 cp {} s3://${{ env.S3_BUCKET_NAME }}/{} \
+          find build-output -name "*.svg" -type f -exec aws s3 cp {} s3://${{ secrets.S3_BUCKET || 'cloudfront-files-socialgraph' }}/{} \
             --content-type "image/svg+xml" \
             --cache-control "max-age=31536000" \;
           
           # Subir todo lo demás
-          aws s3 sync ${{ env.OUTPUT_DIR }}/ s3://${{ env.S3_BUCKET_NAME }} --delete
+          aws s3 sync build-output/ s3://${{ secrets.S3_BUCKET || 'cloudfront-files-socialgraph' }} --delete
           
+      - name: Fix index.html in S3
+        run: |
+          # Asegurar que index.html tenga el content-type correcto
+          aws s3 cp s3://${{ secrets.S3_BUCKET || 'cloudfront-files-socialgraph' }}/index.html \
+              s3://${{ secrets.S3_BUCKET || 'cloudfront-files-socialgraph' }}/index.html \
+              --content-type "text/html" \
+              --metadata-directive REPLACE \
+              --cache-control "no-cache"
+              
       - name: Invalidate CloudFront cache
         run: |
           echo "🔄 Invalidando caché de CloudFront..."
           aws cloudfront create-invalidation \
-            --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID || 'EJQ196MQ2JOFD' }} \
             --paths "/*"
           
           echo "✅ Despliegue completado!"
           echo "🌐 Website via CloudFront: https://d2kbc0fhzrcwo7.cloudfront.net"
-          echo "⚠️ IMPORTANTE: No uses el enlace directo de S3. Accede siempre a través de CloudFront."
