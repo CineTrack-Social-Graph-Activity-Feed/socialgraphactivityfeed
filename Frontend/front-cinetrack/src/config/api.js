@@ -2,11 +2,11 @@
  * Configuración centralizada para la API
  */
 
-// URL base de la API desde las variables de entorno o fallback
-export const API_URL = import.meta.env.VITE_API_URL || 'http://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com';
+// Para proxy a través de CloudFront
+export const API_URL = window.location.origin;
 
-// Logs para depuración
-console.log('API configurada en:', API_URL);
+// Para conexión directa a Elastic Beanstalk (alternativa)
+// export const API_URL = 'http://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com';
 
 /**
  * Cliente API para realizar peticiones al backend
