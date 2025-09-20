@@ -49,5 +49,5 @@ jobs:
             --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
           
-          echo "✅ Deployment complete!"
+          echo "✅ Deployment listo!"
           echo "🌐 Website: https://d2kbc0fhzrcwo7.cloudfront.net"
