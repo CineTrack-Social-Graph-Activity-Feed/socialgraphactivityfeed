@@ -2,6 +2,7 @@ import "./ListaFollows.css";
 import { useEffect, useState } from "react";
 import { useUser } from "../../../UserContex";
 
+
 // URL base de la API desde las variables de entorno
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -167,25 +168,5 @@ function ListaFollows() {
     </div>
   );
 }
-
-export default ListaFollows;
-  );
-};
-
-export default ListaFollows;
-                onClick={() => {
-                  unfollowUser(confirmUnfollow._id);
-                  setConfirmUnfollow(null);
-                }}
-              >
-                Dejar de seguir
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
 
 export default ListaFollows;
