@@ -18,13 +18,35 @@ console.log('🔧 Configuración:', {
   CORS_ORIGIN: process.env.CORS_ORIGIN || '*'
 });
 
-// Middlewares
+// Configuración de CORS - CRUCIAL para la comunicación con el frontend
+const allowedOrigins = process.env.CORS_ORIGINS ? 
+  process.env.CORS_ORIGINS.split(',') : 
+  ['https://d2kbc0fhzrcwo7.cloudfront.net', 'https://dj07hexl3m0a6.cloudfront.net', 'http://localhost:5173'];
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: function(origin, callback) {
+    // Permitir solicitudes sin origen (como las peticiones desde Postman o curl)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+      callback(null, true);
+    } else {
+      console.log(`Origen bloqueado por CORS: ${origin}`);
+      callback(null, false);
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  credentials: true
 }));
 
+// Middleware para logging
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin || 'unknown'}`);
+  next();
+});
+
+// Middlewares
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
