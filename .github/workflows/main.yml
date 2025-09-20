@@ -139,6 +139,8 @@ jobs:
               AWS_REGION: ${AWS_REGION}
               # Colocar aquí tu string de conexión de MongoDB (reemplaza con tu URI real)
               MONGODB_URI: "mongodb+srv://nicolasaversa1_db_user:4mSvF4VaOswSKngJ@socialgraph-activityfee.reute35.mongodb.net/?retryWrites=true&w=majority&appName=SocialGraph-ActivityFeed"
+              # Permitir CORS desde CloudFront
+              CORS_ORIGINS: "https://dj07hexl3m0a6.cloudfront.net,http://dj07hexl3m0a6.cloudfront.net,http://localhost:5173,https://d2kbc0fhzrcwo7.cloudfront.net"
             aws:elasticbeanstalk:environment:proxy:staticfiles:
               /public: public
             aws:elasticbeanstalk:cloudwatch:logs:
@@ -156,31 +158,29 @@ jobs:
               Application Healthcheck URL: /health
           EOF
 
-      - name: Create deployment package
-        run: |
-          cd deployment
-          zip -r ../app.zip . -x ".git/*"
-          
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-          
-      - name: Deploy to Elastic Beanstalk
-        run: |
-          # Create application version
-          VERSION_LABEL="v${{ github.run_number }}-${{ github.sha }}"
-
-          # Upload application bundle to S3 first
-          aws s3 cp app.zip s3://${{ secrets.EB_S3_BUCKET }}/versions/$VERSION_LABEL.zip
-          
-          aws elasticbeanstalk create-application-version \
-            --application-name ${{ env.EB_APPLICATION_NAME }} \
-            --version-label $VERSION_LABEL \
-            --source-bundle S3Bucket="${{ secrets.EB_S3_BUCKET }}",S3Key="versions/$VERSION_LABEL.zip" \
-            --description "Deploy from GitHub Actions - ${{ github.sha }}"
+          # Add CORS configuration
+          cat > deployment/.ebextensions/cors.config << 'EOF'
+          files:
+            "/etc/nginx/conf.d/cors.conf" :
+              mode: "000644"
+              owner: root
+              group: root
+              content: |
+                # CORS configuration
+                add_header 'Access-Control-Allow-Origin' '*' always;
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE' always;
+                add_header 'Access-Control-Allow-Headers' 'Origin, X-Requested-With, Content-Type, Accept, Authorization' always;
+                
+                if ($request_method = 'OPTIONS') {
+                  add_header 'Access-Control-Allow-Origin' '*';
+                  add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE';
+                  add_header 'Access-Control-Allow-Headers' 'Origin, X-Requested-With, Content-Type, Accept, Authorization';
+                  add_header 'Access-Control-Max-Age' 1728000;
+                  add_header 'Content-Type' 'text/plain charset=UTF-8';
+                  add_header 'Content-Length' 0;
+                  return 204;
+                }
+          EOF
           
           # Deploy to environment
           aws elasticbeanstalk update-environment \

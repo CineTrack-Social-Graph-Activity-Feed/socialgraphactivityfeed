@@ -3,44 +3,85 @@ import { Eye, List, Heart, CheckCircle } from "lucide-react";
 import { use, useEffect, useState } from "react";
 import { useUser } from "../../../UserContex";
 
-// URL base de la API desde las variables de entorno
+// URL base de la API desde las variables de entorno (asegurar HTTPS)
 const API_URL =
   import.meta.env.VITE_API_URL ||
-  "http://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com";
+  "https://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com";
+
+// Logs para depuración
+console.log("API URL configurada:", API_URL);
 
 const ListaFollows = () => {
   const { userId } = useUser();
   const [seguidores, setSeguidores] = useState([]);
   const [confirmUnfollow, setConfirmUnfollow] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const unfollowUser = async (targetId) => {
     try {
+      console.log(`Enviando solicitud unfollow a ${API_URL}/api/unfollow`);
       const res = await fetch(`${API_URL}/api/unfollow`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Origin: window.location.origin,
+        },
         body: JSON.stringify({
           follower_user_id: userId,
           followed_user_id: targetId,
         }),
+        credentials: "include", // Incluir cookies si es necesario
       });
+
+      console.log("Respuesta del servidor:", res.status);
 
       if (res.ok) {
         // Se actualiza inmediatamente la lista
         setSeguidores((prev) => prev.filter((u) => u._id !== targetId));
       } else {
-        const error = await res.json();
-        console.error("Error al dejar de seguir:", error);
+        const errorData = await res.json().catch(() => ({
+          message: "Error desconocido",
+        }));
+        console.error("Error al dejar de seguir:", errorData);
+        setError(`Error al dejar de seguir: ${errorData.message || res.status}`);
       }
     } catch (err) {
       console.error("Error en unfollowUser:", err);
+      setError(`Error de conexión: ${err.message}`);
     }
   };
 
   useEffect(() => {
-    const fetchData = () => {
-      fetch(`${API_URL}/api/followed?user_id=${userId}`)
-        .then((res) => res.json())
-        .then((data) => setSeguidores(data.followed));
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        console.log(
+          `Fetching from: ${API_URL}/api/followed?user_id=${userId}`
+        );
+        const res = await fetch(`${API_URL}/api/followed?user_id=${userId}`, {
+          headers: {
+            Origin: window.location.origin,
+          },
+          credentials: "include", // Incluir cookies si es necesario
+        });
+
+        console.log("Status de respuesta:", res.status);
+
+        if (!res.ok) {
+          throw new Error(`Error ${res.status}: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+        console.log("Datos recibidos:", data);
+        setSeguidores(data.followed || []);
+      } catch (err) {
+        console.error("Error al obtener seguidores:", err);
+        setError(`Error al cargar seguidores: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
     };
 
     // Primera carga
@@ -53,6 +94,21 @@ const ListaFollows = () => {
       window.removeEventListener("followersUpdated", fetchData);
     };
   }, [userId]);
+
+  // Mostrar estado de carga o error
+  if (loading) {
+    return <div className="loading">Cargando seguidores...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="error-message">
+        <h3>Error de conexión</h3>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Reintentar</button>
+      </div>
+    );
+  }
 
   return (
     <div className="container">

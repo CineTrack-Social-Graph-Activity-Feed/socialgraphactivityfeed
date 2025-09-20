@@ -30,9 +30,9 @@ jobs:
       - name: Build frontend
         run: npm run build
         env: 
-          # Configurar la URL de la API para apuntar al backend en Elastic Beanstalk
-          VITE_API_URL: ${{ secrets.API_URL || 'http://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com' }}
-          VITE_API_BASE_URL: ${{ secrets.API_URL || 'http://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com' }}
+          # Configurar la URL de la API para apuntar al backend en Elastic Beanstalk con HTTPS
+          VITE_API_URL: ${{ secrets.API_URL || 'https://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com' }}
+          VITE_API_BASE_URL: ${{ secrets.API_URL || 'https://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com' }}
           
       - name: Verify output directory
         run: |
