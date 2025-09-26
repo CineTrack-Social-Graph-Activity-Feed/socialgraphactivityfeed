@@ -1,6 +1,7 @@
 import "./ListaFollowers.css";
 import { Eye, List, Heart, CheckCircle } from "lucide-react";
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useState } from "react"
+import { API_URL } from "../../config/api";
 import { useUser } from "../../../UserContex";
 
 const ListaFollowers = () => {
@@ -11,7 +12,7 @@ const ListaFollowers = () => {
   const [confirmUnfollow, setConfirmUnfollow] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/user/${userId}`)
+    fetch(`${API_URL}/api/user/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Usuario recibido:", data);
@@ -23,7 +24,7 @@ const ListaFollowers = () => {
   // Traigo los usuarios que me siguen
   useEffect(() => {
     const fetchData = () => {
-      fetch(`http://localhost:3000/api/followers?user_id=${userId}`)
+      fetch(`${API_URL}/api/followers?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => setSeguidores(data.followers));
     };
@@ -41,7 +42,7 @@ const ListaFollowers = () => {
 
   // Traigo los usuarios que sigo
   useEffect(() => {
-    fetch(`http://localhost:3000/api/followed?user_id=${userId}`)
+    fetch(`${API_URL}/api/followed?user_id=${userId}`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Followers data:", data);
@@ -166,3 +167,4 @@ const ListaFollowers = () => {
 };
 
 export default ListaFollowers;
+

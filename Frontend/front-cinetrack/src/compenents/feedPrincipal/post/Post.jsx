@@ -4,6 +4,7 @@ import { useUser } from "../../../../UserContex";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/es";
+import { API_URL } from "../../../config/api";
 
 dayjs.extend(relativeTime);
 dayjs.locale("es");
@@ -18,7 +19,7 @@ function Post({ post }) {
 
   /* Obtengo los datos del usuario logueado */
   useEffect(() => {
-    fetch(`http://localhost:3000/api/user/${userId}`)
+    fetch(`${API_URL}/api/user/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         setUser(data.user);
@@ -33,7 +34,7 @@ function Post({ post }) {
     if (!comment.trim()) return;
 
     try {
-      const res = await fetch("http://localhost:3000/api/comment", {
+      const res = await fetch(`${API_URL}/api/comment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -151,7 +152,7 @@ function Post({ post }) {
       try {
         const results = await Promise.all(
           posts.map((p) =>
-            fetch(`http://localhost:3000/api/comment/publication/${p.id}`)
+            fetch(`${API_URL}/api/comment/publication/${p.id}`)
               .then((res) => res.json())
               .then((data) => {
                 console.log("Post", p.id, "-> Comentarios:", data.comments);
@@ -579,3 +580,4 @@ function Post({ post }) {
 }
 
 export default Post;
+

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import "./Navbar.css";
 import { useUser } from "../../../UserContex";
+import { API_URL } from "../../config/api";
 
 function Navbar() {
   const { userId } = useUser();
@@ -16,7 +17,7 @@ function Navbar() {
   const searchRef = useRef(null);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/user/${userId}`)
+    fetch(`${API_URL}/api/user/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Usuario recibido:", data);
@@ -34,7 +35,7 @@ function Navbar() {
 
     const delayDebounce = setTimeout(() => {
       setLoading(true);
-      fetch(`http://localhost:3000/api/user/search?q=${query}&limit=5`)
+      fetch(`${API_URL}/api/user/search?q=${query}&limit=5`)
         .then((res) => res.json())
         .then((data) => {
           if (data.users) {
@@ -69,7 +70,7 @@ function Navbar() {
 
   // Traigo los usuarios que sigo
   useEffect(() => {
-    fetch(`http://localhost:3000/api/followed?user_id=${userId}`)
+    fetch(`${API_URL}/api/followed?user_id=${userId}`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Followers data:", data);
@@ -242,3 +243,4 @@ function Navbar() {
 }
 
 export default Navbar;
+

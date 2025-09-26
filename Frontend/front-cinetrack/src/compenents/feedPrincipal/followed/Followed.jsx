@@ -1,4 +1,5 @@
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useState } from "react"
+import { API_URL } from "../../config/api";
 import "./Followed.css";
 import { useUser } from "../../../../UserContex";
 
@@ -14,7 +15,7 @@ function Followed() {
   const handleUnfollow = (idUser) => {
     setOpenMenu(null);
     // 👇 acá podrías llamar al backend para realmente dejar de seguir
-    fetch(`http://localhost:3000/api/unfollow`, {
+    fetch(`${API_URL}/api/unfollow`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -30,7 +31,7 @@ function Followed() {
 
   useEffect(() => {
     const fetchData = () => {
-      fetch(`http://localhost:3000/api/followed?user_id=${userId}`)
+      fetch(`${API_URL}/api/followed?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => setSeguidores(data.followed));
     };
@@ -114,3 +115,4 @@ function Followed() {
   );
 }
 export default Followed;
+

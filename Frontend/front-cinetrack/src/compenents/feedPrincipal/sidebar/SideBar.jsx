@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
+import { API_URL } from "../../config/api";
 import { NavLink } from "react-router-dom";
 import "./SideBar.css";
 import { useUser } from "../../../../UserContex";
@@ -9,7 +10,7 @@ function SideBar() {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/user/${userId}`)
+    fetch(`${API_URL}/api/user/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Usuario recibido:", data);
@@ -121,3 +122,4 @@ function SideBar() {
 }
 
 export default SideBar;
+

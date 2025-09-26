@@ -1,14 +1,10 @@
 import "./ListaFollows.css";
 import { useEffect, useState } from "react";
 import { useUser } from "../../../UserContex";
+import { API_URL } from "../../config/api";
 
-
-// URL base de la API desde las variables de entorno
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  "http://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com";
-
-console.log("API URL configurada:", API_URL);
+// Asegurar que estamos usando la API_URL centralizada
+console.log("ListaFollows usando API URL:", API_URL);
 
 function ListaFollows() {
   const { userId } = useUser();
