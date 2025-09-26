@@ -75,6 +75,19 @@ jobs:
         run: |
           echo "🚀 Desplegando a S3 desde build-output/ ..."
           
+          # Crear directorios para rutas de SPA
+          mkdir -p build-output/api-test
+          mkdir -p build-output/mi-actividad
+          mkdir -p build-output/follows
+          mkdir -p build-output/buscar-amigos
+          
+          # Copiar index.html a cada ruta para soporte de SPA
+          cp build-output/index.html build-output/api-test/index.html
+          cp build-output/index.html build-output/mi-actividad/index.html
+          cp build-output/index.html build-output/follows/index.html
+          cp build-output/index.html build-output/buscar-amigos/index.html
+          cp build-output/index.html build-output/error.html
+          
           # Subir HTML con tipo de contenido específico
           find build-output -name "*.html" -type f -exec aws s3 cp {} s3://${{ secrets.S3_BUCKET || 'cloudfront-files-socialgraph' }}/{} \
             --content-type "text/html" \
@@ -107,6 +120,26 @@ jobs:
               --metadata-directive REPLACE \
               --cache-control "no-cache"
               
+      - name: Configure CloudFront for SPA routing (manual step)
+        run: |
+          echo "🔧 Instrucciones para configurar CloudFront para enrutamiento SPA:"
+          echo ""
+          echo "Para que las rutas de React Router funcionen correctamente, necesitas configurar CloudFront manualmente:"
+          echo ""
+          echo "1. Ve a la consola de AWS CloudFront"
+          echo "2. Selecciona tu distribución: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID || 'EJQ196MQ2JOFD' }}"
+          echo "3. Ve a la pestaña 'Error Pages'"
+          echo "4. Haz clic en 'Create custom error response'"
+          echo "5. Configura lo siguiente:"
+          echo "   - HTTP Error Code: 403"
+          echo "   - Customize Error Response: Yes"
+          echo "   - Response Page Path: /index.html"
+          echo "   - HTTP Response Code: 200"
+          echo "6. Haz clic en 'Create'"
+          echo "7. Repite los pasos 4-6 para el código de error 404"
+          echo ""
+          echo "Esta configuración permitirá que tu SPA maneje correctamente las rutas."
+          
       - name: Invalidate CloudFront cache
         run: |
           echo "🔄 Invalidando caché de CloudFront..."
@@ -116,3 +149,4 @@ jobs:
           
           echo "✅ Despliegue completado!"
           echo "🌐 Website via CloudFront: https://d2kbc0fhzrcwo7.cloudfront.net"
+          echo "⚠️ Nota: La configuración de CloudFront para SPA puede tardar hasta 15 minutos en propagarse."

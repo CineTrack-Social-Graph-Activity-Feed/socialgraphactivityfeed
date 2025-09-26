@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "../../../UserContex";
 
 
-// URL base de la API desde las variables de entorno
+//URL base de la API desde las variables de entorno
 const API_URL =
   import.meta.env.VITE_API_URL ||
   "http://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com";
