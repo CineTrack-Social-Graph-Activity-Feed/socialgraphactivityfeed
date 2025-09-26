@@ -4,7 +4,7 @@
 
 // Usar la URL de la API definida en las variables de entorno (inyectada por Vite durante la compilación)
 // Si no está disponible, usar la URL de Elastic Beanstalk
-export const API_URL = import.meta.env.VITE_API_URL || 'https://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com';
+export const API_URL = import.meta.env.VITE_API_URL || 'http://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com';
 
 // Registro de la URL utilizada
 console.log('API URL configurada:', API_URL);
