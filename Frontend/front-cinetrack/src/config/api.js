@@ -3,8 +3,11 @@
  */
 
 // Usar la URL de la API definida en las variables de entorno (inyectada por Vite durante la compilación)
-// Si no está disponible, usar la URL de Elastic Beanstalk
-export const API_URL = import.meta.env.VITE_API_URL || 'http://social-graph-app-env.eba-2hqyxuyh.us-east-2.elasticbeanstalk.com';
+// Si no está disponible, usar la nueva URL de CloudFront para la API (HTTPS)
+export const API_URL = import.meta.env.VITE_API_URL || 'https://REPLACE_WITH_YOUR_NEW_CLOUDFRONT_DOMAIN.cloudfront.net';
+
+// ✅ Ahora usando CloudFront con HTTPS para evitar problemas de mixed content
+console.log('✅ API URL configurada con CloudFront (HTTPS):', API_URL);
 
 // Registro de la URL utilizada
 console.log('API URL configurada:', API_URL);
@@ -26,12 +29,14 @@ export const apiClient = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          // Importante: Necesario para CORS
-          'Origin': window.location.origin,
+          // No es necesario establecer manualmente el Origin para CORS
+          // El navegador lo gestiona automáticamente
           ...options.headers
         },
+        // Para CORS cross-origin debemos especificar el modo
+        mode: 'cors',
         // No incluir credenciales a menos que se necesiten específicamente
-        // credentials: 'include',
+        credentials: 'same-origin',
         ...options
       });
       
@@ -61,13 +66,15 @@ export const apiClient = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Importante: Necesario para CORS
-          'Origin': window.location.origin,
+          // No es necesario establecer manualmente el Origin para CORS
+          // El navegador lo gestiona automáticamente
           ...options.headers
         },
         body: JSON.stringify(data),
+        // Para CORS cross-origin debemos especificar el modo
+        mode: 'cors',
         // No incluir credenciales a menos que se necesiten específicamente
-        // credentials: 'include',
+        credentials: 'same-origin',
         ...options
       });
       
