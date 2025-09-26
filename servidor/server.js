@@ -39,9 +39,13 @@ const corsOptions = {
       callback(null, true);
     } else {
       console.warn(`Origen rechazado por CORS: ${origin}`);
-      // Durante desarrollo/depuración, permitir todos los orígenes temporalmente:
-      callback(null, true); 
-      // En producción: callback(new Error('No permitido por CORS'));
+      // En producción, rechazamos orígenes no permitidos
+      if (process.env.NODE_ENV === 'production') {
+        callback(new Error('No permitido por CORS'));
+      } else {
+        // Solo en ambientes no productivos permitimos todos los orígenes
+        callback(null, true);
+      }
     }
   },
   credentials: true,
