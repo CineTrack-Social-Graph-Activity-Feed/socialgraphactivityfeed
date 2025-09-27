@@ -3,6 +3,23 @@ const Publication = require("../models/Publication");
 const User = require("../models/User");
 const { createLikeEvent, createUnlikeEvent } = require("../utils/events");
 
+// --- DEMO MODE for hardcoded publications ---
+// Allow likes for hardcoded posts that exist only on the frontend.
+// We keep an in-memory store so the feature works in the cloud without a Publications DB.
+const DEMO_PUBLICATION_IDS = new Set([
+  "65f5e1d77c65c827d8536abc",
+  "65f5e1d77c65c827d8536abd",
+  "65f5e1d77c65c827d8536abe",
+]);
+
+// In-memory store structure:
+// demoLikes[publicationId] = [{ id, user_id, target_id, target_type, created_at }]
+const demoLikes = Object.create(null);
+function ensureDemoArray(id) {
+  if (!demoLikes[id]) demoLikes[id] = [];
+  return demoLikes[id];
+}
+
 /**
  * Dar like a una publicación
  * POST /api/like
@@ -54,57 +71,94 @@ const addLike = async (req, res) => {
     }
     */
 
-    // Verificar si ya existe el like
-    const existingLike = await Like.findOne({
-      user_id,
-      target_id,
-      target_type,
-    });
+    if (DEMO_PUBLICATION_IDS.has(String(target_id))) {
+      // DEMO path: store like in memory
+      const list = ensureDemoArray(String(target_id));
+      const duplicate = list.find((l) => String(l.user_id) === String(user_id));
+      if (duplicate) {
+        console.log(`❌ addLike[DEMO] - Like duplicado`);
+        return res.status(409).json({ error: "Ya has dado like a esta publicación" });
+      }
 
-    console.log('Buscando like existente:', { user_id, target_id, target_type });
-    console.log('Like existente encontrado:', existingLike);
+      const demoLike = {
+        id: `demo_like_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+        user_id: String(user_id),
+        target_id: String(target_id),
+        target_type,
+        created_at: new Date().toISOString(),
+      };
+      list.push(demoLike);
 
-    if (existingLike) {
-      console.log(`❌ addLike - Like duplicado detectado: ${existingLike._id}`);
-      return res.status(409).json({
-        error: "Ya has dado like a esta publicación",
-      });
-    }
+      createLikeEvent(user_id, target_id, target_type);
 
-    // Crear el like
-    const like = new Like({
-      user_id,
-      target_id,
-      target_type,
-    });
-
-    try {
-      await like.save();
-      console.log(`✅ addLike - Like guardado exitosamente: ${like._id}`);
-    } catch (saveError) {
-      console.log(`❌ addLike - Error al guardar like:`, saveError);
-      throw saveError;
-    }
-
-    // Publicar evento
-    createLikeEvent(user_id, target_id, target_type);
-    console.log(`✉️ addLike - Evento de like publicado`);
-
-    const responseData = {
-      message: "Like agregado exitosamente",
-      like: {
-        id: like._id,
-        user: {
-          id: user._id,
-          username: user.username,
+      const responseData = {
+        message: "Like agregado exitosamente (demo)",
+        like: {
+          id: demoLike.id,
+          user: {
+            id: user._id,
+            username: user.username,
+          },
+          target: target_id,
+          created_at: demoLike.created_at,
         },
-        target: target_id,
-        created_at: like.created_at,
-      },
-    };
-    
-    console.log(`✅ addLike - Respondiendo con éxito:`, responseData);
-    res.status(201).json(responseData);
+      };
+      console.log(`✅ addLike[DEMO] - Respondiendo con éxito:`, responseData);
+      return res.status(201).json(responseData);
+    } else {
+      // Normal DB path
+      // Verificar si ya existe el like
+      const existingLike = await Like.findOne({
+        user_id,
+        target_id,
+        target_type,
+      });
+
+      console.log('Buscando like existente:', { user_id, target_id, target_type });
+      console.log('Like existente encontrado:', existingLike);
+
+      if (existingLike) {
+        console.log(`❌ addLike - Like duplicado detectado: ${existingLike._id}`);
+        return res.status(409).json({
+          error: "Ya has dado like a esta publicación",
+        });
+      }
+
+      // Crear el like
+      const like = new Like({
+        user_id,
+        target_id,
+        target_type,
+      });
+
+      try {
+        await like.save();
+        console.log(`✅ addLike - Like guardado exitosamente: ${like._id}`);
+      } catch (saveError) {
+        console.log(`❌ addLike - Error al guardar like:`, saveError);
+        throw saveError;
+      }
+
+      // Publicar evento
+      createLikeEvent(user_id, target_id, target_type);
+      console.log(`✉️ addLike - Evento de like publicado`);
+
+      const responseData = {
+        message: "Like agregado exitosamente",
+        like: {
+          id: like._id,
+          user: {
+            id: user._id,
+            username: user.username,
+          },
+          target: target_id,
+          created_at: like.created_at,
+        },
+      };
+      
+      console.log(`✅ addLike - Respondiendo con éxito:`, responseData);
+      return res.status(201).json(responseData);
+    }
   } catch (error) {
     console.error("Error en addLike:", error);
     console.error("Stack trace:", error.stack);
@@ -137,7 +191,29 @@ const removeLike = async (req, res) => {
       });
     }
 
-    // Buscar el like
+    // DEMO path: if like_id starts with demo_like_, remove from memory
+    if (String(like_id).startsWith('demo_like_')) {
+      let removed = false;
+      for (const pubId of Object.keys(demoLikes)) {
+        const idx = demoLikes[pubId].findIndex((l) => l.id === like_id);
+        if (idx !== -1) {
+          const like = demoLikes[pubId][idx];
+          if (String(like.user_id) !== String(user_id)) {
+            return res.status(403).json({ error: "No tienes permisos para eliminar este like" });
+          }
+          demoLikes[pubId].splice(idx, 1);
+          createUnlikeEvent(like.user_id, like.target_id, like.target_type);
+          removed = true;
+          break;
+        }
+      }
+      if (!removed) {
+        return res.status(404).json({ error: "Like no encontrado" });
+      }
+      return res.status(200).json({ message: "Like eliminado exitosamente (demo)" });
+    }
+
+    // Normal DB path
     const like = await Like.findById(like_id);
     if (!like) {
       return res.status(404).json({
@@ -145,22 +221,15 @@ const removeLike = async (req, res) => {
       });
     }
 
-    // Verificar que el usuario que quiere eliminar el like sea el propietario
     if (like.user_id.toString() !== user_id) {
       return res.status(403).json({
         error: "No tienes permisos para eliminar este like",
       });
     }
 
-    // Eliminar el like
     await Like.findByIdAndDelete(like_id);
-
-    // Publicar evento
     createUnlikeEvent(like.user_id, like.target_id, like.target_type);
-
-    res.status(200).json({
-      message: "Like eliminado exitosamente",
-    });
+    res.status(200).json({ message: "Like eliminado exitosamente" });
   } catch (error) {
     console.error("Error en removeLike:", error);
     res.status(500).json({
@@ -196,34 +265,69 @@ const getPublicationLikes = async (req, res) => {
     }
     */
 
-    // Obtener likes con información del usuario
-    const likes = await Like.find({ target_id: publication_id })
-      .populate("user_id", "username avatar_url")
-      .sort({ created_at: -1 })
-      .skip(skip)
-      .limit(limit);
+    if (DEMO_PUBLICATION_IDS.has(String(publication_id))) {
+      const list = ensureDemoArray(String(publication_id));
 
-    // Obtener total de likes
-    const totalLikes = await Like.countDocuments({ target_id: publication_id });
+      // We still try to enrich users from DB when possible
+      const enriched = await Promise.all(
+        list
+          .slice()
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(skip, skip + limit)
+          .map(async (l) => {
+            const u = await User.findById(l.user_id).select("username avatar_url");
+            return {
+              id: l.id,
+              user: {
+                id: l.user_id,
+                username: u?.username || `user_${String(l.user_id).slice(-4)}`,
+                avatar_url: u?.avatar_url || null,
+              },
+              created_at: l.created_at,
+            };
+          })
+      );
 
-    res.status(200).json({
-      likes: likes.map((like) => ({
-        id: like._id,
-        user: {
-          id: like.user_id._id,
-          username: like.user_id.username,
-          avatar_url: like.user_id.avatar_url,
+      const totalLikes = list.length;
+      return res.status(200).json({
+        likes: enriched,
+        total_likes: totalLikes,
+        pagination: {
+          current_page: page,
+          total_pages: Math.ceil(totalLikes / limit),
+          total_items: totalLikes,
+          items_per_page: limit,
         },
-        created_at: like.created_at,
-      })),
-      total_likes: totalLikes,
-      pagination: {
-        current_page: page,
-        total_pages: Math.ceil(totalLikes / limit),
-        total_items: totalLikes,
-        items_per_page: limit,
-      },
-    });
+      });
+    } else {
+      // DB path
+      const likes = await Like.find({ target_id: publication_id })
+        .populate("user_id", "username avatar_url")
+        .sort({ created_at: -1 })
+        .skip(skip)
+        .limit(limit);
+
+      const totalLikes = await Like.countDocuments({ target_id: publication_id });
+
+      return res.status(200).json({
+        likes: likes.map((like) => ({
+          id: like._id,
+          user: {
+            id: like.user_id._id,
+            username: like.user_id.username,
+            avatar_url: like.user_id.avatar_url,
+          },
+          created_at: like.created_at,
+        })),
+        total_likes: totalLikes,
+        pagination: {
+          current_page: page,
+          total_pages: Math.ceil(totalLikes / limit),
+          total_items: totalLikes,
+          items_per_page: limit,
+        },
+      });
+    }
   } catch (error) {
     console.error("Error en getPublicationLikes:", error);
     res.status(500).json({
