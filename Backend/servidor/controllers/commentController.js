@@ -63,15 +63,21 @@ const addComment = async (req, res) => {
       });
     }
 
-    // Verificar que el usuario exista
-    const user = await User.findById(user_id);
-    if (!user) {
-      console.log(`❌ addComment - Usuario no encontrado: ${user_id}`);
-      return res.status(404).json({
-        error: "Usuario no encontrado",
-      });
+    // Verificar que el usuario exista (relajado para DEMO)
+    let user = null;
+    try {
+      user = await User.findById(user_id);
+    } catch (_) {}
+    if (!DEMO_PUBLICATION_IDS.has(String(target_id))) {
+      if (!user) {
+        console.log(`❌ addComment - Usuario no encontrado: ${user_id}`);
+        return res.status(404).json({ error: "Usuario no encontrado" });
+      }
+      console.log(`✅ addComment - Usuario encontrado: ${user.username}`);
+    } else {
+      if (user) console.log(`ℹ️ addComment[DEMO] - Usuario encontrado para enriquecer: ${user.username}`);
+      else console.log(`ℹ️ addComment[DEMO] - Usuario no existe, continuamos igualmente`);
     }
-    console.log(`✅ addComment - Usuario encontrado: ${user.username}`);
 
     /*
     // Verificar que la publicación exista y sea del tipo correcto
@@ -107,9 +113,9 @@ const addComment = async (req, res) => {
         comment: {
           id: demoComment.id,
           user: {
-            id: user._id,
-            username: user.username,
-            avatar_url: user.avatar_url,
+            id: user?._id || String(user_id),
+            username: user?.username || `user_${String(user_id).slice(-4)}`,
+            avatar_url: user?.avatar_url || null,
           },
           target: {
             id: target_id,
@@ -271,31 +277,48 @@ const getPublicationComments = async (req, res) => {
     */
    
     if (DEMO_PUBLICATION_IDS.has(String(publication_id))) {
-      const list = ensureDemoCommentsArray(String(publication_id));
+      const mem = ensureDemoCommentsArray(String(publication_id));
 
-      const enriched = await Promise.all(
-        list
-          .slice()
-          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-          .slice(skip, skip + limit)
-          .map(async (c) => {
-            const u = await User.findById(c.user_id).select("username avatar_url");
-            return {
-              id: c.id,
-              user: {
-                id: c.user_id,
-                username: u?.username || `user_${String(c.user_id).slice(-4)}`,
-                avatar_url: u?.avatar_url || null,
-              },
-              comment: c.comment,
-              created_at: c.created_at,
-            };
-          })
+      // Traer también comentarios de DB y fusionarlos
+      const dbComments = await Comment.find({ target_id: publication_id })
+        .populate("user_id", "username avatar_url")
+        .sort({ created_at: -1 });
+
+      const memEnriched = await Promise.all(
+        mem.map(async (c) => {
+          const u = await User.findById(c.user_id).select("username avatar_url");
+          return {
+            id: c.id,
+            user: {
+              id: c.user_id,
+              username: u?.username || `user_${String(c.user_id).slice(-4)}`,
+              avatar_url: u?.avatar_url || null,
+            },
+            comment: c.comment,
+            created_at: c.created_at,
+          };
+        })
       );
 
-      const totalComments = list.length;
+      const dbNormalized = dbComments.map((comment) => ({
+        id: comment._id,
+        user: {
+          id: comment.user_id._id,
+          username: comment.user_id.username,
+          avatar_url: comment.user_id.avatar_url,
+        },
+        comment: comment.comment,
+        created_at: comment.created_at,
+      }));
+
+      // Merge memoria + DB y paginar
+      const merged = [...memEnriched, ...dbNormalized].sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+      const totalComments = merged.length;
+      const paginated = merged.slice(skip, skip + limit);
       return res.status(200).json({
-        comments: enriched,
+        comments: paginated,
         total_comments: totalComments,
         pagination: {
           current_page: page,

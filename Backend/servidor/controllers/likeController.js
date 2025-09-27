@@ -47,15 +47,22 @@ const addLike = async (req, res) => {
       });
     }
 
-    // Verificar que el usuario exista
-    const user = await User.findById(user_id);
-    if (!user) {
-      console.log(`❌ addLike - Usuario no encontrado: ${user_id}`);
-      return res.status(404).json({
-        error: "Usuario no encontrado",
-      });
+    // Verificar que el usuario exista (relajado para DEMO)
+    let user = null;
+    try {
+      user = await User.findById(user_id);
+    } catch (_) {}
+    if (!DEMO_PUBLICATION_IDS.has(String(target_id))) {
+      if (!user) {
+        console.log(`❌ addLike - Usuario no encontrado: ${user_id}`);
+        return res.status(404).json({ error: "Usuario no encontrado" });
+      }
+      console.log(`✅ addLike - Usuario encontrado: ${user.username}`);
+    } else {
+      // Para DEMO, no bloqueamos si el usuario no existe; enriquecemos si está
+      if (user) console.log(`ℹ️ addLike[DEMO] - Usuario encontrado para enriquecer: ${user.username}`);
+      else console.log(`ℹ️ addLike[DEMO] - Usuario no existe, continuamos igualmente`);
     }
-    console.log(`✅ addLike - Usuario encontrado: ${user.username}`);
 
     /*
     // Verificar que la publicación exista y sea del tipo correcto
@@ -96,8 +103,8 @@ const addLike = async (req, res) => {
         like: {
           id: demoLike.id,
           user: {
-            id: user._id,
-            username: user.username,
+            id: user?._id || String(user_id),
+            username: user?.username || `user_${String(user_id).slice(-4)}`,
           },
           target: target_id,
           created_at: demoLike.created_at,
@@ -266,31 +273,46 @@ const getPublicationLikes = async (req, res) => {
     */
 
     if (DEMO_PUBLICATION_IDS.has(String(publication_id))) {
-      const list = ensureDemoArray(String(publication_id));
+      const mem = ensureDemoArray(String(publication_id));
+      // También traemos likes de DB y fusionamos
+      const dbLikes = await Like.find({ target_id: publication_id })
+        .populate("user_id", "username avatar_url")
+        .sort({ created_at: -1 });
 
-      // We still try to enrich users from DB when possible
-      const enriched = await Promise.all(
-        list
-          .slice()
-          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-          .slice(skip, skip + limit)
-          .map(async (l) => {
-            const u = await User.findById(l.user_id).select("username avatar_url");
-            return {
-              id: l.id,
-              user: {
-                id: l.user_id,
-                username: u?.username || `user_${String(l.user_id).slice(-4)}`,
-                avatar_url: u?.avatar_url || null,
-              },
-              created_at: l.created_at,
-            };
-          })
+      const memEnriched = await Promise.all(
+        mem.map(async (l) => {
+          const u = await User.findById(l.user_id).select("username avatar_url");
+          return {
+            id: l.id,
+            user: {
+              id: l.user_id,
+              username: u?.username || `user_${String(l.user_id).slice(-4)}`,
+              avatar_url: u?.avatar_url || null,
+            },
+            created_at: l.created_at,
+          };
+        })
       );
 
-      const totalLikes = list.length;
+      const dbNormalized = dbLikes.map((like) => ({
+        id: like._id,
+        user: {
+          id: like.user_id._id,
+          username: like.user_id.username,
+          avatar_url: like.user_id.avatar_url,
+        },
+        created_at: like.created_at,
+      }));
+
+      // Merge memoria + DB, ordenado desc por fecha
+      const merged = [...memEnriched, ...dbNormalized].sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      const totalLikes = merged.length;
+      const paginated = merged.slice(skip, skip + limit);
       return res.status(200).json({
-        likes: enriched,
+        likes: paginated,
         total_likes: totalLikes,
         pagination: {
           current_page: page,
