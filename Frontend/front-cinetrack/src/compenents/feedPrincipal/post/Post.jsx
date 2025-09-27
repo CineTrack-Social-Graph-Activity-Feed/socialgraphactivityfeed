@@ -1,4 +1,4 @@
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import "./Post.css";
 import { useUser } from "../../../../UserContex";
 import dayjs from "dayjs";
@@ -18,45 +18,7 @@ function Post({ post }) {
   const [showAllComments, setShowAllComments] = useState({});
   const [likesByPost, setLikesByPost] = useState({});
   
-  // Inicializar datos locales para posts hardcoded
-  // Para demostración, podemos agregar algunos comentarios predefinidos
-  const [localLikesData, setLocalLikesData] = useState({
-    "65f5e1d77c65c827d8536abc": { total_likes: 5, liked: false, like_id: null },
-    "65f5e1d77c65c827d8536abd": { total_likes: 3, liked: false, like_id: null },
-    "65f5e1d77c65c827d8536abe": { total_likes: 8, liked: false, like_id: null }
-  });
-  
-  // Comentarios iniciales para demostrar la funcionalidad
-  const [localCommentsData, setLocalCommentsData] = useState({
-    "65f5e1d77c65c827d8536abc": [
-      {
-        id: "local_demo_comment_1",
-        comment: "¡Excelente película! Totalmente de acuerdo con tu reseña.",
-        created_at: "2025-09-25T15:30:00Z",
-        user: {
-          id: "demo_user_1",
-          username: "cinefilo_experto",
-          avatar_url: "https://i.pravatar.cc/60?img=3"
-        },
-        target_id: "65f5e1d77c65c827d8536abc",
-        target_type: "review"
-      }
-    ],
-    "65f5e1d77c65c827d8536abd": [
-      {
-        id: "local_demo_comment_2",
-        comment: "Creo que le diste una calificación muy justa. Los efectos especiales fueron geniales.",
-        created_at: "2025-09-26T10:15:00Z",
-        user: {
-          id: "demo_user_2",
-          username: "filmreview",
-          avatar_url: "https://i.pravatar.cc/60?img=5"
-        },
-        target_id: "65f5e1d77c65c827d8536abd",
-        target_type: "review"
-      }
-    ]
-  });
+  // Sin datos locales: todo viene del backend
   
   // Depuración inicial
   console.log("👤 userId:", userId);
@@ -111,8 +73,6 @@ function Post({ post }) {
         comment,
       });
       
-      let useLocalImplementation = false;
-      
       // Intentar primero con el backend
       try {
         console.log("🔄 Intentando guardar comentario en el backend...");
@@ -160,80 +120,29 @@ function Post({ post }) {
             if (resComments.ok) {
               const dataComments = await resComments.json();
               console.log("📊 Comentarios actualizados desde backend:", dataComments);
-  
-              setCommentsByPost((prev) => {
-                const backendList = Array.isArray(dataComments.comments) ? dataComments.comments : [];
-                const localList = localCommentsData[post.id] || [];
-                const mergedMap = new Map();
-                [...backendList, ...localList].forEach((c) => mergedMap.set(c.id, c));
-                const merged = Array.from(mergedMap.values()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                return {
-                  ...prev,
-                  [post.id]: merged,
-                };
-              });
+              setCommentsByPost((prev) => ({
+                ...prev,
+                [post.id]: Array.isArray(dataComments.comments) ? dataComments.comments : [],
+              }));
               setComment("");
               return;
             } else {
               console.warn("⚠️ La respuesta del backend para obtener comentarios no fue exitosa:", resComments.status);
-              useLocalImplementation = true;
+              throw new Error(`GET comments failed: ${resComments.status}`);
             }
           } catch (fetchErr) {
             console.warn("⚠️ Error al obtener comentarios actualizados:", fetchErr);
-            useLocalImplementation = true;
+            throw fetchErr;
           }
         } else {
           console.warn("⚠️ La respuesta del backend no fue exitosa:", res.status);
-          useLocalImplementation = true;
+          throw new Error(`POST comment failed: ${res.status}`);
         }
       } catch (backendErr) {
-        console.warn("⚠️ Error con el backend, usando implementación local:", backendErr.message);
-        useLocalImplementation = true;
+        console.warn("⚠️ Error con el backend al crear comentario:", backendErr.message);
+        alert(`No se pudo guardar el comentario: ${backendErr.message}`);
       }
-
-      // 🔶 Si useLocalImplementation es true, usamos la implementación local
-      if (useLocalImplementation) {
-        console.log("🔷 Usando implementación local para el comentario");
-        
-        // Crear un comentario local con datos simulados
-        const newLocalComment = {
-          id: `local_comment_${Date.now()}`,
-          comment: comment,
-          created_at: new Date().toISOString(),
-          user: {
-            id: userId,
-            username: user.username || "usuario",
-            avatar_url: user.avatar_url || "https://i.pravatar.cc/60?img=1",
-          },
-          target_id: post.id,
-          target_type: post.type,
-        };
-  
-        console.log("📝 Nuevo comentario local creado:", newLocalComment);
-  
-        // Actualizar el estado local de comentarios
-        const updatedLocalComments = {
-          ...localCommentsData,
-          [post.id]: [...(localCommentsData[post.id] || []), newLocalComment]
-        };
-        setLocalCommentsData(updatedLocalComments);
-        
-        // Verificar el estado actual de comentarios para este post
-        console.log("📊 Estado actual de comentarios para este post:", commentsByPost[post.id] || []);
-        
-        // Actualizar la UI inmediatamente
-        setCommentsByPost((prev) => {
-          const updatedComments = [...(prev[post.id] || []), newLocalComment];
-          console.log("📊 Nuevo estado de comentarios UI para post:", updatedComments);
-          return {
-            ...prev,
-            [post.id]: updatedComments
-          };
-        });
-      }
-      
-      // Limpiar el campo de comentario
-      setComment("");
+      // Limpiar después del éxito; si falló, lo dejamos para reintentar
 
     } catch (err) {
       console.error("❌ Error al guardar comentario:", err);
@@ -303,18 +212,7 @@ function Post({ post }) {
                 `${API_URL}/api/like/publication/${p.id}`
               );
   
-              if (!res.ok) {
-                console.warn(`No se encontraron likes para el post hardcoded ${p.id}. Usando datos locales.`);
-                // Si el post es hardcoded, usamos los datos locales
-                return [
-                  p.id,
-                  {
-                    total_likes: localLikesData[p.id]?.total_likes || 0,
-                    liked: localLikesData[p.id]?.liked || false,
-                    like_id: localLikesData[p.id]?.like_id || null,
-                  },
-                ];
-              }
+              if (!res.ok) throw new Error(`GET likes failed: ${res.status}`);
   
               const data = await res.json();
 
@@ -322,35 +220,17 @@ function Post({ post }) {
               const backendTotal = typeof data.total_likes === 'number' ? data.total_likes : backendLikes.length;
               const myBackendLike = backendLikes.find((l) => String(l.user?.id) === String(userId));
 
-              // Si el backend está vacío y hay datos locales, usa locales
-              const local = localLikesData[p.id];
-              const useLocal = (backendTotal === 0 && !myBackendLike && local);
-
-              return [
-                p.id,
-                useLocal
-                  ? {
-                      total_likes: local.total_likes || 0,
-                      liked: !!local.liked,
-                      like_id: local.like_id || null,
-                    }
-                  : {
-                      total_likes: backendTotal,
-                      liked: !!myBackendLike,
-                      like_id: myBackendLike?.id || null,
-                    },
-              ];
-            } catch (err) {
-              console.warn(`Error al obtener likes para post ${p.id}:`, err);
-              // Si hay error, usamos datos locales
               return [
                 p.id,
                 {
-                  total_likes: localLikesData[p.id]?.total_likes || 0,
-                  liked: localLikesData[p.id]?.liked || false,
-                  like_id: localLikesData[p.id]?.like_id || null,
+                  total_likes: backendTotal,
+                  liked: !!myBackendLike,
+                  like_id: myBackendLike?.id || null,
                 },
               ];
+            } catch (err) {
+              console.warn(`Error al obtener likes para post ${p.id}:`, err);
+              return [p.id, { total_likes: 0, liked: false, like_id: null }];
             }
           })
         );
@@ -362,77 +242,9 @@ function Post({ post }) {
     };
 
     fetchLikes();
-  }, [posts, userId, localLikesData]);
+  }, [posts, userId]);
 
-  // Función para asegurarse de que tengamos datos locales para demostración
-  useEffect(() => {
-    // Esta función se ejecuta una vez para inicializar datos para demostración
-    const initializeLocalDemo = () => {
-      console.log("🔄 Inicializando datos locales para demostración...");
-      
-      // Verificamos si ya hay datos locales para cada post
-      const postsWithoutComments = posts.filter(p => !localCommentsData[p.id] || localCommentsData[p.id].length === 0);
-      
-      if (postsWithoutComments.length > 0) {
-        console.log(`🔄 Inicializando comentarios demo para ${postsWithoutComments.length} posts sin datos locales`);
-        
-        const newLocalComments = { ...localCommentsData };
-        
-        // Crear comentarios demo para posts que no tienen
-        postsWithoutComments.forEach(p => {
-          if (!newLocalComments[p.id]) {
-            newLocalComments[p.id] = [{
-              id: `local_demo_comment_${p.id}_1`,
-              comment: "¡Me encantó tu opinión sobre esta película!",
-              created_at: new Date(Date.now() - 3600000).toISOString(), // 1 hora atrás
-              user: {
-                id: "demo_user_random",
-                username: "cine_fan",
-                avatar_url: `https://i.pravatar.cc/60?img=${Math.floor(Math.random() * 10) + 10}`
-              },
-              target_id: p.id,
-              target_type: p.type
-            }];
-          }
-        });
-        
-        // Actualizamos el estado local si hicimos cambios
-        if (Object.keys(newLocalComments).length > Object.keys(localCommentsData).length) {
-          console.log("🔄 Actualizando estado de comentarios locales con nuevos datos demo");
-          setLocalCommentsData(newLocalComments);
-        }
-      }
-      
-      // Lo mismo para likes
-      const postsWithoutLikes = posts.filter(p => !localLikesData[p.id]);
-      
-      if (postsWithoutLikes.length > 0) {
-        console.log(`🔄 Inicializando likes demo para ${postsWithoutLikes.length} posts sin datos locales`);
-        
-        const newLocalLikes = { ...localLikesData };
-        
-        // Crear likes demo para posts que no tienen
-        postsWithoutLikes.forEach(p => {
-          if (!newLocalLikes[p.id]) {
-            newLocalLikes[p.id] = {
-              total_likes: Math.floor(Math.random() * 10) + 1, // 1-10 likes aleatorios
-              liked: false,
-              like_id: null
-            };
-          }
-        });
-        
-        // Actualizamos el estado local si hicimos cambios
-        if (Object.keys(newLocalLikes).length > Object.keys(localLikesData).length) {
-          console.log("🔄 Actualizando estado de likes locales con nuevos datos demo");
-          setLocalLikesData(newLocalLikes);
-        }
-      }
-    };
-    
-    // Ejecutamos la inicialización
-    initializeLocalDemo();
-  }, [posts]); // Solo depende de posts
+  // Eliminado: no se inyectan datos locales de demo
 
   // Cargar comentarios desde backend o usar locales
   useEffect(() => {
@@ -454,10 +266,8 @@ function Post({ post }) {
               });
               
               if (!res.ok) {
-                console.warn(`⚠️ No se encontraron comentarios para el post hardcoded ${p.id}. Usando datos locales.`);
-                console.log(`📋 Datos locales disponibles para ${p.id}:`, localCommentsData[p.id] || []);
-                // Si el post es hardcoded, usamos los datos locales
-                return [p.id, localCommentsData[p.id] || []];
+                console.warn(`⚠️ No se encontraron comentarios para el post ${p.id}.`);
+                return [p.id, []];
               }
               
               // Parsear la respuesta de texto a JSON
@@ -466,23 +276,16 @@ function Post({ post }) {
                 data = JSON.parse(responseText);
               } catch (parseErr) {
                 console.error(`❌ Error al parsear la respuesta para post ${p.id}:`, parseErr);
-                return [p.id, localCommentsData[p.id] || []];
+                return [p.id, []];
               }
               
               const backendComments = Array.isArray(data.comments) ? data.comments : [];
-              const local = localCommentsData[p.id] || [];
-              // Fusionar por id y ordenar por fecha desc
-              const mergedMap = new Map();
-              [...backendComments, ...local].forEach((c) => {
-                mergedMap.set(c.id, c);
-              });
-              const merged = Array.from(mergedMap.values()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-              console.log(`✅ Post ${p.id} -> Comentarios fusionados:`, merged);
-              return [p.id, merged];
+              const ordered = backendComments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+              console.log(`✅ Post ${p.id} -> Comentarios desde backend:`, ordered);
+              return [p.id, ordered];
             } catch (err) {
               console.warn(`⚠️ Error al obtener comentarios para post ${p.id}:`, err);
-              // Si hay error, usamos datos locales
-              return [p.id, localCommentsData[p.id] || []];
+              return [p.id, []];
             }
           })
         );
@@ -501,7 +304,7 @@ function Post({ post }) {
     };
 
     loadComments();
-  }, [posts, localCommentsData]); // Ahora depende de localCommentsData
+  }, [posts]);
 
   const handleLike = async (post) => {
     try {
@@ -563,55 +366,8 @@ function Post({ post }) {
           }
         }
       } catch (backendErr) {
-        // Si falla el backend, continuamos con la implementación local
-        console.warn("Error con el backend, usando implementación local:", backendErr.message);
-      }
-
-      // 🔶 Si llegamos aquí, es porque el backend falló o el post es hardcoded
-      // Implementación local para posts hardcoded
-      console.log("Usando implementación local para el like");
-      
-      // Generamos un ID único para el like (simulado)
-      const fakeId = `local_like_${Date.now()}`;
-      
-      if (!state.liked) {
-        // Dar like localmente
-        const newLikeData = {
-          total_likes: (state.total_likes || 0) + 1,
-          liked: true,
-          like_id: fakeId
-        };
-        
-        // Actualizar estado local
-        setLocalLikesData(prev => ({
-          ...prev,
-          [post.id]: newLikeData
-        }));
-        
-        // Actualizar estado UI inmediatamente
-        setLikesByPost(prev => ({
-          ...prev,
-          [post.id]: newLikeData
-        }));
-      } else {
-        // Quitar like localmente
-        const newLikeData = {
-          total_likes: Math.max((state.total_likes || 0) - 1, 0), // Prevenir negativos
-          liked: false,
-          like_id: null
-        };
-        
-        // Actualizar estado local
-        setLocalLikesData(prev => ({
-          ...prev,
-          [post.id]: newLikeData
-        }));
-        
-        // Actualizar estado UI inmediatamente
-        setLikesByPost(prev => ({
-          ...prev,
-          [post.id]: newLikeData
-        }));
+        console.warn("Error con el backend al procesar like:", backendErr.message);
+        alert(`No se pudo procesar el like: ${backendErr.message}`);
       }
     } catch (err) {
       console.error("Error en handleLike:", err);
@@ -629,19 +385,7 @@ function Post({ post }) {
           `${API_URL}/api/like/publication/${postId}`
         );
         
-        if (!res.ok) {
-          // Si el post es hardcoded, usaremos el estado local
-          console.warn(`No se encontraron likes para el post ${postId}. Usando datos locales.`);
-          
-          // Si hay datos locales, usarlos
-          if (localLikesData[postId]) {
-            setLikesByPost((prev) => ({
-              ...prev,
-              [postId]: localLikesData[postId]
-            }));
-          }
-          return;
-        }
+        if (!res.ok) return;
         
         const data = await res.json();
 
@@ -651,21 +395,11 @@ function Post({ post }) {
         const total = typeof data.total_likes === 'number' ? data.total_likes : backendLikes.length;
         const myLike = backendLikes.find((l) => String(l.user?.id) === String(userId));
 
-        // Si el backend está vacío y hay demo local, mantener la experiencia demo
-        const local = localLikesData[postId];
-        const useLocal = (total === 0 && !myLike && local);
-
-        const likeData = useLocal
-          ? {
-              total_likes: local.total_likes || 0,
-              liked: !!local.liked,
-              like_id: local.like_id || null,
-            }
-          : {
-              total_likes: total,
-              liked: !!myLike,
-              like_id: myLike?.id ?? null,
-            };
+        const likeData = {
+          total_likes: total,
+          liked: !!myLike,
+          like_id: myLike?.id ?? null,
+        };
 
         setLikesByPost((prev) => ({
           ...prev,
@@ -673,13 +407,7 @@ function Post({ post }) {
         }));
       } catch (err) {
         console.warn(`Error al obtener likes para post ${postId}:`, err);
-        // Si hay error y hay datos locales, usarlos
-        if (localLikesData[postId]) {
-          setLikesByPost((prev) => ({
-            ...prev,
-            [postId]: localLikesData[postId]
-          }));
-        }
+        // Error silencioso; mantenemos estado previo
       }
     } catch (err) {
       console.error("Error al refrescar likes:", err);
@@ -688,28 +416,6 @@ function Post({ post }) {
 
   const handleDeleteComment = async (commentId, postId) => {
     try {
-      // Verificar si es un comentario local (ID comienza con 'local_')
-      const isLocalComment = commentId.toString().startsWith('local_');
-      
-      if (isLocalComment) {
-        console.log("Eliminando comentario local", commentId);
-        
-        // Eliminar el comentario del estado local
-        const updatedLocalComments = {
-          ...localCommentsData,
-          [postId]: (localCommentsData[postId] || []).filter(c => c.id !== commentId)
-        };
-        setLocalCommentsData(updatedLocalComments);
-        
-        // Actualizar la UI inmediatamente
-        setCommentsByPost((prev) => ({
-          ...prev,
-          [postId]: (prev[postId] || []).filter(c => c.id !== commentId)
-        }));
-        
-        return;
-      }
-      
       // Si no es local, intentar con el backend
       try {
         const res = await fetch(
@@ -736,26 +442,13 @@ function Post({ post }) {
         );
         const dataComments = await resComments.json();
 
-        // Fusionar backend + locales para no perder los demos si el back vuelve vacío
-        setCommentsByPost((prev) => {
-          const backendList = Array.isArray(dataComments.comments) ? dataComments.comments : [];
-          const localList = localCommentsData[postId] || [];
-          const mergedMap = new Map();
-          [...backendList, ...localList].forEach((c) => mergedMap.set(c.id, c));
-          const merged = Array.from(mergedMap.values()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-          return {
-            ...prev,
-            [postId]: merged,
-          };
-        });
-      } catch (err) {
-        console.warn("Error al eliminar comentario con el backend:", err.message);
-        
-        // Como alternativa, eliminar localmente
         setCommentsByPost((prev) => ({
           ...prev,
-          [postId]: (prev[postId] || []).filter(c => c.id !== commentId)
+          [postId]: Array.isArray(dataComments.comments) ? dataComments.comments : [],
         }));
+      } catch (err) {
+        console.warn("Error al eliminar comentario con el backend:", err.message);
+        alert(`No se pudo eliminar el comentario: ${err.message}`);
       }
     } catch (err) {
       console.error("Error al eliminar comentario:", err.message);
