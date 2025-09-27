@@ -4,6 +4,7 @@ import MiActividad from "./pages/MiActividad/MiActividad";
 import Follows from "./pages/Follows/Follows";
 import BuscarAmigos from "./pages/BuscarAmigos/BuscarAmigos";
 import ApiTest from "./compenents/ApiTest"; // Importamos el componente de prueba
+import ApiDebugger from "./compenents/ApiDebugger"; // Nuevo componente de depuración
 
 import { UserContext } from "../UserContex";
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/follows" element={<Follows />}></Route>
           <Route path="/buscar-amigos" element={<BuscarAmigos />}></Route>
           <Route path="/api-test" element={<ApiTest />}></Route>
+          <Route path="/debug" element={<ApiDebugger />}></Route>
 
           {/* Ruta para manejar 404 - debe estar al final */}
           <Route path="*" element={<Navigate to="/" replace />} />

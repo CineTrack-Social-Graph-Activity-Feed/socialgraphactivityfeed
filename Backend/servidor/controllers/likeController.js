@@ -10,9 +10,12 @@ const { createLikeEvent, createUnlikeEvent } = require("../utils/events");
 const addLike = async (req, res) => {
   try {
     const { user_id, target_id, target_type } = req.body;
+    
+    console.log("📩 addLike - Request recibido:", { user_id, target_id, target_type });
 
     // Validaciones básicas
     if (!user_id || !target_id || !target_type) {
+      console.log("❌ addLike - Validación fallida: campos requeridos faltantes");
       return res.status(400).json({
         error: "user_id, target_id y target_type son requeridos",
       });
@@ -21,6 +24,7 @@ const addLike = async (req, res) => {
     // Validar target_type
     const validTargetTypes = ["review", "rating", "list"];
     if (!validTargetTypes.includes(target_type)) {
+      console.log(`❌ addLike - Target type inválido: ${target_type}`);
       return res.status(400).json({
         error: "target_type debe ser: review, rating o list",
       });
@@ -29,10 +33,12 @@ const addLike = async (req, res) => {
     // Verificar que el usuario exista
     const user = await User.findById(user_id);
     if (!user) {
+      console.log(`❌ addLike - Usuario no encontrado: ${user_id}`);
       return res.status(404).json({
         error: "Usuario no encontrado",
       });
     }
+    console.log(`✅ addLike - Usuario encontrado: ${user.username}`);
 
     /*
     // Verificar que la publicación exista y sea del tipo correcto
@@ -55,7 +61,11 @@ const addLike = async (req, res) => {
       target_type,
     });
 
+    console.log('Buscando like existente:', { user_id, target_id, target_type });
+    console.log('Like existente encontrado:', existingLike);
+
     if (existingLike) {
+      console.log(`❌ addLike - Like duplicado detectado: ${existingLike._id}`);
       return res.status(409).json({
         error: "Ya has dado like a esta publicación",
       });
@@ -68,12 +78,19 @@ const addLike = async (req, res) => {
       target_type,
     });
 
-    await like.save();
+    try {
+      await like.save();
+      console.log(`✅ addLike - Like guardado exitosamente: ${like._id}`);
+    } catch (saveError) {
+      console.log(`❌ addLike - Error al guardar like:`, saveError);
+      throw saveError;
+    }
 
     // Publicar evento
     createLikeEvent(user_id, target_id, target_type);
+    console.log(`✉️ addLike - Evento de like publicado`);
 
-    res.status(201).json({
+    const responseData = {
       message: "Like agregado exitosamente",
       like: {
         id: like._id,
@@ -84,11 +101,17 @@ const addLike = async (req, res) => {
         target: target_id,
         created_at: like.created_at,
       },
-    });
+    };
+    
+    console.log(`✅ addLike - Respondiendo con éxito:`, responseData);
+    res.status(201).json(responseData);
   } catch (error) {
     console.error("Error en addLike:", error);
+    console.error("Stack trace:", error.stack);
     res.status(500).json({
       error: "Error interno del servidor",
+      details: error.message,
+      code: error.name || 'UnknownError'
     });
   }
 };

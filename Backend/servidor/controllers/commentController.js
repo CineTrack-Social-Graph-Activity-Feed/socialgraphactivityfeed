@@ -13,9 +13,12 @@ const {
 const addComment = async (req, res) => {
   try {
     const { user_id, target_id, target_type, comment } = req.body;
+    
+    console.log("📩 addComment - Request recibido:", { user_id, target_id, target_type, comment: comment?.substring(0, 30) + (comment?.length > 30 ? '...' : '') });
 
     // Validaciones básicas
     if (!user_id || !target_id || !target_type || !comment) {
+      console.log("❌ addComment - Validación fallida: campos requeridos faltantes");
       return res.status(400).json({
         error: "user_id, target_id, target_type y comment son requeridos",
       });
@@ -24,6 +27,7 @@ const addComment = async (req, res) => {
     // Validar target_type
     const validTargetTypes = ["review", "rating", "list"];
     if (!validTargetTypes.includes(target_type)) {
+      console.log(`❌ addComment - Target type inválido: ${target_type}`);
       return res.status(400).json({
         error: "target_type debe ser: review, rating o list",
       });
@@ -31,12 +35,14 @@ const addComment = async (req, res) => {
 
     // Validar longitud del comentario
     if (comment.trim().length === 0) {
+      console.log(`❌ addComment - Comentario vacío`);
       return res.status(400).json({
         error: "El comentario no puede estar vacío",
       });
     }
 
     if (comment.length > 500) {
+      console.log(`❌ addComment - Comentario excede límite: ${comment.length} caracteres`);
       return res.status(400).json({
         error: "El comentario no puede exceder 500 caracteres",
       });
@@ -45,10 +51,12 @@ const addComment = async (req, res) => {
     // Verificar que el usuario exista
     const user = await User.findById(user_id);
     if (!user) {
+      console.log(`❌ addComment - Usuario no encontrado: ${user_id}`);
       return res.status(404).json({
         error: "Usuario no encontrado",
       });
     }
+    console.log(`✅ addComment - Usuario encontrado: ${user.username}`);
 
     /*
     // Verificar que la publicación exista y sea del tipo correcto
@@ -72,15 +80,27 @@ const addComment = async (req, res) => {
       comment: comment.trim(),
     });
 
-    await newComment.save();
+    try {
+      await newComment.save();
+      console.log(`✅ addComment - Comentario guardado exitosamente: ${newComment._id}`);
+    } catch (saveError) {
+      console.log(`❌ addComment - Error al guardar comentario:`, saveError);
+      throw saveError;
+    }
 
     // Poblar el comentario con información del usuario
-    await newComment.populate("user_id", "username avatar_url");
+    try {
+      await newComment.populate("user_id", "username avatar_url");
+      console.log(`✅ addComment - Comentario poblado con información de usuario`);
+    } catch (populateError) {
+      console.log(`❌ addComment - Error al poblar comentario:`, populateError);
+      // No lanzamos error aquí para no interrumpir el flujo
+    }
 
     // Publicar evento
     createCommentEvent(user_id, target_id, newComment._id, target_type);
 
-    res.status(201).json({
+    const responseData = {
       message: "Comentario agregado exitosamente",
       comment: {
         id: newComment._id,
@@ -90,18 +110,24 @@ const addComment = async (req, res) => {
           avatar_url: newComment.user_id.avatar_url,
         },
         target: {
-          id: publication._id,
-          type: publication.type,
-          author: publication.author_id.username,
+          id: target_id,
+          type: target_type,
         },
         comment: newComment.comment,
         created_at: newComment.created_at,
       },
+    };
+    
+    console.log(`✅ addComment - Respondiendo con éxito:`, responseData);
+    res.status(201).json(responseData);
     });
   } catch (error) {
     console.error("Error en addComment:", error);
+    console.error("Stack trace:", error.stack);
     res.status(500).json({
       error: "Error interno del servidor",
+      details: error.message,
+      code: error.name || 'UnknownError'
     });
   }
 };

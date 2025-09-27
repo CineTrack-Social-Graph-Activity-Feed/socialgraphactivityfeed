@@ -34,6 +34,13 @@ function Post({ post }) {
     if (!comment.trim()) return;
 
     try {
+      console.log("Enviando comentario:", {
+        user_id: userId,
+        target_type: post.type,
+        target_id: post.id,
+        comment,
+      });
+      
       const res = await fetch(`${API_URL}/api/comment`, {
         method: "POST",
         headers: {
@@ -47,11 +54,25 @@ function Post({ post }) {
         }),
       });
 
+      // Loguear la respuesta para debugging
+      const responseData = await res.json();
+      console.log("Respuesta al crear comentario:", {
+        status: res.status,
+        ok: res.ok,
+        data: responseData
+      });
+
+      if (!res.ok) {
+        throw new Error(`Error ${res.status}: ${responseData.error || 'Error desconocido'}`);
+      }
+
       //después del POST, vuelvo a pedir todos los comentarios del post asi cuando agrego uno nuevo se actualiza la lista
       const resComments = await fetch(
         `${API_URL}/api/comment/publication/${post.id}`
       );
       const dataComments = await resComments.json();
+
+      console.log("Comentarios actualizados:", dataComments);
 
       setCommentsByPost((prev) => {
         const unique = (dataComments.comments || []).filter(
@@ -65,6 +86,7 @@ function Post({ post }) {
       setComment("");
     } catch (err) {
       console.error("Error al guardar comentario:", err);
+      alert(`Error al guardar comentario: ${err.message}`);
     }
   };
 
@@ -182,6 +204,12 @@ function Post({ post }) {
 
       if (!state.liked) {
         // 👉 Dar like
+        console.log("Enviando like:", {
+          user_id: userId,
+          target_id: post.id,
+          target_type: post.type
+        });
+        
         const res = await fetch(`${API_URL}/api/like`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -191,14 +219,28 @@ function Post({ post }) {
             target_type: post.type, // o lo que corresponda
           }),
         });
+        
+        // Loguear la respuesta para debugging
         const data = await res.json();
+        console.log("Respuesta al dar like:", {
+          status: res.status,
+          ok: res.ok,
+          data: data
+        });
 
         if (res.ok) {
           // recargo likes de ese post
           refreshLikes(post.id);
+        } else {
+          throw new Error(`Error ${res.status}: ${data.error || 'Error desconocido'}`);
         }
       } else {
         // 👉 Quitar like
+        console.log("Eliminando like:", {
+          like_id: state.like_id,
+          user_id: userId
+        });
+        
         const res = await fetch(
           `${API_URL}/api/like/${state.like_id}`,
           {
@@ -207,42 +249,79 @@ function Post({ post }) {
             body: JSON.stringify({ user_id: userId }),
           }
         );
+        
+        // Loguear la respuesta para debugging
+        let responseText;
+        try {
+          responseText = await res.text();
+          console.log("Respuesta al quitar like (texto):", responseText);
+          
+          // Intentar parsear como JSON si es posible
+          if (responseText) {
+            const data = JSON.parse(responseText);
+            console.log("Respuesta al quitar like (JSON):", {
+              status: res.status,
+              ok: res.ok,
+              data: data
+            });
+          }
+        } catch (e) {
+          console.log("La respuesta no es JSON válido:", responseText);
+        }
 
         if (res.ok) {
           // recargo likes de ese post
           refreshLikes(post.id);
+        } else {
+          throw new Error(`Error ${res.status}: No se pudo quitar el like`);
         }
       }
     } catch (err) {
       console.error("Error en handleLike:", err);
+      alert(`Error al procesar like: ${err.message}`);
     }
   };
 
   // 🔹 traer likes y estado actualizado desde el back
   const refreshLikes = async (postId) => {
-    const res = await fetch(
-      `${API_URL}/api/like/publication/${postId}`
-    );
-    const data = await res.json();
+    try {
+      console.log(`Obteniendo likes para post ${postId}`);
+      
+      const res = await fetch(
+        `${API_URL}/api/like/publication/${postId}`
+      );
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error(`Error al obtener likes (${res.status}):", ${errorText}`);
+        throw new Error(`Error ${res.status} al obtener likes`);
+      }
+      
+      const data = await res.json();
 
-    console.log("Post", postId, "-> Likes:", data);
+      console.log("Post", postId, "-> Likes:", data);
 
-    // OJO: en tu back la key es total_likes, no totalLikes
-    const total = data.total_likes ?? 0;
+      // OJO: en tu back la key es total_likes, no totalLikes
+      const total = data.total_likes ?? 0;
 
-    // Buscar si el usuario actual está en el array
-    const myLike = (data.likes || []).find(
-      (l) => String(l.user.id) === String(userId)
-    );
+      // Buscar si el usuario actual está en el array
+      const myLike = (data.likes || []).find(
+        (l) => String(l.user.id) === String(userId)
+      );
+      
+      console.log("Mi like encontrado:", myLike);
 
-    setLikesByPost((prev) => ({
-      ...prev,
-      [postId]: {
-        total_likes: total,
-        liked: !!myLike,
-        like_id: myLike?.id ?? null,
-      },
-    }));
+      setLikesByPost((prev) => ({
+        ...prev,
+        [postId]: {
+          total_likes: total,
+          liked: !!myLike,
+          like_id: myLike?.id ?? null,
+        },
+      }));
+    } catch (err) {
+      console.error("Error al refrescar likes:", err);
+    }
   };
 
   const handleDeleteComment = async (commentId, postId) => {

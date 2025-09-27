@@ -80,12 +80,14 @@ jobs:
           mkdir -p build-output/mi-actividad
           mkdir -p build-output/follows
           mkdir -p build-output/buscar-amigos
+          mkdir -p build-output/debug
           
           # Copiar index.html a cada ruta para soporte de SPA
           cp build-output/index.html build-output/api-test/index.html
           cp build-output/index.html build-output/mi-actividad/index.html
           cp build-output/index.html build-output/follows/index.html
           cp build-output/index.html build-output/buscar-amigos/index.html
+          cp build-output/index.html build-output/debug/index.html
           cp build-output/index.html build-output/error.html
           
           # Subir HTML con tipo de contenido específico
