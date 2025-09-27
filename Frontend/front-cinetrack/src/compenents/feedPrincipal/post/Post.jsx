@@ -162,12 +162,14 @@ function Post({ post }) {
               console.log("📊 Comentarios actualizados desde backend:", dataComments);
   
               setCommentsByPost((prev) => {
-                const unique = (dataComments.comments || []).filter(
-                  (c, index, self) => index === self.findIndex((x) => x.id === c.id)
-                );
+                const backendList = Array.isArray(dataComments.comments) ? dataComments.comments : [];
+                const localList = localCommentsData[post.id] || [];
+                const mergedMap = new Map();
+                [...backendList, ...localList].forEach((c) => mergedMap.set(c.id, c));
+                const merged = Array.from(mergedMap.values()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                 return {
                   ...prev,
-                  [post.id]: unique,
+                  [post.id]: merged,
                 };
               });
               setComment("");
@@ -315,14 +317,28 @@ function Post({ post }) {
               }
   
               const data = await res.json();
-  
+
+              const backendLikes = Array.isArray(data.likes) ? data.likes : [];
+              const backendTotal = typeof data.total_likes === 'number' ? data.total_likes : backendLikes.length;
+              const myBackendLike = backendLikes.find((l) => String(l.user?.id) === String(userId));
+
+              // Si el backend está vacío y hay datos locales, usa locales
+              const local = localLikesData[p.id];
+              const useLocal = (backendTotal === 0 && !myBackendLike && local);
+
               return [
                 p.id,
-                {
-                  total_likes: data.total_likes,
-                  liked: data.likes.some((l) => l.user.id === userId), // check si yo estoy en la lista
-                  like_id: data.likes.find((l) => l.user.id === userId)?.id || null,
-                },
+                useLocal
+                  ? {
+                      total_likes: local.total_likes || 0,
+                      liked: !!local.liked,
+                      like_id: local.like_id || null,
+                    }
+                  : {
+                      total_likes: backendTotal,
+                      liked: !!myBackendLike,
+                      like_id: myBackendLike?.id || null,
+                    },
               ];
             } catch (err) {
               console.warn(`Error al obtener likes para post ${p.id}:`, err);
@@ -453,8 +469,16 @@ function Post({ post }) {
                 return [p.id, localCommentsData[p.id] || []];
               }
               
-              console.log(`✅ Post ${p.id} -> Comentarios:`, data.comments || []);
-              return [p.id, data.comments || []];
+              const backendComments = Array.isArray(data.comments) ? data.comments : [];
+              const local = localCommentsData[p.id] || [];
+              // Fusionar por id y ordenar por fecha desc
+              const mergedMap = new Map();
+              [...backendComments, ...local].forEach((c) => {
+                mergedMap.set(c.id, c);
+              });
+              const merged = Array.from(mergedMap.values()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+              console.log(`✅ Post ${p.id} -> Comentarios fusionados:`, merged);
+              return [p.id, merged];
             } catch (err) {
               console.warn(`⚠️ Error al obtener comentarios para post ${p.id}:`, err);
               // Si hay error, usamos datos locales
@@ -620,28 +644,32 @@ function Post({ post }) {
         }
         
         const data = await res.json();
-  
+
         console.log("Post", postId, "-> Likes:", data);
-  
-        // OJO: en tu back la key es total_likes, no totalLikes
-        const total = data.total_likes ?? 0;
-  
-        // Buscar si el usuario actual está en el array
-        const myLike = (data.likes || []).find(
-          (l) => String(l.user.id) === String(userId)
-        );
-        
-        console.log("Mi like encontrado:", myLike);
-  
-        const likeData = {
-          total_likes: total,
-          liked: !!myLike,
-          like_id: myLike?.id ?? null,
-        };
-  
+
+        const backendLikes = Array.isArray(data.likes) ? data.likes : [];
+        const total = typeof data.total_likes === 'number' ? data.total_likes : backendLikes.length;
+        const myLike = backendLikes.find((l) => String(l.user?.id) === String(userId));
+
+        // Si el backend está vacío y hay demo local, mantener la experiencia demo
+        const local = localLikesData[postId];
+        const useLocal = (total === 0 && !myLike && local);
+
+        const likeData = useLocal
+          ? {
+              total_likes: local.total_likes || 0,
+              liked: !!local.liked,
+              like_id: local.like_id || null,
+            }
+          : {
+              total_likes: total,
+              liked: !!myLike,
+              like_id: myLike?.id ?? null,
+            };
+
         setLikesByPost((prev) => ({
           ...prev,
-          [postId]: likeData
+          [postId]: likeData,
         }));
       } catch (err) {
         console.warn(`Error al obtener likes para post ${postId}:`, err);
@@ -708,10 +736,18 @@ function Post({ post }) {
         );
         const dataComments = await resComments.json();
 
-        setCommentsByPost((prev) => ({
-          ...prev,
-          [postId]: dataComments.comments || [],
-        }));
+        // Fusionar backend + locales para no perder los demos si el back vuelve vacío
+        setCommentsByPost((prev) => {
+          const backendList = Array.isArray(dataComments.comments) ? dataComments.comments : [];
+          const localList = localCommentsData[postId] || [];
+          const mergedMap = new Map();
+          [...backendList, ...localList].forEach((c) => mergedMap.set(c.id, c));
+          const merged = Array.from(mergedMap.values()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          return {
+            ...prev,
+            [postId]: merged,
+          };
+        });
       } catch (err) {
         console.warn("Error al eliminar comentario con el backend:", err.message);
         
