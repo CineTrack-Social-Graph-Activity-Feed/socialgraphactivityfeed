@@ -56,8 +56,8 @@ const ListaFollowers = () => {
     const isFollowing = seguidos.includes(targetId);
 
     const url = isFollowing
-      ? "http://localhost:3000/api/unfollow"
-      : "http://localhost:3000/api/follow";
+      ? `${API_URL}/api/unfollow`
+      : `${API_URL}/api/follow`;
 
     const res = await fetch(url, {
       method: "POST",

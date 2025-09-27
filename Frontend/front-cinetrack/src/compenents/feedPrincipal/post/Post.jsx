@@ -49,7 +49,7 @@ function Post({ post }) {
 
       //después del POST, vuelvo a pedir todos los comentarios del post asi cuando agrego uno nuevo se actualiza la lista
       const resComments = await fetch(
-        `http://localhost:3000/api/comment/publication/${post.id}`
+        `${API_URL}/api/comment/publication/${post.id}`
       );
       const dataComments = await resComments.json();
 
@@ -125,7 +125,7 @@ function Post({ post }) {
       const results = await Promise.all(
         posts.map(async (p) => {
           const res = await fetch(
-            `http://localhost:3000/api/like/publication/${p.id}`
+            `${API_URL}/api/like/publication/${p.id}`
           );
 
           const data = await res.json();
@@ -182,7 +182,7 @@ function Post({ post }) {
 
       if (!state.liked) {
         // 👉 Dar like
-        const res = await fetch("http://localhost:3000/api/like", {
+        const res = await fetch(`${API_URL}/api/like`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -200,7 +200,7 @@ function Post({ post }) {
       } else {
         // 👉 Quitar like
         const res = await fetch(
-          `http://localhost:3000/api/like/${state.like_id}`,
+          `${API_URL}/api/like/${state.like_id}`,
           {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
@@ -221,7 +221,7 @@ function Post({ post }) {
   // 🔹 traer likes y estado actualizado desde el back
   const refreshLikes = async (postId) => {
     const res = await fetch(
-      `http://localhost:3000/api/like/publication/${postId}`
+      `${API_URL}/api/like/publication/${postId}`
     );
     const data = await res.json();
 
@@ -248,7 +248,7 @@ function Post({ post }) {
   const handleDeleteComment = async (commentId, postId) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/comment/${commentId}`,
+        `${API_URL}/api/comment/${commentId}`,
         {
           method: "DELETE",
           headers: {
@@ -267,7 +267,7 @@ function Post({ post }) {
 
       // 👇 refrescar comentarios del post
       const resComments = await fetch(
-        `http://localhost:3000/api/comment/publication/${postId}`
+        `${API_URL}/api/comment/publication/${postId}`
       );
       const dataComments = await resComments.json();
 
