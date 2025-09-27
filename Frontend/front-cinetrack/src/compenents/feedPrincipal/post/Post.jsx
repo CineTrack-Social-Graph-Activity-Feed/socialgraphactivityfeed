@@ -10,25 +10,92 @@ dayjs.extend(relativeTime);
 dayjs.locale("es");
 
 function Post({ post }) {
+  console.log("🚀 Inicializando componente Post");
   const { userId } = useUser();
   const [user, setUser] = useState({});
   const [comment, setComment] = useState("");
   const [commentsByPost, setCommentsByPost] = useState({});
   const [showAllComments, setShowAllComments] = useState({});
   const [likesByPost, setLikesByPost] = useState({});
-  // Estado local para seguimiento de likes y comentarios (para posts hardcoded)
-  const [localLikesData, setLocalLikesData] = useState({});
-  const [localCommentsData, setLocalCommentsData] = useState({});
+  
+  // Inicializar datos locales para posts hardcoded
+  // Para demostración, podemos agregar algunos comentarios predefinidos
+  const [localLikesData, setLocalLikesData] = useState({
+    "65f5e1d77c65c827d8536abc": { total_likes: 5, liked: false, like_id: null },
+    "65f5e1d77c65c827d8536abd": { total_likes: 3, liked: false, like_id: null },
+    "65f5e1d77c65c827d8536abe": { total_likes: 8, liked: false, like_id: null }
+  });
+  
+  // Comentarios iniciales para demostrar la funcionalidad
+  const [localCommentsData, setLocalCommentsData] = useState({
+    "65f5e1d77c65c827d8536abc": [
+      {
+        id: "local_demo_comment_1",
+        comment: "¡Excelente película! Totalmente de acuerdo con tu reseña.",
+        created_at: "2025-09-25T15:30:00Z",
+        user: {
+          id: "demo_user_1",
+          username: "cinefilo_experto",
+          avatar_url: "https://i.pravatar.cc/60?img=3"
+        },
+        target_id: "65f5e1d77c65c827d8536abc",
+        target_type: "review"
+      }
+    ],
+    "65f5e1d77c65c827d8536abd": [
+      {
+        id: "local_demo_comment_2",
+        comment: "Creo que le diste una calificación muy justa. Los efectos especiales fueron geniales.",
+        created_at: "2025-09-26T10:15:00Z",
+        user: {
+          id: "demo_user_2",
+          username: "filmreview",
+          avatar_url: "https://i.pravatar.cc/60?img=5"
+        },
+        target_id: "65f5e1d77c65c827d8536abd",
+        target_type: "review"
+      }
+    ]
+  });
+  
+  // Depuración inicial
+  console.log("👤 userId:", userId);
 
   /* Obtengo los datos del usuario logueado */
   useEffect(() => {
+    console.log("🔄 Obteniendo datos del usuario:", userId);
     fetch(`${API_URL}/api/user/${userId}`)
       .then((res) => res.json())
       .then((data) => {
+        console.log("👤 Datos de usuario obtenidos:", data.user);
+        
+        // Si no se puede obtener el usuario del backend, crearemos uno local para demostración
+        if (!data.user) {
+          console.log("⚠️ No se pudo obtener el usuario del backend, usando datos de demostración");
+          setUser({
+            id: userId,
+            username: "usuario_demo",
+            name: "Usuario Demo",
+            avatar_url: "https://i.pravatar.cc/60?img=1"
+          });
+          return;
+        }
+        
         setUser(data.user);
       })
-      .catch((err) => console.error("Error al traer usuario:", err));
-  }, []);
+      .catch((err) => {
+        console.error("Error al traer usuario:", err);
+        
+        // En caso de error, usar un usuario de demostración
+        console.log("⚠️ Error al obtener usuario, usando datos de demostración");
+        setUser({
+          id: userId,
+          username: "usuario_demo",
+          name: "Usuario Demo",
+          avatar_url: "https://i.pravatar.cc/60?img=1"
+        });
+      });
+  }, [userId]);
 
   /* Guarda el comentario de una publicacion a la BD o localmente */
   const handleSubmit = async (e, post) => {
@@ -37,15 +104,18 @@ function Post({ post }) {
     if (!comment.trim()) return;
 
     try {
-      console.log("Enviando comentario:", {
+      console.log("📝 Enviando comentario:", {
         user_id: userId,
         target_type: post.type,
         target_id: post.id,
         comment,
       });
       
+      let useLocalImplementation = false;
+      
       // Intentar primero con el backend
       try {
+        console.log("🔄 Intentando guardar comentario en el backend...");
         const res = await fetch(`${API_URL}/api/comment`, {
           method: "POST",
           headers: {
@@ -59,9 +129,21 @@ function Post({ post }) {
           }),
         });
 
-        // Loguear la respuesta para debugging
-        const responseData = await res.json();
-        console.log("Respuesta al crear comentario:", {
+        // Obtener respuesta como texto primero
+        const responseText = await res.text();
+        console.log("📄 Respuesta en texto:", responseText);
+        
+        // Intentar parsear como JSON si es posible
+        let responseData;
+        try {
+          if (responseText) {
+            responseData = JSON.parse(responseText);
+          }
+        } catch (parseErr) {
+          console.error("❌ Error al parsear respuesta JSON:", parseErr);
+        }
+        
+        console.log("📊 Respuesta al crear comentario:", {
           status: res.status,
           ok: res.ok,
           data: responseData
@@ -69,65 +151,90 @@ function Post({ post }) {
 
         if (res.ok) {
           // Si el backend funcionó, actualizamos con los datos del backend
-          const resComments = await fetch(
-            `${API_URL}/api/comment/publication/${post.id}`
-          );
-          const dataComments = await resComments.json();
-
-          console.log("Comentarios actualizados desde backend:", dataComments);
-
-          setCommentsByPost((prev) => {
-            const unique = (dataComments.comments || []).filter(
-              (c, index, self) => index === self.findIndex((x) => x.id === c.id)
+          try {
+            console.log("✅ Comentario guardado en backend, actualizando lista...");
+            const resComments = await fetch(
+              `${API_URL}/api/comment/publication/${post.id}`
             );
-            return {
-              ...prev,
-              [post.id]: unique,
-            };
-          });
-          setComment("");
-          return;
+            
+            if (resComments.ok) {
+              const dataComments = await resComments.json();
+              console.log("📊 Comentarios actualizados desde backend:", dataComments);
+  
+              setCommentsByPost((prev) => {
+                const unique = (dataComments.comments || []).filter(
+                  (c, index, self) => index === self.findIndex((x) => x.id === c.id)
+                );
+                return {
+                  ...prev,
+                  [post.id]: unique,
+                };
+              });
+              setComment("");
+              return;
+            } else {
+              console.warn("⚠️ La respuesta del backend para obtener comentarios no fue exitosa:", resComments.status);
+              useLocalImplementation = true;
+            }
+          } catch (fetchErr) {
+            console.warn("⚠️ Error al obtener comentarios actualizados:", fetchErr);
+            useLocalImplementation = true;
+          }
+        } else {
+          console.warn("⚠️ La respuesta del backend no fue exitosa:", res.status);
+          useLocalImplementation = true;
         }
       } catch (backendErr) {
-        console.warn("Error con el backend, usando implementación local:", backendErr.message);
+        console.warn("⚠️ Error con el backend, usando implementación local:", backendErr.message);
+        useLocalImplementation = true;
       }
 
-      // 🔶 Si llegamos aquí, es porque el backend falló o el post es hardcoded
-      // Implementación local para posts hardcoded
-      console.log("Usando implementación local para el comentario");
-      
-      // Crear un comentario local con datos simulados
-      const newLocalComment = {
-        id: `local_comment_${Date.now()}`,
-        comment: comment,
-        created_at: new Date().toISOString(),
-        user: {
-          id: userId,
-          username: user.username || "usuario",
-          avatar_url: user.avatar_url || "https://i.pravatar.cc/60?img=1",
-        },
-        target_id: post.id,
-        target_type: post.type,
-      };
-
-      // Actualizar el estado local de comentarios
-      const updatedLocalComments = {
-        ...localCommentsData,
-        [post.id]: [...(localCommentsData[post.id] || []), newLocalComment]
-      };
-      setLocalCommentsData(updatedLocalComments);
-      
-      // Actualizar la UI inmediatamente
-      setCommentsByPost((prev) => ({
-        ...prev,
-        [post.id]: [...(prev[post.id] || []), newLocalComment]
-      }));
+      // 🔶 Si useLocalImplementation es true, usamos la implementación local
+      if (useLocalImplementation) {
+        console.log("🔷 Usando implementación local para el comentario");
+        
+        // Crear un comentario local con datos simulados
+        const newLocalComment = {
+          id: `local_comment_${Date.now()}`,
+          comment: comment,
+          created_at: new Date().toISOString(),
+          user: {
+            id: userId,
+            username: user.username || "usuario",
+            avatar_url: user.avatar_url || "https://i.pravatar.cc/60?img=1",
+          },
+          target_id: post.id,
+          target_type: post.type,
+        };
+  
+        console.log("📝 Nuevo comentario local creado:", newLocalComment);
+  
+        // Actualizar el estado local de comentarios
+        const updatedLocalComments = {
+          ...localCommentsData,
+          [post.id]: [...(localCommentsData[post.id] || []), newLocalComment]
+        };
+        setLocalCommentsData(updatedLocalComments);
+        
+        // Verificar el estado actual de comentarios para este post
+        console.log("📊 Estado actual de comentarios para este post:", commentsByPost[post.id] || []);
+        
+        // Actualizar la UI inmediatamente
+        setCommentsByPost((prev) => {
+          const updatedComments = [...(prev[post.id] || []), newLocalComment];
+          console.log("📊 Nuevo estado de comentarios UI para post:", updatedComments);
+          return {
+            ...prev,
+            [post.id]: updatedComments
+          };
+        });
+      }
       
       // Limpiar el campo de comentario
       setComment("");
 
     } catch (err) {
-      console.error("Error al guardar comentario:", err);
+      console.error("❌ Error al guardar comentario:", err);
       alert(`Error al guardar comentario: ${err.message}`);
     }
   };
@@ -241,25 +348,115 @@ function Post({ post }) {
     fetchLikes();
   }, [posts, userId, localLikesData]);
 
+  // Función para asegurarse de que tengamos datos locales para demostración
+  useEffect(() => {
+    // Esta función se ejecuta una vez para inicializar datos para demostración
+    const initializeLocalDemo = () => {
+      console.log("🔄 Inicializando datos locales para demostración...");
+      
+      // Verificamos si ya hay datos locales para cada post
+      const postsWithoutComments = posts.filter(p => !localCommentsData[p.id] || localCommentsData[p.id].length === 0);
+      
+      if (postsWithoutComments.length > 0) {
+        console.log(`🔄 Inicializando comentarios demo para ${postsWithoutComments.length} posts sin datos locales`);
+        
+        const newLocalComments = { ...localCommentsData };
+        
+        // Crear comentarios demo para posts que no tienen
+        postsWithoutComments.forEach(p => {
+          if (!newLocalComments[p.id]) {
+            newLocalComments[p.id] = [{
+              id: `local_demo_comment_${p.id}_1`,
+              comment: "¡Me encantó tu opinión sobre esta película!",
+              created_at: new Date(Date.now() - 3600000).toISOString(), // 1 hora atrás
+              user: {
+                id: "demo_user_random",
+                username: "cine_fan",
+                avatar_url: `https://i.pravatar.cc/60?img=${Math.floor(Math.random() * 10) + 10}`
+              },
+              target_id: p.id,
+              target_type: p.type
+            }];
+          }
+        });
+        
+        // Actualizamos el estado local si hicimos cambios
+        if (Object.keys(newLocalComments).length > Object.keys(localCommentsData).length) {
+          console.log("🔄 Actualizando estado de comentarios locales con nuevos datos demo");
+          setLocalCommentsData(newLocalComments);
+        }
+      }
+      
+      // Lo mismo para likes
+      const postsWithoutLikes = posts.filter(p => !localLikesData[p.id]);
+      
+      if (postsWithoutLikes.length > 0) {
+        console.log(`🔄 Inicializando likes demo para ${postsWithoutLikes.length} posts sin datos locales`);
+        
+        const newLocalLikes = { ...localLikesData };
+        
+        // Crear likes demo para posts que no tienen
+        postsWithoutLikes.forEach(p => {
+          if (!newLocalLikes[p.id]) {
+            newLocalLikes[p.id] = {
+              total_likes: Math.floor(Math.random() * 10) + 1, // 1-10 likes aleatorios
+              liked: false,
+              like_id: null
+            };
+          }
+        });
+        
+        // Actualizamos el estado local si hicimos cambios
+        if (Object.keys(newLocalLikes).length > Object.keys(localLikesData).length) {
+          console.log("🔄 Actualizando estado de likes locales con nuevos datos demo");
+          setLocalLikesData(newLocalLikes);
+        }
+      }
+    };
+    
+    // Ejecutamos la inicialización
+    initializeLocalDemo();
+  }, [posts]); // Solo depende de posts
+
+  // Cargar comentarios desde backend o usar locales
   useEffect(() => {
     const loadComments = async () => {
       try {
+        console.log("🔄 Cargando comentarios para los posts...");
         const results = await Promise.all(
           posts.map(async (p) => {
             try {
+              console.log(`📥 Intentando obtener comentarios para post ${p.id} del backend...`);
               const res = await fetch(`${API_URL}/api/comment/publication/${p.id}`);
               
+              // Loggear respuesta completa
+              const responseText = await res.text();
+              console.log(`📄 Respuesta para post ${p.id}:`, { 
+                status: res.status, 
+                ok: res.ok,
+                responseText 
+              });
+              
               if (!res.ok) {
-                console.warn(`No se encontraron comentarios para el post hardcoded ${p.id}. Usando datos locales.`);
+                console.warn(`⚠️ No se encontraron comentarios para el post hardcoded ${p.id}. Usando datos locales.`);
+                console.log(`📋 Datos locales disponibles para ${p.id}:`, localCommentsData[p.id] || []);
                 // Si el post es hardcoded, usamos los datos locales
                 return [p.id, localCommentsData[p.id] || []];
               }
               
-              const data = await res.json();
-              console.log("Post", p.id, "-> Comentarios:", data.comments);
+              // Parsear la respuesta de texto a JSON
+              let data;
+              try {
+                data = JSON.parse(responseText);
+              } catch (parseErr) {
+                console.error(`❌ Error al parsear la respuesta para post ${p.id}:`, parseErr);
+                return [p.id, localCommentsData[p.id] || []];
+              }
+              
+              console.log(`✅ Post ${p.id} -> Comentarios:`, data.comments || []);
               return [p.id, data.comments || []];
             } catch (err) {
-              console.warn(`Error al obtener comentarios para post ${p.id}:`, err);
+              console.warn(`⚠️ Error al obtener comentarios para post ${p.id}:`, err);
               // Si hay error, usamos datos locales
               return [p.id, localCommentsData[p.id] || []];
             }
@@ -272,9 +469,10 @@ function Post({ post }) {
           return acc;
         }, {});
 
+        console.log("📊 Nuevo estado de comentarios por post:", newCommentsByPost);
         setCommentsByPost(newCommentsByPost);
       } catch (err) {
-        console.error("Error al cargar comentarios:", err);
+        console.error("❌ Error al cargar comentarios:", err);
       }
     };
 
@@ -672,7 +870,7 @@ function Post({ post }) {
 
             <div className="comment-post">
               <img
-                src={user.avatar_url}
+                src={user?.avatar_url || "https://i.pravatar.cc/60?img=1"}
                 alt="avatar"
                 className="user-logo-post"
               />
@@ -716,31 +914,34 @@ function Post({ post }) {
           </div>
 
           {/* Comentarios (solo si hay) */}
-          {(commentsByPost[post.id] || []).length > 0 && (
+          {(commentsByPost[post.id] || []).length > 0 ? (
             <>
               <hr />
+              {/* Depuración: Mostrar datos de los comentarios */}
+              <div style={{ display: 'none' }}>
+                {console.log(`📄 Renderizando ${(commentsByPost[post.id] || []).length} comentarios para post ${post.id}:`, commentsByPost[post.id])}
+              </div>
               {(commentsByPost[post.id] || [])
                 .slice() // copia para no mutar el original
-
                 .slice(0, showAllComments[post.id] ? undefined : 2) // muestra 2 más recientes
                 .map((c) => (
                   <div key={c.id} className="comment">
                     <img
-                      src={c.user.avatar_url}
+                      src={c.user?.avatar_url || "https://i.pravatar.cc/60?img=1"}
                       alt="user"
                       className="avatar-comment"
                     />
                     <div className="comment-body">
                       <div>
                         <strong>
-                          {c.user.username}{" "}
+                          {c.user?.username || "Usuario"}{" "}
                           <span className="comment-time">
-                            {dayjs(c.created_at).fromNow()}
+                            {c.created_at ? dayjs(c.created_at).fromNow() : "hace un momento"}
                           </span>
                         </strong>
                         <p className="comment-text">{c.comment}</p>
                       </div>
-                      {c.user.id === userId && (
+                      {c.user?.id === userId && (
                         <button
                           className="delete-comment-btn"
                           aria-label="Delete comment"
@@ -759,49 +960,37 @@ function Post({ post }) {
                         </button>
                       )}
                     </div>
-                    {/*
-                    <button
-                      className="like-comment-btn"
-                      aria-label="Like comment"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        className="bi bi-heart-fill"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
-                        />
-                      </svg>
-                      <span>-</span>
-                    </button>
-                    */}
+                    {/* Opciones adicionales de comentarios que se pueden agregar en el futuro */}
                   </div>
                 ))}
 
+              {/* Botón para ver todos los comentarios */}
               <div className="view-all">
-                {commentsByPost[post.id] &&
-                  commentsByPost[post.id].length > 2 && (
-                    <button
-                      className="view-all-btn"
-                      onClick={() =>
-                        setShowAllComments((prev) => ({
+                {(commentsByPost[post.id] || []).length > 2 && (
+                  <button
+                    className="view-all-btn"
+                    onClick={() =>
+                      setShowAllComments((prev) => {
+                        console.log(`🔄 Cambiando estado 'showAllComments' para post ${post.id}: ${!prev[post.id]}`);
+                        return {
                           ...prev,
                           [post.id]: !prev[post.id], // toggle por post
-                        }))
-                      }
-                    >
-                      {showAllComments[post.id]
-                        ? "Ver menos comentarios"
-                        : "Ver todos los comentarios"}
-                    </button>
-                  )}
+                        };
+                      })
+                    }
+                  >
+                    {showAllComments[post.id]
+                      ? "Ver menos comentarios"
+                      : "Ver todos los comentarios"}
+                  </button>
+                )}
               </div>
             </>
+          ) : (
+            // No hay comentarios
+            <div className="no-comments" style={{ display: 'none' }}>
+              {console.log(`❌ No hay comentarios para mostrar en post ${post.id}`)}
+            </div>
           )}
         </div>
       );
