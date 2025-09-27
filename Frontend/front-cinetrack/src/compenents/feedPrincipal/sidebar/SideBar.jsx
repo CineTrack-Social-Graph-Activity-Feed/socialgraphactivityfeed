@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { API_URL } from "../../config/api";
+import { API_URL } from "../../../config/api";
 import { NavLink } from "react-router-dom";
 import "./SideBar.css";
 import { useUser } from "../../../../UserContex";
