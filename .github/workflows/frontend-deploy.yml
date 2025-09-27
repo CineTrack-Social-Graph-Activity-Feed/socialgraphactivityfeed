@@ -148,5 +148,5 @@ jobs:
             --paths "/*"
           
           echo "✅ Despliegue completado!"
-          echo "🌐 Website via CloudFront: https://d2kbc0fhzrcwo7.cloudfront.net"
+          echo "🌐 Website via CloudFront: https://dj07hexl3m0a6.cloudfront.net/"
           echo "⚠️ Nota: La configuración de CloudFront para SPA puede tardar hasta 15 minutos en propagarse."

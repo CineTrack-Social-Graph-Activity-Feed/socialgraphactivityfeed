@@ -74,7 +74,7 @@ function Post({ post }) {
    */
   const [posts, setPosts] = useState([
     {
-      id: 1,
+      id: "65f5e1d77c65c827d8536abc", // ID de MongoDB válido (generado como ejemplo)
       type: "review",
       author: {
         name: "Paul Rudd",
@@ -89,7 +89,7 @@ function Post({ post }) {
         "https://a.ltrbxd.com/resized/film-poster/9/3/6/0/6/5/936065-the-conjuring-last-rites-0-1000-0-1500-crop.jpg?v=597eedcd06",
     },
     {
-      id: 2,
+      id: "65f5e1d77c65c827d8536abd", // ID de MongoDB válido (generado como ejemplo)
       type: "review",
       author: {
         name: "Jane Foster",
@@ -104,7 +104,7 @@ function Post({ post }) {
         "https://a.ltrbxd.com/resized/film-poster/9/5/7/0/5/0/957050-superman-2025-0-1000-0-1500-crop.jpg?v=54e41a55ff",
     },
     {
-      id: 3,
+      id: "65f5e1d77c65c827d8536abe", // ID de MongoDB válido (generado como ejemplo)
       type: "review",
       author: {
         name: "Jane Foster",
