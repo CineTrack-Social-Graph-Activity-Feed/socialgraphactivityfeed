@@ -3,7 +3,7 @@
  * En el futuro se integrará con un Hub de mensajería (Redis, RabbitMQ, etc.)
  */
 
-const publishEvent = (event) => {
+const publishEvent = async (event) => {
   try {
     // Validar que el evento tenga la estructura correcta
     if (!event || typeof event !== 'object') {
@@ -24,10 +24,29 @@ const publishEvent = (event) => {
       metadata: event.metadata || {}
     };
 
-    // Por ahora solo log, después se enviará al Hub de mensajería
-    console.log('📡 EVENT PUBLISHED:', JSON.stringify(eventData, null, 2));
+    const payload = {
+      type: event_type,
+      specversion: '1.0',
+      source: '/socialgraph/activityfeed',
+      id: `${actor_id}-${Date.now()}`,
+      time: timestamp.toISOString(),
+      data: eventData,
+      datacontenttype: 'application/json'
+    };
+    const apiUrl = `http://core-letterboxd.us-east-2.elasticbeanstalk.com/events/receive?routingKey=${event_type}`;
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      throw new Error(`Error publishing event: ${response.statusText}`);
+    }
+    console.log('✅ Event published:', payload);
+    return response.json();
 
-    return eventData;
   } catch (error) {
     console.error('❌ Error publishing event:', error.message);
     throw error;
@@ -37,20 +56,20 @@ const publishEvent = (event) => {
 // Tipos de eventos predefinidos
 const EVENT_TYPES = {
   // Seguimientos
-  FOLLOW: 'FOLLOW',
-  UNFOLLOW: 'UNFOLLOW',
-  
+  FOLLOW: 'social.follow',
+  UNFOLLOW: 'social.unfollow',
+
   // Likes
-  LIKE: 'LIKE',
-  UNLIKE: 'UNLIKE',
-  
+  LIKE: 'social.like',
+  UNLIKE: 'social.unlike',
+
   // Comentarios
-  COMMENT: 'COMMENT',
-  DELETE_COMMENT: 'DELETE_COMMENT',
-  
+  COMMENT: 'social.comment.create',
+  DELETE_COMMENT: 'social.comment.delete',
+
   // Publicaciones
-  NEW_PUBLICATION: 'NEW_PUBLICATION',
-  DELETE_PUBLICATION: 'DELETE_PUBLICATION'
+  NEW_PUBLICATION: 'social.publication.new',
+  DELETE_PUBLICATION: 'social.publication.delete'
 };
 
 // Helpers para crear eventos específicos
