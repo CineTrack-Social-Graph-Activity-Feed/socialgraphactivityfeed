@@ -1,0 +1,95 @@
+INFO     root:conftest.py:86 Starting test: test_init_default_timeout
+INFO     root:conftest.py:91 Completed test: test_init_default_timeout
+INFO     root:conftest.py:86 Starting test: test_init_custom_timeout
+INFO     root:conftest.py:91 Completed test: test_init_custom_timeout
+INFO     root:conftest.py:86 Starting test: test_wait_for_element_visible_success
+INFO     root:conftest.py:91 Completed test: test_wait_for_element_visible_success
+INFO     root:conftest.py:86 Starting test: test_wait_for_element_visible_timeout
+INFO     root:conftest.py:91 Completed test: test_wait_for_element_visible_timeout
+INFO     root:conftest.py:86 Starting test: test_wait_for_element_clickable_success
+INFO     root:conftest.py:91 Completed test: test_wait_for_element_clickable_success
+INFO     root:conftest.py:86 Starting test: test_safe_click_success
+INFO     root:conftest.py:91 Completed test: test_safe_click_success
+INFO     root:conftest.py:86 Starting test: test_safe_click_failure
+INFO     root:conftest.py:91 Completed test: test_safe_click_failure
+INFO     root:conftest.py:86 Starting test: test_safe_send_keys_success_with_clear
+INFO     root:conftest.py:91 Completed test: test_safe_send_keys_success_with_clear
+INFO     root:conftest.py:86 Starting test: test_safe_send_keys_no_clear
+INFO     root:conftest.py:91 Completed test: test_safe_send_keys_no_clear
+INFO     root:conftest.py:86 Starting test: test_get_text_safe_success
+INFO     root:conftest.py:91 Completed test: test_get_text_safe_success
+INFO     root:conftest.py:86 Starting test: test_get_text_safe_element_not_found
+INFO     root:conftest.py:91 Completed test: test_get_text_safe_element_not_found
+INFO     root:conftest.py:86 Starting test: test_is_element_present_true
+INFO     root:conftest.py:91 Completed test: test_is_element_present_true
+INFO     root:conftest.py:86 Starting test: test_is_element_present_false
+INFO     root:conftest.py:91 Completed test: test_is_element_present_false
+INFO     root:conftest.py:86 Starting test: test_scroll_to_element_success
+INFO     root:conftest.py:91 Completed test: test_scroll_to_element_success
+INFO     root:conftest.py:86 Starting test: test_wait_for_page_load_success
+INFO     root:conftest.py:91 Completed test: test_wait_for_page_load_success
+INFO     root:conftest.py:86 Starting test: test_wait_for_page_load_timeout
+INFO     root:conftest.py:91 Completed test: test_wait_for_page_load_timeout
+INFO     root:conftest.py:86 Starting test: test_wait_vis_function
+INFO     root:conftest.py:91 Completed test: test_wait_vis_function
+INFO     root:conftest.py:86 Starting test: test_wait_css_function
+INFO     root:conftest.py:91 Completed test: test_wait_css_function
+INFO     root:conftest.py:86 Starting test: test_frame_context_manager_creation
+INFO     root:conftest.py:91 Completed test: test_frame_context_manager_creation
+INFO     root:conftest.py:86 Starting test: test_test_step_creation
+INFO     root:conftest.py:91 Completed test: test_test_step_creation
+INFO     root:conftest.py:86 Starting test: test_test_step_to_dict
+INFO     root:conftest.py:91 Completed test: test_test_step_to_dict
+INFO     root:conftest.py:86 Starting test: test_checklist_creation
+INFO     root:conftest.py:91 Completed test: test_checklist_creation
+INFO     root:conftest.py:86 Starting test: test_check_method
+INFO     tests.utils.checklist:checklist.py:113 Step 'Step 1': PASS - Success message
+ERROR    tests.utils.checklist:checklist.py:115 Step 'Step 2': FAIL - Failure message
+INFO     root:conftest.py:91 Completed test: test_check_method
+INFO     root:conftest.py:86 Starting test: test_step_counts
+INFO     tests.utils.checklist:checklist.py:113 Step 'Pass 1': PASS
+INFO     tests.utils.checklist:checklist.py:113 Step 'Pass 2': PASS
+ERROR    tests.utils.checklist:checklist.py:115 Step 'Fail 1': FAIL
+INFO     root:conftest.py:91 Completed test: test_step_counts
+INFO     root:conftest.py:86 Starting test: test_is_success_property
+INFO     tests.utils.checklist:checklist.py:113 Step 'Step 1': PASS
+INFO     tests.utils.checklist:checklist.py:113 Step 'Step 2': PASS
+ERROR    tests.utils.checklist:checklist.py:115 Step 'Step 3': FAIL
+INFO     root:conftest.py:91 Completed test: test_is_success_property
+INFO     root:conftest.py:86 Starting test: test_get_failed_steps
+INFO     tests.utils.checklist:checklist.py:113 Step 'Pass': PASS
+ERROR    tests.utils.checklist:checklist.py:115 Step 'Fail 1': FAIL - Error 1
+ERROR    tests.utils.checklist:checklist.py:115 Step 'Fail 2': FAIL - Error 2
+INFO     root:conftest.py:91 Completed test: test_get_failed_steps
+INFO     root:conftest.py:86 Starting test: test_add_tag
+INFO     root:conftest.py:91 Completed test: test_add_tag
+INFO     root:conftest.py:86 Starting test: test_set_environment_info
+INFO     root:conftest.py:91 Completed test: test_set_environment_info
+INFO     root:conftest.py:86 Starting test: test_add_test_data
+INFO     root:conftest.py:91 Completed test: test_add_test_data
+INFO     root:conftest.py:86 Starting test: test_summary_dict
+INFO     tests.utils.checklist:checklist.py:113 Step 'Step 1': PASS - Success
+ERROR    tests.utils.checklist:checklist.py:115 Step 'Step 2': FAIL - Failure
+INFO     root:conftest.py:91 Completed test: test_summary_dict
+INFO     root:conftest.py:86 Starting test: test_assert_all_passed_success
+INFO     tests.utils.checklist:checklist.py:113 Step 'Step 1': PASS
+INFO     tests.utils.checklist:checklist.py:113 Step 'Step 2': PASS
+INFO     root:conftest.py:91 Completed test: test_assert_all_passed_success
+INFO     root:conftest.py:86 Starting test: test_assert_all_passed_failure
+INFO     tests.utils.checklist:checklist.py:113 Step 'Step 1': PASS
+ERROR    tests.utils.checklist:checklist.py:115 Step 'Step 2': FAIL - This failed
+INFO     root:conftest.py:91 Completed test: test_assert_all_passed_failure
+INFO     root:conftest.py:86 Starting test: test_assert_all_passed_custom_message
+ERROR    tests.utils.checklist:checklist.py:115 Step 'Step 1': FAIL
+INFO     root:conftest.py:91 Completed test: test_assert_all_passed_custom_message
+INFO     root:conftest.py:86 Starting test: test_to_json
+INFO     tests.utils.checklist:checklist.py:113 Step 'Step 1': PASS - Success
+ERROR    tests.utils.checklist:checklist.py:115 Step 'Step 2': FAIL - Failure
+INFO     tests.utils.checklist:checklist.py:214 Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-8\test_to_json0\test_results.json
+INFO     root:conftest.py:91 Completed test: test_to_json
+INFO     root:conftest.py:86 Starting test: test_duration_calculation
+INFO     tests.utils.checklist:checklist.py:113 Step 'Step 1': PASS
+INFO     tests.utils.checklist:checklist.py:113 Step 'Step 2': PASS
+INFO     root:conftest.py:91 Completed test: test_duration_calculation
+INFO     root:conftest.py:86 Starting test: test_empty_checklist_properties
+INFO     root:conftest.py:91 Completed test: test_empty_checklist_properties

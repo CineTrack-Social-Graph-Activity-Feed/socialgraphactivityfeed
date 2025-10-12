@@ -1,0 +1,33 @@
+[run]
+source = Backend/servidor, Frontend/front-cinetrack/src, tests
+omit = 
+    */node_modules/*
+    */venv/*
+    */env/*
+    */.venv/*
+    */tests/reports/*
+    */tests/__pycache__/*
+    */tests/.pytest_cache/*
+    */__pycache__/*
+    */migrations/*
+    */settings/*
+    */config/*
+    */vite.config.js
+    */eslint.config.js
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if settings.DEBUG
+    if TYPE_CHECKING:
+
+[html]
+directory = tests/reports/coverage_html
+title = SocialGraphActivityFeed Coverage Report
+
+[xml]
+output = tests/reports/coverage.xml

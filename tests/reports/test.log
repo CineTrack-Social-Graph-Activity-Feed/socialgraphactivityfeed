@@ -1,0 +1,703 @@
+2025-10-12 19:21:27,622 - root - INFO - Starting test: test_test_step_creation
+2025-10-12 19:21:27,630 - root - INFO - Completed test: test_test_step_creation
+2025-10-12 19:21:27,639 - root - INFO - Starting test: test_test_step_to_dict
+2025-10-12 19:21:27,645 - root - INFO - Completed test: test_test_step_to_dict
+2025-10-12 19:21:27,652 - root - INFO - Starting test: test_checklist_creation
+2025-10-12 19:21:27,660 - root - INFO - Completed test: test_checklist_creation
+2025-10-12 19:21:27,668 - root - INFO - Starting test: test_check_method
+2025-10-12 19:21:27,673 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-10-12 19:21:27,674 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-10-12 19:21:27,680 - root - INFO - Completed test: test_check_method
+2025-10-12 19:21:27,689 - root - INFO - Starting test: test_step_counts
+2025-10-12 19:21:27,692 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-10-12 19:21:27,692 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-10-12 19:21:27,693 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-10-12 19:21:27,763 - root - INFO - Completed test: test_step_counts
+2025-10-12 19:21:27,770 - root - INFO - Starting test: test_is_success_property
+2025-10-12 19:21:27,771 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:21:27,771 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:21:27,772 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-10-12 19:21:27,776 - root - INFO - Completed test: test_is_success_property
+2025-10-12 19:21:27,781 - root - INFO - Starting test: test_get_failed_steps
+2025-10-12 19:21:27,785 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-10-12 19:21:27,785 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-10-12 19:21:27,785 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-10-12 19:21:27,789 - root - INFO - Completed test: test_get_failed_steps
+2025-10-12 19:21:27,793 - root - INFO - Starting test: test_add_tag
+2025-10-12 19:21:27,799 - root - INFO - Completed test: test_add_tag
+2025-10-12 19:21:27,807 - root - INFO - Starting test: test_set_environment_info
+2025-10-12 19:21:27,812 - root - INFO - Completed test: test_set_environment_info
+2025-10-12 19:21:27,817 - root - INFO - Starting test: test_add_test_data
+2025-10-12 19:21:27,823 - root - INFO - Completed test: test_add_test_data
+2025-10-12 19:21:27,827 - root - INFO - Starting test: test_summary_dict
+2025-10-12 19:21:27,829 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:21:27,829 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:21:27,834 - root - INFO - Completed test: test_summary_dict
+2025-10-12 19:21:27,839 - root - INFO - Starting test: test_assert_all_passed_success
+2025-10-12 19:21:27,841 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:21:27,841 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:21:27,844 - root - INFO - Completed test: test_assert_all_passed_success
+2025-10-12 19:21:27,850 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-10-12 19:21:27,853 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:21:27,853 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-10-12 19:21:27,857 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-10-12 19:21:27,863 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-10-12 19:21:27,867 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-10-12 19:21:27,871 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-10-12 19:21:27,879 - root - INFO - Starting test: test_to_json
+2025-10-12 19:21:27,902 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:21:27,902 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:21:27,906 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-0\test_to_json0\test_results.json
+2025-10-12 19:21:27,936 - root - INFO - Completed test: test_to_json
+2025-10-12 19:21:27,943 - root - INFO - Starting test: test_duration_calculation
+2025-10-12 19:21:27,946 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:21:28,054 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:21:28,059 - root - INFO - Completed test: test_duration_calculation
+2025-10-12 19:21:28,067 - root - INFO - Starting test: test_empty_checklist_properties
+2025-10-12 19:21:28,076 - root - INFO - Completed test: test_empty_checklist_properties
+2025-10-12 19:22:54,561 - root - INFO - Starting test: test_test_step_creation
+2025-10-12 19:22:54,581 - root - INFO - Completed test: test_test_step_creation
+2025-10-12 19:22:54,585 - root - INFO - Starting test: test_test_step_to_dict
+2025-10-12 19:22:54,589 - root - INFO - Completed test: test_test_step_to_dict
+2025-10-12 19:22:54,594 - root - INFO - Starting test: test_checklist_creation
+2025-10-12 19:22:54,599 - root - INFO - Completed test: test_checklist_creation
+2025-10-12 19:22:54,602 - root - INFO - Starting test: test_check_method
+2025-10-12 19:22:54,603 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-10-12 19:22:54,605 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-10-12 19:22:54,608 - root - INFO - Completed test: test_check_method
+2025-10-12 19:22:54,611 - root - INFO - Starting test: test_step_counts
+2025-10-12 19:22:54,614 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-10-12 19:22:54,614 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-10-12 19:22:54,614 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-10-12 19:22:54,618 - root - INFO - Completed test: test_step_counts
+2025-10-12 19:22:54,623 - root - INFO - Starting test: test_is_success_property
+2025-10-12 19:22:54,624 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:22:54,625 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:22:54,625 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-10-12 19:22:54,628 - root - INFO - Completed test: test_is_success_property
+2025-10-12 19:22:54,631 - root - INFO - Starting test: test_get_failed_steps
+2025-10-12 19:22:54,632 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-10-12 19:22:54,632 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-10-12 19:22:54,632 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-10-12 19:22:54,635 - root - INFO - Completed test: test_get_failed_steps
+2025-10-12 19:22:54,639 - root - INFO - Starting test: test_add_tag
+2025-10-12 19:22:54,643 - root - INFO - Completed test: test_add_tag
+2025-10-12 19:22:54,646 - root - INFO - Starting test: test_set_environment_info
+2025-10-12 19:22:54,650 - root - INFO - Completed test: test_set_environment_info
+2025-10-12 19:22:54,653 - root - INFO - Starting test: test_add_test_data
+2025-10-12 19:22:54,657 - root - INFO - Completed test: test_add_test_data
+2025-10-12 19:22:54,660 - root - INFO - Starting test: test_summary_dict
+2025-10-12 19:22:54,661 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:22:54,662 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:22:54,665 - root - INFO - Completed test: test_summary_dict
+2025-10-12 19:22:54,666 - root - INFO - Starting test: test_assert_all_passed_success
+2025-10-12 19:22:54,668 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:22:54,669 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:22:54,672 - root - INFO - Completed test: test_assert_all_passed_success
+2025-10-12 19:22:54,675 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-10-12 19:22:54,677 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:22:54,677 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-10-12 19:22:54,680 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-10-12 19:22:54,683 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-10-12 19:22:54,685 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-10-12 19:22:54,688 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-10-12 19:22:54,692 - root - INFO - Starting test: test_to_json
+2025-10-12 19:22:54,706 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:22:54,706 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:22:54,707 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-1\test_to_json0\test_results.json
+2025-10-12 19:22:54,728 - root - INFO - Completed test: test_to_json
+2025-10-12 19:22:54,731 - root - INFO - Starting test: test_duration_calculation
+2025-10-12 19:22:54,734 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:22:54,837 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:22:54,841 - root - INFO - Completed test: test_duration_calculation
+2025-10-12 19:22:54,846 - root - INFO - Starting test: test_empty_checklist_properties
+2025-10-12 19:22:54,854 - root - INFO - Completed test: test_empty_checklist_properties
+2025-10-12 19:27:46,263 - root - INFO - Starting test: test_test_step_creation
+2025-10-12 19:27:46,280 - root - INFO - Completed test: test_test_step_creation
+2025-10-12 19:27:46,293 - root - INFO - Starting test: test_test_step_to_dict
+2025-10-12 19:27:46,303 - root - INFO - Completed test: test_test_step_to_dict
+2025-10-12 19:27:46,312 - root - INFO - Starting test: test_checklist_creation
+2025-10-12 19:27:46,324 - root - INFO - Completed test: test_checklist_creation
+2025-10-12 19:27:46,337 - root - INFO - Starting test: test_check_method
+2025-10-12 19:27:46,344 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-10-12 19:27:46,346 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-10-12 19:27:46,355 - root - INFO - Completed test: test_check_method
+2025-10-12 19:27:46,365 - root - INFO - Starting test: test_step_counts
+2025-10-12 19:27:46,370 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-10-12 19:27:46,371 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-10-12 19:27:46,372 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-10-12 19:27:46,379 - root - INFO - Completed test: test_step_counts
+2025-10-12 19:27:46,392 - root - INFO - Starting test: test_is_success_property
+2025-10-12 19:27:46,396 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:27:46,397 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:27:46,397 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-10-12 19:27:46,406 - root - INFO - Completed test: test_is_success_property
+2025-10-12 19:27:46,416 - root - INFO - Starting test: test_get_failed_steps
+2025-10-12 19:27:46,421 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-10-12 19:27:46,422 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-10-12 19:27:46,423 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-10-12 19:27:46,429 - root - INFO - Completed test: test_get_failed_steps
+2025-10-12 19:27:46,442 - root - INFO - Starting test: test_add_tag
+2025-10-12 19:27:46,452 - root - INFO - Completed test: test_add_tag
+2025-10-12 19:27:46,461 - root - INFO - Starting test: test_set_environment_info
+2025-10-12 19:27:46,472 - root - INFO - Completed test: test_set_environment_info
+2025-10-12 19:27:46,485 - root - INFO - Starting test: test_add_test_data
+2025-10-12 19:27:46,495 - root - INFO - Completed test: test_add_test_data
+2025-10-12 19:27:46,505 - root - INFO - Starting test: test_summary_dict
+2025-10-12 19:27:46,509 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:27:46,510 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:27:46,518 - root - INFO - Completed test: test_summary_dict
+2025-10-12 19:27:46,530 - root - INFO - Starting test: test_assert_all_passed_success
+2025-10-12 19:27:46,536 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:27:46,537 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:27:46,543 - root - INFO - Completed test: test_assert_all_passed_success
+2025-10-12 19:27:46,556 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-10-12 19:27:46,562 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:27:46,563 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-10-12 19:27:46,573 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-10-12 19:27:46,581 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-10-12 19:27:46,586 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-10-12 19:27:46,595 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-10-12 19:27:46,607 - root - INFO - Starting test: test_to_json
+2025-10-12 19:27:46,639 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:27:46,640 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:27:46,645 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-2\test_to_json0\test_results.json
+2025-10-12 19:27:46,698 - root - INFO - Completed test: test_to_json
+2025-10-12 19:27:46,714 - root - INFO - Starting test: test_duration_calculation
+2025-10-12 19:27:46,723 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:27:46,826 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:27:46,833 - root - INFO - Completed test: test_duration_calculation
+2025-10-12 19:27:46,843 - root - INFO - Starting test: test_empty_checklist_properties
+2025-10-12 19:27:46,851 - root - INFO - Completed test: test_empty_checklist_properties
+2025-10-12 19:28:49,623 - root - INFO - Starting test: test_test_step_creation
+2025-10-12 19:28:49,643 - root - INFO - Completed test: test_test_step_creation
+2025-10-12 19:28:49,651 - root - INFO - Starting test: test_test_step_to_dict
+2025-10-12 19:28:49,663 - root - INFO - Completed test: test_test_step_to_dict
+2025-10-12 19:28:49,673 - root - INFO - Starting test: test_checklist_creation
+2025-10-12 19:28:49,684 - root - INFO - Completed test: test_checklist_creation
+2025-10-12 19:28:49,694 - root - INFO - Starting test: test_check_method
+2025-10-12 19:28:49,700 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-10-12 19:28:49,701 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-10-12 19:28:49,709 - root - INFO - Completed test: test_check_method
+2025-10-12 19:28:49,719 - root - INFO - Starting test: test_step_counts
+2025-10-12 19:28:49,723 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-10-12 19:28:49,725 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-10-12 19:28:49,726 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-10-12 19:28:49,736 - root - INFO - Completed test: test_step_counts
+2025-10-12 19:28:49,746 - root - INFO - Starting test: test_is_success_property
+2025-10-12 19:28:49,752 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:28:49,753 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:28:49,754 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-10-12 19:28:49,765 - root - INFO - Completed test: test_is_success_property
+2025-10-12 19:28:49,774 - root - INFO - Starting test: test_get_failed_steps
+2025-10-12 19:28:49,782 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-10-12 19:28:49,783 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-10-12 19:28:49,784 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-10-12 19:28:49,791 - root - INFO - Completed test: test_get_failed_steps
+2025-10-12 19:28:49,805 - root - INFO - Starting test: test_add_tag
+2025-10-12 19:28:49,818 - root - INFO - Completed test: test_add_tag
+2025-10-12 19:28:49,834 - root - INFO - Starting test: test_set_environment_info
+2025-10-12 19:28:49,852 - root - INFO - Completed test: test_set_environment_info
+2025-10-12 19:28:49,866 - root - INFO - Starting test: test_add_test_data
+2025-10-12 19:28:49,896 - root - INFO - Completed test: test_add_test_data
+2025-10-12 19:28:49,920 - root - INFO - Starting test: test_summary_dict
+2025-10-12 19:28:49,927 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:28:49,929 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:28:49,937 - root - INFO - Completed test: test_summary_dict
+2025-10-12 19:28:49,945 - root - INFO - Starting test: test_assert_all_passed_success
+2025-10-12 19:28:49,949 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:28:49,950 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:28:49,954 - root - INFO - Completed test: test_assert_all_passed_success
+2025-10-12 19:28:49,964 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-10-12 19:28:49,967 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:28:49,968 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-10-12 19:28:49,974 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-10-12 19:28:49,982 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-10-12 19:28:49,985 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-10-12 19:28:49,998 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-10-12 19:28:50,006 - root - INFO - Starting test: test_to_json
+2025-10-12 19:28:50,026 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:28:50,028 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:28:50,034 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-3\test_to_json0\test_results.json
+2025-10-12 19:28:50,065 - root - INFO - Completed test: test_to_json
+2025-10-12 19:28:50,073 - root - INFO - Starting test: test_duration_calculation
+2025-10-12 19:28:50,079 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:28:50,183 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:28:50,193 - root - INFO - Completed test: test_duration_calculation
+2025-10-12 19:28:50,199 - root - INFO - Starting test: test_empty_checklist_properties
+2025-10-12 19:28:50,202 - root - INFO - Completed test: test_empty_checklist_properties
+2025-10-12 19:29:16,403 - root - INFO - Starting test: test_test_step_creation
+2025-10-12 19:29:16,414 - root - INFO - Completed test: test_test_step_creation
+2025-10-12 19:29:16,418 - root - INFO - Starting test: test_test_step_to_dict
+2025-10-12 19:29:16,424 - root - INFO - Completed test: test_test_step_to_dict
+2025-10-12 19:29:16,429 - root - INFO - Starting test: test_checklist_creation
+2025-10-12 19:29:16,434 - root - INFO - Completed test: test_checklist_creation
+2025-10-12 19:29:16,440 - root - INFO - Starting test: test_check_method
+2025-10-12 19:29:16,444 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-10-12 19:29:16,445 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-10-12 19:29:16,449 - root - INFO - Completed test: test_check_method
+2025-10-12 19:29:16,454 - root - INFO - Starting test: test_step_counts
+2025-10-12 19:29:16,458 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-10-12 19:29:16,458 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-10-12 19:29:16,459 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-10-12 19:29:16,464 - root - INFO - Completed test: test_step_counts
+2025-10-12 19:29:16,467 - root - INFO - Starting test: test_is_success_property
+2025-10-12 19:29:16,470 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:29:16,470 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:29:16,472 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-10-12 19:29:16,476 - root - INFO - Completed test: test_is_success_property
+2025-10-12 19:29:16,481 - root - INFO - Starting test: test_get_failed_steps
+2025-10-12 19:29:16,483 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-10-12 19:29:16,483 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-10-12 19:29:16,484 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-10-12 19:29:16,489 - root - INFO - Completed test: test_get_failed_steps
+2025-10-12 19:29:16,494 - root - INFO - Starting test: test_add_tag
+2025-10-12 19:29:16,500 - root - INFO - Completed test: test_add_tag
+2025-10-12 19:29:16,506 - root - INFO - Starting test: test_set_environment_info
+2025-10-12 19:29:16,511 - root - INFO - Completed test: test_set_environment_info
+2025-10-12 19:29:16,515 - root - INFO - Starting test: test_add_test_data
+2025-10-12 19:29:16,521 - root - INFO - Completed test: test_add_test_data
+2025-10-12 19:29:16,528 - root - INFO - Starting test: test_summary_dict
+2025-10-12 19:29:16,530 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:29:16,531 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:29:16,536 - root - INFO - Completed test: test_summary_dict
+2025-10-12 19:29:16,540 - root - INFO - Starting test: test_assert_all_passed_success
+2025-10-12 19:29:16,544 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:29:16,545 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:29:16,548 - root - INFO - Completed test: test_assert_all_passed_success
+2025-10-12 19:29:16,553 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-10-12 19:29:16,556 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:29:16,557 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-10-12 19:29:16,562 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-10-12 19:29:16,567 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-10-12 19:29:16,569 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-10-12 19:29:16,574 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-10-12 19:29:16,579 - root - INFO - Starting test: test_to_json
+2025-10-12 19:29:16,593 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:29:16,594 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:29:16,598 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-4\test_to_json0\test_results.json
+2025-10-12 19:29:16,627 - root - INFO - Completed test: test_to_json
+2025-10-12 19:29:16,634 - root - INFO - Starting test: test_duration_calculation
+2025-10-12 19:29:16,638 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:29:16,750 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:29:16,753 - root - INFO - Completed test: test_duration_calculation
+2025-10-12 19:29:16,760 - root - INFO - Starting test: test_empty_checklist_properties
+2025-10-12 19:29:16,766 - root - INFO - Completed test: test_empty_checklist_properties
+2025-10-12 19:32:06,087 - root - INFO - Starting test: test_init_default_timeout
+2025-10-12 19:32:06,111 - root - INFO - Completed test: test_init_default_timeout
+2025-10-12 19:32:06,115 - root - INFO - Starting test: test_init_custom_timeout
+2025-10-12 19:32:06,122 - root - INFO - Completed test: test_init_custom_timeout
+2025-10-12 19:32:06,126 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-10-12 19:32:06,140 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-10-12 19:32:06,144 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-10-12 19:32:06,157 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-10-12 19:32:06,161 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-10-12 19:32:06,177 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-10-12 19:32:06,180 - root - INFO - Starting test: test_safe_click_success
+2025-10-12 19:32:06,194 - root - INFO - Completed test: test_safe_click_success
+2025-10-12 19:32:06,200 - root - INFO - Starting test: test_safe_click_failure
+2025-10-12 19:32:06,210 - root - INFO - Completed test: test_safe_click_failure
+2025-10-12 19:32:06,216 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-10-12 19:32:06,233 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-10-12 19:32:06,239 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-10-12 19:32:06,251 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-10-12 19:32:06,255 - root - INFO - Starting test: test_get_text_safe_success
+2025-10-12 19:32:06,269 - root - INFO - Completed test: test_get_text_safe_success
+2025-10-12 19:32:06,274 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-10-12 19:32:06,285 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-10-12 19:32:06,291 - root - INFO - Starting test: test_is_element_present_true
+2025-10-12 19:32:06,304 - root - INFO - Completed test: test_is_element_present_true
+2025-10-12 19:32:06,307 - root - INFO - Starting test: test_is_element_present_false
+2025-10-12 19:32:06,317 - root - INFO - Completed test: test_is_element_present_false
+2025-10-12 19:32:06,321 - root - INFO - Starting test: test_scroll_to_element_success
+2025-10-12 19:32:06,336 - root - INFO - Completed test: test_scroll_to_element_success
+2025-10-12 19:32:06,340 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-10-12 19:32:06,350 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-10-12 19:32:06,354 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-10-12 19:32:06,363 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-10-12 19:32:06,368 - root - INFO - Starting test: test_wait_vis_function
+2025-10-12 19:32:06,377 - root - INFO - Completed test: test_wait_vis_function
+2025-10-12 19:32:06,380 - root - INFO - Starting test: test_wait_css_function
+2025-10-12 19:32:06,389 - root - INFO - Completed test: test_wait_css_function
+2025-10-12 19:32:06,394 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-10-12 19:32:06,398 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-10-12 19:32:14,973 - root - INFO - Starting test: test_init_default_timeout
+2025-10-12 19:32:14,983 - root - INFO - Completed test: test_init_default_timeout
+2025-10-12 19:32:14,987 - root - INFO - Starting test: test_init_custom_timeout
+2025-10-12 19:32:14,992 - root - INFO - Completed test: test_init_custom_timeout
+2025-10-12 19:32:14,996 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-10-12 19:32:15,010 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-10-12 19:32:15,013 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-10-12 19:32:15,023 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-10-12 19:32:15,027 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-10-12 19:32:15,041 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-10-12 19:32:15,044 - root - INFO - Starting test: test_safe_click_success
+2025-10-12 19:32:15,057 - root - INFO - Completed test: test_safe_click_success
+2025-10-12 19:32:15,060 - root - INFO - Starting test: test_safe_click_failure
+2025-10-12 19:32:15,070 - root - INFO - Completed test: test_safe_click_failure
+2025-10-12 19:32:15,074 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-10-12 19:32:15,087 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-10-12 19:32:15,092 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-10-12 19:32:15,105 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-10-12 19:32:15,109 - root - INFO - Starting test: test_get_text_safe_success
+2025-10-12 19:32:15,122 - root - INFO - Completed test: test_get_text_safe_success
+2025-10-12 19:32:15,127 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-10-12 19:32:15,141 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-10-12 19:32:15,147 - root - INFO - Starting test: test_is_element_present_true
+2025-10-12 19:32:15,169 - root - INFO - Completed test: test_is_element_present_true
+2025-10-12 19:32:15,177 - root - INFO - Starting test: test_is_element_present_false
+2025-10-12 19:32:15,192 - root - INFO - Completed test: test_is_element_present_false
+2025-10-12 19:32:15,200 - root - INFO - Starting test: test_scroll_to_element_success
+2025-10-12 19:32:15,227 - root - INFO - Completed test: test_scroll_to_element_success
+2025-10-12 19:32:15,235 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-10-12 19:32:15,249 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-10-12 19:32:15,254 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-10-12 19:32:15,263 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-10-12 19:32:15,269 - root - INFO - Starting test: test_wait_vis_function
+2025-10-12 19:32:15,279 - root - INFO - Completed test: test_wait_vis_function
+2025-10-12 19:32:15,288 - root - INFO - Starting test: test_wait_css_function
+2025-10-12 19:32:15,300 - root - INFO - Completed test: test_wait_css_function
+2025-10-12 19:32:15,306 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-10-12 19:32:15,313 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-10-12 19:32:15,321 - root - INFO - Starting test: test_test_step_creation
+2025-10-12 19:32:15,328 - root - INFO - Completed test: test_test_step_creation
+2025-10-12 19:32:15,337 - root - INFO - Starting test: test_test_step_to_dict
+2025-10-12 19:32:15,343 - root - INFO - Completed test: test_test_step_to_dict
+2025-10-12 19:32:15,348 - root - INFO - Starting test: test_checklist_creation
+2025-10-12 19:32:15,356 - root - INFO - Completed test: test_checklist_creation
+2025-10-12 19:32:15,361 - root - INFO - Starting test: test_check_method
+2025-10-12 19:32:15,363 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-10-12 19:32:15,363 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-10-12 19:32:15,367 - root - INFO - Completed test: test_check_method
+2025-10-12 19:32:15,373 - root - INFO - Starting test: test_step_counts
+2025-10-12 19:32:15,375 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-10-12 19:32:15,375 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-10-12 19:32:15,376 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-10-12 19:32:15,378 - root - INFO - Completed test: test_step_counts
+2025-10-12 19:32:15,390 - root - INFO - Starting test: test_is_success_property
+2025-10-12 19:32:15,396 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:32:15,397 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:32:15,398 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-10-12 19:32:15,403 - root - INFO - Completed test: test_is_success_property
+2025-10-12 19:32:15,408 - root - INFO - Starting test: test_get_failed_steps
+2025-10-12 19:32:15,410 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-10-12 19:32:15,411 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-10-12 19:32:15,411 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-10-12 19:32:15,416 - root - INFO - Completed test: test_get_failed_steps
+2025-10-12 19:32:15,421 - root - INFO - Starting test: test_add_tag
+2025-10-12 19:32:15,427 - root - INFO - Completed test: test_add_tag
+2025-10-12 19:32:15,434 - root - INFO - Starting test: test_set_environment_info
+2025-10-12 19:32:15,438 - root - INFO - Completed test: test_set_environment_info
+2025-10-12 19:32:15,441 - root - INFO - Starting test: test_add_test_data
+2025-10-12 19:32:15,446 - root - INFO - Completed test: test_add_test_data
+2025-10-12 19:32:15,452 - root - INFO - Starting test: test_summary_dict
+2025-10-12 19:32:15,455 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:32:15,456 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:32:15,465 - root - INFO - Completed test: test_summary_dict
+2025-10-12 19:32:15,470 - root - INFO - Starting test: test_assert_all_passed_success
+2025-10-12 19:32:15,472 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:32:15,473 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:32:15,475 - root - INFO - Completed test: test_assert_all_passed_success
+2025-10-12 19:32:15,479 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-10-12 19:32:15,482 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:32:15,483 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-10-12 19:32:15,487 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-10-12 19:32:15,490 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-10-12 19:32:15,492 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-10-12 19:32:15,495 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-10-12 19:32:15,502 - root - INFO - Starting test: test_to_json
+2025-10-12 19:32:15,512 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:32:15,512 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:32:15,517 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-5\test_to_json0\test_results.json
+2025-10-12 19:32:15,537 - root - INFO - Completed test: test_to_json
+2025-10-12 19:32:15,541 - root - INFO - Starting test: test_duration_calculation
+2025-10-12 19:32:15,543 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:32:15,652 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:32:15,660 - root - INFO - Completed test: test_duration_calculation
+2025-10-12 19:32:15,669 - root - INFO - Starting test: test_empty_checklist_properties
+2025-10-12 19:32:15,678 - root - INFO - Completed test: test_empty_checklist_properties
+2025-10-12 19:35:17,705 - root - INFO - Starting test: test_init_default_timeout
+2025-10-12 19:35:17,716 - root - INFO - Completed test: test_init_default_timeout
+2025-10-12 19:35:17,720 - root - INFO - Starting test: test_init_custom_timeout
+2025-10-12 19:35:17,728 - root - INFO - Completed test: test_init_custom_timeout
+2025-10-12 19:35:17,732 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-10-12 19:35:17,745 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-10-12 19:35:17,749 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-10-12 19:35:17,760 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-10-12 19:35:17,763 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-10-12 19:35:17,776 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-10-12 19:35:17,780 - root - INFO - Starting test: test_safe_click_success
+2025-10-12 19:35:17,792 - root - INFO - Completed test: test_safe_click_success
+2025-10-12 19:35:17,797 - root - INFO - Starting test: test_safe_click_failure
+2025-10-12 19:35:17,809 - root - INFO - Completed test: test_safe_click_failure
+2025-10-12 19:35:17,813 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-10-12 19:35:17,827 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-10-12 19:35:17,831 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-10-12 19:35:17,846 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-10-12 19:35:17,851 - root - INFO - Starting test: test_get_text_safe_success
+2025-10-12 19:35:17,864 - root - INFO - Completed test: test_get_text_safe_success
+2025-10-12 19:35:17,868 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-10-12 19:35:17,878 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-10-12 19:35:17,881 - root - INFO - Starting test: test_is_element_present_true
+2025-10-12 19:35:17,899 - root - INFO - Completed test: test_is_element_present_true
+2025-10-12 19:35:17,907 - root - INFO - Starting test: test_is_element_present_false
+2025-10-12 19:35:17,922 - root - INFO - Completed test: test_is_element_present_false
+2025-10-12 19:35:17,930 - root - INFO - Starting test: test_scroll_to_element_success
+2025-10-12 19:35:17,949 - root - INFO - Completed test: test_scroll_to_element_success
+2025-10-12 19:35:17,954 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-10-12 19:35:17,969 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-10-12 19:35:17,976 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-10-12 19:35:17,988 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-10-12 19:35:17,994 - root - INFO - Starting test: test_wait_vis_function
+2025-10-12 19:35:18,002 - root - INFO - Completed test: test_wait_vis_function
+2025-10-12 19:35:18,008 - root - INFO - Starting test: test_wait_css_function
+2025-10-12 19:35:18,016 - root - INFO - Completed test: test_wait_css_function
+2025-10-12 19:35:18,021 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-10-12 19:35:18,031 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-10-12 19:35:18,037 - root - INFO - Starting test: test_test_step_creation
+2025-10-12 19:35:18,045 - root - INFO - Completed test: test_test_step_creation
+2025-10-12 19:35:18,049 - root - INFO - Starting test: test_test_step_to_dict
+2025-10-12 19:35:18,054 - root - INFO - Completed test: test_test_step_to_dict
+2025-10-12 19:35:18,061 - root - INFO - Starting test: test_checklist_creation
+2025-10-12 19:35:18,066 - root - INFO - Completed test: test_checklist_creation
+2025-10-12 19:35:18,070 - root - INFO - Starting test: test_check_method
+2025-10-12 19:35:18,073 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-10-12 19:35:18,073 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-10-12 19:35:18,079 - root - INFO - Completed test: test_check_method
+2025-10-12 19:35:18,085 - root - INFO - Starting test: test_step_counts
+2025-10-12 19:35:18,088 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-10-12 19:35:18,088 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-10-12 19:35:18,088 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-10-12 19:35:18,095 - root - INFO - Completed test: test_step_counts
+2025-10-12 19:35:18,101 - root - INFO - Starting test: test_is_success_property
+2025-10-12 19:35:18,103 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:35:18,104 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:35:18,104 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-10-12 19:35:18,107 - root - INFO - Completed test: test_is_success_property
+2025-10-12 19:35:18,112 - root - INFO - Starting test: test_get_failed_steps
+2025-10-12 19:35:18,115 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-10-12 19:35:18,116 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-10-12 19:35:18,117 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-10-12 19:35:18,120 - root - INFO - Completed test: test_get_failed_steps
+2025-10-12 19:35:18,138 - root - INFO - Starting test: test_add_tag
+2025-10-12 19:35:18,146 - root - INFO - Completed test: test_add_tag
+2025-10-12 19:35:18,152 - root - INFO - Starting test: test_set_environment_info
+2025-10-12 19:35:18,157 - root - INFO - Completed test: test_set_environment_info
+2025-10-12 19:35:18,162 - root - INFO - Starting test: test_add_test_data
+2025-10-12 19:35:18,169 - root - INFO - Completed test: test_add_test_data
+2025-10-12 19:35:18,176 - root - INFO - Starting test: test_summary_dict
+2025-10-12 19:35:18,179 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:35:18,180 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:35:18,184 - root - INFO - Completed test: test_summary_dict
+2025-10-12 19:35:18,188 - root - INFO - Starting test: test_assert_all_passed_success
+2025-10-12 19:35:18,192 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:35:18,193 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:35:18,197 - root - INFO - Completed test: test_assert_all_passed_success
+2025-10-12 19:35:18,201 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-10-12 19:35:18,202 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:35:18,203 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-10-12 19:35:18,205 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-10-12 19:35:18,211 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-10-12 19:35:18,214 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-10-12 19:35:18,217 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-10-12 19:35:18,221 - root - INFO - Starting test: test_to_json
+2025-10-12 19:35:18,703 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:35:18,704 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:35:18,711 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-6\test_to_json0\test_results.json
+2025-10-12 19:35:18,735 - root - INFO - Completed test: test_to_json
+2025-10-12 19:35:18,738 - root - INFO - Starting test: test_duration_calculation
+2025-10-12 19:35:18,740 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:35:18,854 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:35:18,861 - root - INFO - Completed test: test_duration_calculation
+2025-10-12 19:35:18,868 - root - INFO - Starting test: test_empty_checklist_properties
+2025-10-12 19:35:18,878 - root - INFO - Completed test: test_empty_checklist_properties
+2025-10-12 19:36:29,243 - root - INFO - Starting test: test_init_default_timeout
+2025-10-12 19:36:29,254 - root - INFO - Completed test: test_init_default_timeout
+2025-10-12 19:36:29,257 - root - INFO - Starting test: test_init_custom_timeout
+2025-10-12 19:36:29,263 - root - INFO - Completed test: test_init_custom_timeout
+2025-10-12 19:36:29,267 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-10-12 19:36:29,279 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-10-12 19:36:29,282 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-10-12 19:36:29,293 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-10-12 19:36:29,297 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-10-12 19:36:29,314 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-10-12 19:36:29,318 - root - INFO - Starting test: test_safe_click_success
+2025-10-12 19:36:29,329 - root - INFO - Completed test: test_safe_click_success
+2025-10-12 19:36:29,334 - root - INFO - Starting test: test_safe_click_failure
+2025-10-12 19:36:29,344 - root - INFO - Completed test: test_safe_click_failure
+2025-10-12 19:36:29,348 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-10-12 19:36:29,363 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-10-12 19:36:29,367 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-10-12 19:36:29,379 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-10-12 19:36:29,384 - root - INFO - Starting test: test_get_text_safe_success
+2025-10-12 19:36:29,400 - root - INFO - Completed test: test_get_text_safe_success
+2025-10-12 19:36:29,403 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-10-12 19:36:29,412 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-10-12 19:36:29,415 - root - INFO - Starting test: test_is_element_present_true
+2025-10-12 19:36:29,429 - root - INFO - Completed test: test_is_element_present_true
+2025-10-12 19:36:29,433 - root - INFO - Starting test: test_is_element_present_false
+2025-10-12 19:36:29,443 - root - INFO - Completed test: test_is_element_present_false
+2025-10-12 19:36:29,447 - root - INFO - Starting test: test_scroll_to_element_success
+2025-10-12 19:36:29,462 - root - INFO - Completed test: test_scroll_to_element_success
+2025-10-12 19:36:29,466 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-10-12 19:36:29,481 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-10-12 19:36:29,484 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-10-12 19:36:29,496 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-10-12 19:36:29,500 - root - INFO - Starting test: test_wait_vis_function
+2025-10-12 19:36:29,508 - root - INFO - Completed test: test_wait_vis_function
+2025-10-12 19:36:29,512 - root - INFO - Starting test: test_wait_css_function
+2025-10-12 19:36:29,519 - root - INFO - Completed test: test_wait_css_function
+2025-10-12 19:36:29,524 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-10-12 19:36:29,529 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-10-12 19:36:29,533 - root - INFO - Starting test: test_test_step_creation
+2025-10-12 19:36:29,538 - root - INFO - Completed test: test_test_step_creation
+2025-10-12 19:36:29,543 - root - INFO - Starting test: test_test_step_to_dict
+2025-10-12 19:36:29,547 - root - INFO - Completed test: test_test_step_to_dict
+2025-10-12 19:36:29,554 - root - INFO - Starting test: test_checklist_creation
+2025-10-12 19:36:29,560 - root - INFO - Completed test: test_checklist_creation
+2025-10-12 19:36:29,566 - root - INFO - Starting test: test_check_method
+2025-10-12 19:36:29,571 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-10-12 19:36:29,571 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-10-12 19:36:29,574 - root - INFO - Completed test: test_check_method
+2025-10-12 19:36:29,580 - root - INFO - Starting test: test_step_counts
+2025-10-12 19:36:29,584 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-10-12 19:36:29,585 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-10-12 19:36:29,586 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-10-12 19:36:29,591 - root - INFO - Completed test: test_step_counts
+2025-10-12 19:36:29,595 - root - INFO - Starting test: test_is_success_property
+2025-10-12 19:36:29,598 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:36:29,598 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:36:29,599 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-10-12 19:36:29,606 - root - INFO - Completed test: test_is_success_property
+2025-10-12 19:36:29,611 - root - INFO - Starting test: test_get_failed_steps
+2025-10-12 19:36:29,615 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-10-12 19:36:29,615 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-10-12 19:36:29,616 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-10-12 19:36:29,622 - root - INFO - Completed test: test_get_failed_steps
+2025-10-12 19:36:29,626 - root - INFO - Starting test: test_add_tag
+2025-10-12 19:36:29,633 - root - INFO - Completed test: test_add_tag
+2025-10-12 19:36:29,639 - root - INFO - Starting test: test_set_environment_info
+2025-10-12 19:36:29,643 - root - INFO - Completed test: test_set_environment_info
+2025-10-12 19:36:29,648 - root - INFO - Starting test: test_add_test_data
+2025-10-12 19:36:29,654 - root - INFO - Completed test: test_add_test_data
+2025-10-12 19:36:29,658 - root - INFO - Starting test: test_summary_dict
+2025-10-12 19:36:29,660 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:36:29,661 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:36:29,664 - root - INFO - Completed test: test_summary_dict
+2025-10-12 19:36:29,670 - root - INFO - Starting test: test_assert_all_passed_success
+2025-10-12 19:36:29,673 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:36:29,673 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:36:29,678 - root - INFO - Completed test: test_assert_all_passed_success
+2025-10-12 19:36:29,687 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-10-12 19:36:29,690 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:36:29,691 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-10-12 19:36:29,695 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-10-12 19:36:29,699 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-10-12 19:36:29,704 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-10-12 19:36:29,708 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-10-12 19:36:29,713 - root - INFO - Starting test: test_to_json
+2025-10-12 19:36:29,735 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:36:29,736 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:36:29,741 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-7\test_to_json0\test_results.json
+2025-10-12 19:36:29,766 - root - INFO - Completed test: test_to_json
+2025-10-12 19:36:29,778 - root - INFO - Starting test: test_duration_calculation
+2025-10-12 19:36:29,786 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:36:29,904 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:36:29,933 - root - INFO - Completed test: test_duration_calculation
+2025-10-12 19:36:29,939 - root - INFO - Starting test: test_empty_checklist_properties
+2025-10-12 19:36:29,946 - root - INFO - Completed test: test_empty_checklist_properties
+2025-10-12 19:36:57,911 - root - INFO - Starting test: test_init_default_timeout
+2025-10-12 19:36:57,921 - root - INFO - Completed test: test_init_default_timeout
+2025-10-12 19:36:57,926 - root - INFO - Starting test: test_init_custom_timeout
+2025-10-12 19:36:57,933 - root - INFO - Completed test: test_init_custom_timeout
+2025-10-12 19:36:57,937 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-10-12 19:36:57,949 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-10-12 19:36:57,955 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-10-12 19:36:57,965 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-10-12 19:36:57,972 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-10-12 19:36:57,983 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-10-12 19:36:57,988 - root - INFO - Starting test: test_safe_click_success
+2025-10-12 19:36:58,000 - root - INFO - Completed test: test_safe_click_success
+2025-10-12 19:36:58,006 - root - INFO - Starting test: test_safe_click_failure
+2025-10-12 19:36:58,016 - root - INFO - Completed test: test_safe_click_failure
+2025-10-12 19:36:58,023 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-10-12 19:36:58,037 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-10-12 19:36:58,043 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-10-12 19:36:58,058 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-10-12 19:36:58,062 - root - INFO - Starting test: test_get_text_safe_success
+2025-10-12 19:36:58,076 - root - INFO - Completed test: test_get_text_safe_success
+2025-10-12 19:36:58,080 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-10-12 19:36:58,091 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-10-12 19:36:58,095 - root - INFO - Starting test: test_is_element_present_true
+2025-10-12 19:36:58,107 - root - INFO - Completed test: test_is_element_present_true
+2025-10-12 19:36:58,112 - root - INFO - Starting test: test_is_element_present_false
+2025-10-12 19:36:58,122 - root - INFO - Completed test: test_is_element_present_false
+2025-10-12 19:36:58,126 - root - INFO - Starting test: test_scroll_to_element_success
+2025-10-12 19:36:58,140 - root - INFO - Completed test: test_scroll_to_element_success
+2025-10-12 19:36:58,144 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-10-12 19:36:58,155 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-10-12 19:36:58,159 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-10-12 19:36:58,170 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-10-12 19:36:58,174 - root - INFO - Starting test: test_wait_vis_function
+2025-10-12 19:36:58,183 - root - INFO - Completed test: test_wait_vis_function
+2025-10-12 19:36:58,189 - root - INFO - Starting test: test_wait_css_function
+2025-10-12 19:36:58,196 - root - INFO - Completed test: test_wait_css_function
+2025-10-12 19:36:58,200 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-10-12 19:36:58,205 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-10-12 19:36:58,209 - root - INFO - Starting test: test_test_step_creation
+2025-10-12 19:36:58,214 - root - INFO - Completed test: test_test_step_creation
+2025-10-12 19:36:58,218 - root - INFO - Starting test: test_test_step_to_dict
+2025-10-12 19:36:58,223 - root - INFO - Completed test: test_test_step_to_dict
+2025-10-12 19:36:58,228 - root - INFO - Starting test: test_checklist_creation
+2025-10-12 19:36:58,234 - root - INFO - Completed test: test_checklist_creation
+2025-10-12 19:36:58,238 - root - INFO - Starting test: test_check_method
+2025-10-12 19:36:58,240 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-10-12 19:36:58,241 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-10-12 19:36:58,243 - root - INFO - Completed test: test_check_method
+2025-10-12 19:36:58,250 - root - INFO - Starting test: test_step_counts
+2025-10-12 19:36:58,252 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-10-12 19:36:58,252 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-10-12 19:36:58,253 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-10-12 19:36:58,257 - root - INFO - Completed test: test_step_counts
+2025-10-12 19:36:58,261 - root - INFO - Starting test: test_is_success_property
+2025-10-12 19:36:58,265 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:36:58,267 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:36:58,267 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-10-12 19:36:58,272 - root - INFO - Completed test: test_is_success_property
+2025-10-12 19:36:58,278 - root - INFO - Starting test: test_get_failed_steps
+2025-10-12 19:36:58,281 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-10-12 19:36:58,282 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-10-12 19:36:58,283 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-10-12 19:36:58,286 - root - INFO - Completed test: test_get_failed_steps
+2025-10-12 19:36:58,293 - root - INFO - Starting test: test_add_tag
+2025-10-12 19:36:58,301 - root - INFO - Completed test: test_add_tag
+2025-10-12 19:36:58,306 - root - INFO - Starting test: test_set_environment_info
+2025-10-12 19:36:58,311 - root - INFO - Completed test: test_set_environment_info
+2025-10-12 19:36:58,320 - root - INFO - Starting test: test_add_test_data
+2025-10-12 19:36:58,331 - root - INFO - Completed test: test_add_test_data
+2025-10-12 19:36:58,337 - root - INFO - Starting test: test_summary_dict
+2025-10-12 19:36:58,340 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:36:58,340 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:36:58,343 - root - INFO - Completed test: test_summary_dict
+2025-10-12 19:36:58,348 - root - INFO - Starting test: test_assert_all_passed_success
+2025-10-12 19:36:58,351 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:36:58,351 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:36:58,355 - root - INFO - Completed test: test_assert_all_passed_success
+2025-10-12 19:36:58,358 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-10-12 19:36:58,362 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:36:58,363 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-10-12 19:36:58,368 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-10-12 19:36:58,373 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-10-12 19:36:58,376 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-10-12 19:36:58,383 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-10-12 19:36:58,390 - root - INFO - Starting test: test_to_json
+2025-10-12 19:36:58,411 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-10-12 19:36:58,412 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-10-12 19:36:58,416 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-8\test_to_json0\test_results.json
+2025-10-12 19:36:58,445 - root - INFO - Completed test: test_to_json
+2025-10-12 19:36:58,454 - root - INFO - Starting test: test_duration_calculation
+2025-10-12 19:36:58,456 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-10-12 19:36:58,565 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-10-12 19:36:58,568 - root - INFO - Completed test: test_duration_calculation
+2025-10-12 19:36:58,572 - root - INFO - Starting test: test_empty_checklist_properties
+2025-10-12 19:36:58,575 - root - INFO - Completed test: test_empty_checklist_properties
