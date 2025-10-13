@@ -104,8 +104,8 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
       console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-      console.log(`📜 Swagger Documentation: http://localhost:${PORT}/doc`);
+      console.log(`🔗 Health check: GET /health`);
+      console.log(`📜 Swagger Documentation: GET /doc`);
       console.log('📝 Endpoints disponibles:');
       console.log('   - POST /api/user (crear usuario)');
       console.log('   - GET /api/user/:user_id (obtener usuario)');

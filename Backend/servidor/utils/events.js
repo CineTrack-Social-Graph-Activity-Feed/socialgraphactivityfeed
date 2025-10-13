@@ -58,20 +58,20 @@ const publishEvent = async (event) => {
 // Tipos de eventos predefinidos
 const EVENT_TYPES = {
   // Seguimientos
-  FOLLOW: 'social.follow',
-  UNFOLLOW: 'social.unfollow',
+  FOLLOW: "social.seguimiento.creado",
+  UNFOLLOW: "social.seguimiento.borrado",
 
   // Likes
-  LIKE: 'social.like',
-  UNLIKE: 'social.unlike',
+  LIKE: "social.megusta.creado",
+  UNLIKE: "social.megusta.borrado",
 
   // Comentarios
-  COMMENT: 'social.comment.create',
-  DELETE_COMMENT: 'social.comment.delete',
+  COMMENT: "social.comentario.creado",
+  DELETE_COMMENT: "social.comentario.borrado",
 
   // Publicaciones
-  NEW_PUBLICATION: 'social.publication.new',
-  DELETE_PUBLICATION: 'social.publication.delete'
+  NEW_PUBLICATION: "social.publicacion.creada",
+  DELETE_PUBLICATION: "social.publicacion.borrada",
 };
 
 // Helpers para crear eventos específicos
