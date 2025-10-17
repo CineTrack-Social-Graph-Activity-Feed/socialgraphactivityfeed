@@ -173,8 +173,6 @@ El sistema emite eventos para cada acción importante:
 - `COMMENT` / `DELETE_COMMENT`
 - `NEW_PUBLICATION` / `DELETE_PUBLICATION`
 
-Actualmente los eventos se imprimen en consola, pero están preparados para integración con sistemas de mensajería.
-
 ## 🔧 Estructura del Proyecto
 
 ```
@@ -204,20 +202,6 @@ servidor/
 ├── package.json     # Dependencias
 └── server.js        # Punto de entrada
 ```
-
-## 🧪 Testing con Postman
-
-Puedes importar los ejemplos de la documentación en Postman o usar los comandos curl proporcionados.
-
-## 🚀 Próximos Pasos
-
-1. Implementar autenticación JWT
-2. Agregar middleware de validación más robusto
-3. Implementar rate limiting
-4. Agregar tests unitarios
-5. Integrar con sistema de mensajería real (Redis/RabbitMQ)
-6. Implementar búsqueda avanzada
-7. Agregar métricas y monitoring
 
 ## 📝 Licencia
 

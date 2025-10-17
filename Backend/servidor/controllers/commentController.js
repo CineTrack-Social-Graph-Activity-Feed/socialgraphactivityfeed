@@ -275,7 +275,6 @@ const getPublicationComments = async (req, res) => {
       });
     }
     */
-   
     if (DEMO_PUBLICATION_IDS.has(String(publication_id))) {
       const mem = ensureDemoCommentsArray(String(publication_id));
 

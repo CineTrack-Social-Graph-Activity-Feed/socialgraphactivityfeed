@@ -1,8 +1,3 @@
-/**
- * Utility para publicar eventos del sistema
- * En el futuro se integrará con un Hub de mensajería (Redis, RabbitMQ, etc.)
- */
-
 const { response } = require("express");
 
 const publishEvent = async (event) => {
@@ -35,6 +30,7 @@ const publishEvent = async (event) => {
       data: eventData,
       datacontenttype: 'application/json'
     };
+
     const apiUrl = `http://core-letterboxd.us-east-2.elasticbeanstalk.com/events/receive?routingKey=${event_type}`;
     const response = await fetch(apiUrl, {
       method: 'POST',
