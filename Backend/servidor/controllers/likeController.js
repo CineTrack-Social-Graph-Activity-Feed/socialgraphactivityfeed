@@ -47,6 +47,18 @@ const addLike = async (req, res) => {
       });
     }
 
+    // Verificar que la publicación exista y sea del tipo correcto
+    const publication = await Publication.findOne({
+      _id: target_id,
+      type: target_type
+    }).populate('author_id', 'username');
+
+    if (!publication) {
+      return res.status(404).json({
+        error: '❌ Publicación no encontrada o tipo incorrecto'
+      });
+    }
+
     // Verificar que el usuario exista (relajado para DEMO)
     let user = null;
     try {
@@ -63,20 +75,6 @@ const addLike = async (req, res) => {
       if (user) console.log(`ℹ️ addLike[DEMO] - Usuario encontrado para enriquecer: ${user.username}`);
       else console.log(`ℹ️ addLike[DEMO] - Usuario no existe, continuamos igualmente`);
     }
-
-    /*
-    // Verificar que la publicación exista y sea del tipo correcto
-    const publication = await Publication.findOne({
-      _id: target_id,
-      type: target_type
-    }).populate('author_id', 'username');
-
-    if (!publication) {
-      return res.status(404).json({
-        error: 'Publicación no encontrada o tipo incorrecto'
-      });
-    }
-    */
 
     if (DEMO_PUBLICATION_IDS.has(String(target_id))) {
       // DEMO path: store like in memory

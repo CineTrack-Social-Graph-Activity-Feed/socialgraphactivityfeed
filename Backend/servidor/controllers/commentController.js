@@ -48,6 +48,18 @@ const addComment = async (req, res) => {
       });
     }
 
+        // Verificar que la publicación exista y sea del tipo correcto
+    const publication = await Publication.findOne({
+      _id: target_id,
+      type: target_type
+    }).populate('author_id', 'username');
+
+    if (!publication) {
+      return res.status(404).json({
+        error: '❌ Publicación no encontrada o tipo incorrecto'
+      });
+    }
+
     // Validar longitud del comentario
     if (comment.trim().length === 0) {
       console.log(`❌ addComment - Comentario vacío`);
@@ -78,20 +90,6 @@ const addComment = async (req, res) => {
       if (user) console.log(`ℹ️ addComment[DEMO] - Usuario encontrado para enriquecer: ${user.username}`);
       else console.log(`ℹ️ addComment[DEMO] - Usuario no existe, continuamos igualmente`);
     }
-
-    /*
-    // Verificar que la publicación exista y sea del tipo correcto
-    const publication = await Publication.findOne({
-      _id: target_id,
-      type: target_type
-    }).populate('author_id', 'username');
-
-    if (!publication) {
-      return res.status(404).json({
-        error: 'Publicación no encontrada o tipo incorrecto'
-      });
-    }
-    */
 
     if (DEMO_PUBLICATION_IDS.has(String(target_id))) {
       // DEMO path: store comment in memory
