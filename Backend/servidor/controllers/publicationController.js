@@ -8,7 +8,7 @@ const { createNewPublicationEvent, createDeletePublicationEvent } = require('../
  */
 const createPublication = async (req, res) => {
   try {
-    const { author_id, type, target_id, content, rating } = req.body;
+    const { author_id, type, target_id, content, rating, title, has_spoilers, tags } = req.body;
 
     // Validaciones básicas
     if (!author_id || !type || !target_id || !content) {
@@ -25,11 +25,11 @@ const createPublication = async (req, res) => {
       });
     }
 
-    // Validar rating si el tipo es 'rating'
-    if (type === 'rating') {
-      if (!rating || rating < 1 || rating > 5) {
+    // Validar rating si el tipo es 'rating' o 'review'
+    if ((type === 'rating' || type === 'review') && rating) {
+      if (rating < 1 || rating > 5) {
         return res.status(400).json({
-          error: 'Para publicaciones de tipo rating, se requiere un rating entre 1 y 5'
+          error: 'El rating debe estar entre 1 y 5'
         });
       }
     }
@@ -42,15 +42,20 @@ const createPublication = async (req, res) => {
       });
     }
 
-    // Crear la publicación
-    const publication = new Publication({
+    // Crear la publicación con el modelo unificado
+    const publicationData = {
       author_id,
       type,
       target_id,
       content: content.trim(),
-      rating: type === 'rating' ? rating : undefined
-    });
+      body: content.trim(), // Mantener sincronizados
+      rating: rating || undefined,
+      title: title || undefined,
+      has_spoilers: has_spoilers || false,
+      tags: tags || []
+    };
 
+    const publication = new Publication(publicationData);
     await publication.save();
 
     // Poblar con información del autor
@@ -71,7 +76,10 @@ const createPublication = async (req, res) => {
         type: publication.type,
         target_id: publication.target_id,
         content: publication.content,
+        title: publication.title,
         rating: publication.rating,
+        has_spoilers: publication.has_spoilers,
+        tags: publication.tags,
         created_at: publication.created_at
       }
     });
@@ -79,7 +87,8 @@ const createPublication = async (req, res) => {
   } catch (error) {
     console.error('Error en createPublication:', error);
     res.status(500).json({
-      error: 'Error interno del servidor'
+      error: 'Error interno del servidor',
+      details: error.message
     });
   }
 };
@@ -107,21 +116,44 @@ const getPublication = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      publication: {
-        id: publication._id,
-        author: {
-          id: publication.author_id._id,
-          username: publication.author_id.username,
-          avatar_url: publication.author_id.avatar_url
-        },
-        type: publication.type,
-        target_id: publication.target_id,
-        content: publication.content,
-        rating: publication.rating,
-        created_at: publication.created_at
+    // Construir respuesta compatible con ambos formatos
+    const response = {
+      id: publication._id,
+      type: publication.type,
+      content: publication.content || publication.body,
+      rating: publication.rating,
+      created_at: publication.created_at,
+      // Campos adicionales del modelo unificado
+      title: publication.title,
+      has_spoilers: publication.has_spoilers,
+      tags: publication.tags,
+      // Información de origen
+      review_id: publication.review_id, // Si viene del Core
+      movie_id: publication.movie_id || publication.target_id
+    };
+
+    // Manejar autor (puede ser author_id o user_id)
+    if (publication.author_id) {
+      response.author = {
+        id: publication.author_id._id,
+        username: publication.author_id.username,
+        avatar_url: publication.author_id.avatar_url
+      };
+    } else if (publication.user_id) {
+      // Si solo tiene user_id (del Core), buscar el usuario
+      const user = await User.findOne({ user_id: publication.user_id });
+      if (user) {
+        response.author = {
+          user_id: publication.user_id,
+          username: user.username || user.nombre,
+          avatar_url: user.avatar_url
+        };
+      } else {
+        response.user_id = publication.user_id;
       }
-    });
+    }
+
+    res.status(200).json({ publication: response });
 
   } catch (error) {
     console.error('Error en getPublication:', error);
@@ -138,7 +170,7 @@ const getPublication = async (req, res) => {
 const getUserPublications = async (req, res) => {
   try {
     const { user_id } = req.params;
-    const { type } = req.query; // Filtro opcional por tipo
+    const { type, include_deleted } = req.query; // Filtros opcionales
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
@@ -149,18 +181,38 @@ const getUserPublications = async (req, res) => {
       });
     }
 
-    // Verificar que el usuario exista
-    const user = await User.findById(user_id);
+    // Intentar buscar usuario por ObjectId o por user_id (Core)
+    let user;
+    if (user_id.match(/^[0-9a-fA-F]{24}$/)) {
+      // Es un ObjectId válido
+      user = await User.findById(user_id);
+    } else {
+      // Buscar por user_id del Core
+      user = await User.findOne({ user_id: user_id });
+    }
+
     if (!user) {
       return res.status(404).json({
         error: 'Usuario no encontrado'
       });
     }
 
-    // Construir filtro
-    const filter = { author_id: user_id };
+    // Construir filtro flexible (buscar por author_id O user_id)
+    const filter = {
+      $or: [
+        { author_id: user._id }, // Publicaciones locales
+        { user_id: user.user_id } // Publicaciones del Core
+      ]
+    };
+
+    // Filtrar por tipo si se especifica
     if (type && ['review', 'rating', 'list'].includes(type)) {
       filter.type = type;
+    }
+
+    // Filtrar eliminadas (soft delete)
+    if (include_deleted !== 'true') {
+      filter.isDeleted = { $ne: true };
     }
 
     // Obtener publicaciones
@@ -173,20 +225,42 @@ const getUserPublications = async (req, res) => {
     // Obtener total
     const totalPublications = await Publication.countDocuments(filter);
 
-    res.status(200).json({
-      publications: publications.map(pub => ({
+    // Mapear publicaciones con formato compatible
+    const mappedPublications = publications.map(pub => {
+      const pubData = {
         id: pub._id,
-        author: {
+        type: pub.type,
+        target_id: pub.target_id || pub.movie_id,
+        movie_id: pub.movie_id,
+        content: pub.content || pub.body,
+        title: pub.title,
+        rating: pub.rating,
+        has_spoilers: pub.has_spoilers,
+        tags: pub.tags,
+        created_at: pub.created_at,
+        review_id: pub.review_id, // Si viene del Core
+        isDeleted: pub.isDeleted
+      };
+
+      // Manejar autor
+      if (pub.author_id) {
+        pubData.author = {
           id: pub.author_id._id,
           username: pub.author_id.username,
           avatar_url: pub.author_id.avatar_url
-        },
-        type: pub.type,
-        target_id: pub.target_id,
-        content: pub.content,
-        rating: pub.rating,
-        created_at: pub.created_at
-      })),
+        };
+      } else if (pub.user_id) {
+        pubData.author = {
+          user_id: pub.user_id,
+          username: user.username || user.nombre
+        };
+      }
+
+      return pubData;
+    });
+
+    res.status(200).json({
+      publications: mappedPublications,
       pagination: {
         current_page: page,
         total_pages: Math.ceil(totalPublications / limit),
@@ -197,6 +271,105 @@ const getUserPublications = async (req, res) => {
 
   } catch (error) {
     console.error('Error en getUserPublications:', error);
+    res.status(500).json({
+      error: 'Error interno del servidor'
+    });
+  }
+};
+
+/**
+ * Obtener publicaciones de una película
+ * GET /api/publication/movie/:movie_id
+ */
+const getMoviePublications = async (req, res) => {
+  try {
+    const { movie_id } = req.params;
+    const { type, include_deleted } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    if (!movie_id) {
+      return res.status(400).json({
+        error: 'movie_id es requerido'
+      });
+    }
+
+    // Construir filtro (buscar por target_id O movie_id)
+    const filter = {
+      $or: [
+        { target_id: movie_id.toString() }, // Publicaciones locales
+        { movie_id: parseInt(movie_id) } // Publicaciones del Core
+      ]
+    };
+
+    // Filtrar por tipo si se especifica
+    if (type && ['review', 'rating', 'list'].includes(type)) {
+      filter.type = type;
+    }
+
+    // Filtrar eliminadas (soft delete)
+    if (include_deleted !== 'true') {
+      filter.isDeleted = { $ne: true };
+    }
+
+    // Obtener publicaciones
+    const publications = await Publication.find(filter)
+      .populate('author_id', 'username avatar_url')
+      .sort({ created_at: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Obtener total
+    const totalPublications = await Publication.countDocuments(filter);
+
+    // Mapear publicaciones
+    const mappedPublications = await Promise.all(publications.map(async (pub) => {
+      const pubData = {
+        id: pub._id,
+        type: pub.type,
+        target_id: pub.target_id || pub.movie_id,
+        movie_id: pub.movie_id,
+        content: pub.content || pub.body,
+        title: pub.title,
+        rating: pub.rating,
+        has_spoilers: pub.has_spoilers,
+        tags: pub.tags,
+        created_at: pub.created_at,
+        review_id: pub.review_id
+      };
+
+      // Manejar autor
+      if (pub.author_id) {
+        pubData.author = {
+          id: pub.author_id._id,
+          username: pub.author_id.username,
+          avatar_url: pub.author_id.avatar_url
+        };
+      } else if (pub.user_id) {
+        // Buscar usuario del Core
+        const user = await User.findOne({ user_id: pub.user_id });
+        pubData.author = {
+          user_id: pub.user_id,
+          username: user ? (user.username || user.nombre) : 'Usuario desconocido'
+        };
+      }
+
+      return pubData;
+    }));
+
+    res.status(200).json({
+      publications: mappedPublications,
+      pagination: {
+        current_page: page,
+        total_pages: Math.ceil(totalPublications / limit),
+        total_items: totalPublications,
+        items_per_page: limit
+      }
+    });
+
+  } catch (error) {
+    console.error('Error en getMoviePublications:', error);
     res.status(500).json({
       error: 'Error interno del servidor'
     });
@@ -232,8 +405,12 @@ const deletePublication = async (req, res) => {
       });
     }
 
-    // Verificar que el usuario sea el autor
-    if (publication.author_id.toString() !== user_id) {
+    // Verificar permisos (author_id O user_id)
+    const isAuthor = 
+      (publication.author_id && publication.author_id.toString() === user_id) ||
+      (publication.user_id && publication.user_id === user_id);
+
+    if (!isAuthor) {
       return res.status(403).json({
         error: 'No tienes permisos para eliminar esta publicación'
       });
@@ -261,5 +438,6 @@ module.exports = {
   createPublication,
   getPublication,
   getUserPublications,
+  getMoviePublications,
   deletePublication
 };
