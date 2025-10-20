@@ -10,7 +10,12 @@ class UserHandler {
    */
   async handleUserCreated(eventData) {
     try {
-      logger.info('UserHandler', `Procesando usuario creado: ${eventData.idUsuario}`);
+      // Extraer ID para logging (maneja estructura anidada)
+      const actualData = eventData.data || eventData;
+      const idUsuario = actualData.idUsuario || eventData.idUsuario;
+      
+      logger.info('UserHandler', `Procesando usuario creado: ${idUsuario}`);
+      logger.info('UserHandler', 'Datos completos del evento:', eventData);
 
       const user = await User.createOrUpdateFromEvent(eventData);
 
@@ -35,18 +40,16 @@ class UserHandler {
    */
   async handleSessionStarted(eventData) {
     try {
-      const userId = eventData.idUsuario;
+      // Extraer ID para logging (maneja estructura anidada)
+      const actualData = eventData.data || eventData;
+      const userId = actualData.idUsuario || eventData.idUsuario;
+      
       logger.info('UserHandler', `Procesando inicio de sesión: ${userId}`);
+      logger.info('UserHandler', 'Datos del evento:', eventData);
 
-      const user = await User.updateLastLogin(userId);
+      const user = await User.updateLastLogin(eventData);
 
-      if (!user) {
-        logger.warn('UserHandler', `Usuario no encontrado para sesión iniciada: ${userId}`);
-        // Crear usuario si no existe
-        return await this.handleUserCreated(eventData);
-      }
-
-      logger.success('UserHandler', `Sesión iniciada registrada para: ${userId}`);
+      logger.success('UserHandler', `Sesión iniciada registrada para: ${user.user_id}`);
       return user;
     } catch (error) {
       logger.error('UserHandler', `Error al registrar inicio de sesión: ${error.message}`, {
@@ -62,17 +65,20 @@ class UserHandler {
    */
   async handleSessionEnded(eventData) {
     try {
-      const userId = eventData.idUsuario;
+      // Extraer ID para logging (maneja estructura anidada)
+      const actualData = eventData.data || eventData;
+      const userId = actualData.idUsuario || eventData.idUsuario;
+      
       logger.info('UserHandler', `Procesando cierre de sesión: ${userId}`);
 
-      const user = await User.updateLastLogout(userId);
+      const user = await User.updateLastLogout(eventData);
 
       if (!user) {
         logger.warn('UserHandler', `Usuario no encontrado para sesión finalizada: ${userId}`);
         return null;
       }
 
-      logger.success('UserHandler', `Sesión finalizada registrada para: ${userId}`);
+      logger.success('UserHandler', `Sesión finalizada registrada para: ${user.user_id}`);
       return user;
     } catch (error) {
       logger.error('UserHandler', `Error al registrar cierre de sesión: ${error.message}`, {
