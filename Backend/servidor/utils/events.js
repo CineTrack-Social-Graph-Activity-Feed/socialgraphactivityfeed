@@ -1,4 +1,5 @@
 const { response } = require("express");
+const User = require('../models/User');
 
 const publishEvent = async (event) => {
   try {
@@ -7,18 +8,33 @@ const publishEvent = async (event) => {
       throw new Error('El evento debe ser un objeto válido');
     }
 
-    const { event_type, actor_id, target_id, timestamp = new Date() } = event;
+  const { event_type, actor_id, target_id, timestamp = new Date() } = event;
 
     if (!event_type || !actor_id) {
       throw new Error('event_type y actor_id son requeridos');
     }
 
+    // Mapear actor_id local (ObjectId) -> user_id externo si existe
+    let actorExternalId = event.actor_external_id;
+    let actorLocalId = actor_id || null;
+    if (!actorExternalId && actorLocalId) {
+      try {
+        const user = await User.findById(actorLocalId).select('user_id');
+        if (user && user.user_id !== undefined && user.user_id !== null) {
+          actorExternalId = user.user_id;
+        }
+      } catch (_) { /* ignorar cast errors */ }
+    }
+
     const eventData = {
       event_type,
-      actor_id,
+      // Enviar SIEMPRE el id externo como actor_id si está disponible
+      actor_id: actorExternalId !== undefined ? actorExternalId : actorLocalId,
       target_id: target_id || null,
       timestamp,
-      metadata: event.metadata || {}
+      metadata: {
+        ...event.metadata
+      }
     };
 
     const payload = {
@@ -42,7 +58,7 @@ const publishEvent = async (event) => {
     if (!response.ok) {
       throw new Error(`Error publishing event: ${response.statusText}`);
     }
-    console.log('✅ Event published:', payload);
+  console.log('✅ Event published:', payload);
     return response.json();
 
   } catch (error) {

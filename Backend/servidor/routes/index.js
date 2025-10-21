@@ -4,6 +4,9 @@ const likeRoutes = require('./likeRoutes');
 const commentRoutes = require('./commentRoutes');
 const publicationRoutes = require('./publicationRoutes');
 const userRoutes = require('./userRoutes');
+const authRoutes = require('./authRoutes');
+const { authenticateJWT } = require('../middlewares/auth');
+const { attachActorFromToken } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -16,7 +19,13 @@ router.get('/health', (req, res) => {
   });
 });
 
-// Rutas de la API
+// Rutas públicas de autenticación
+router.use('/api', authRoutes);
+
+// A partir de aquí, todas las rutas requieren autenticación
+router.use('/api', authenticateJWT, attachActorFromToken);
+
+// Rutas de la API protegidas
 router.use('/api', followRoutes);
 router.use('/api', likeRoutes);
 router.use('/api', commentRoutes);

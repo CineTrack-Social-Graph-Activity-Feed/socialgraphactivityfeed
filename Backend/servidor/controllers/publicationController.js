@@ -17,6 +17,14 @@ const createPublication = async (req, res) => {
       });
     }
 
+    // Opción B: mapping obligatorio + match
+    if (!req.actor?.mongo_id) {
+      return res.status(409).json({ error: 'Usuario no sincronizado en este servicio' });
+    }
+    if (String(req.actor.mongo_id) !== String(author_id)) {
+      return res.status(403).json({ error: 'No puedes crear publicaciones en nombre de otro usuario' });
+    }
+
     // Validar type
     const validTypes = ['review', 'rating', 'list'];
     if (!validTypes.includes(type)) {
@@ -395,6 +403,13 @@ const deletePublication = async (req, res) => {
       return res.status(400).json({
         error: 'user_id es requerido para verificar permisos'
       });
+    }
+
+    if (!req.actor?.mongo_id) {
+      return res.status(409).json({ error: 'Usuario no sincronizado en este servicio' });
+    }
+    if (String(req.actor.mongo_id) !== String(user_id)) {
+      return res.status(403).json({ error: 'No puedes actuar en nombre de otro usuario' });
     }
 
     // Buscar la publicación

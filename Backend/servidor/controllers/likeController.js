@@ -38,6 +38,14 @@ const addLike = async (req, res) => {
       });
     }
 
+    // Opción B: exigir mapping local y coincidencia
+    if (!req.actor?.mongo_id) {
+      return res.status(409).json({ error: "Usuario no sincronizado en este servicio" });
+    }
+    if (String(req.actor.mongo_id) !== String(user_id)) {
+      return res.status(403).json({ error: "No puedes actuar en nombre de otro usuario" });
+    }
+
     // Validar target_type
     const validTargetTypes = ["review", "rating", "list"];
     if (!validTargetTypes.includes(target_type)) {
@@ -194,6 +202,13 @@ const removeLike = async (req, res) => {
       return res.status(400).json({
         error: "user_id es requerido para verificar permisos",
       });
+    }
+
+    if (!req.actor?.mongo_id) {
+      return res.status(409).json({ error: "Usuario no sincronizado en este servicio" });
+    }
+    if (String(req.actor.mongo_id) !== String(user_id)) {
+      return res.status(403).json({ error: "No puedes actuar en nombre de otro usuario" });
     }
 
     // DEMO path: if like_id starts with demo_like_, remove from memory

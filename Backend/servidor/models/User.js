@@ -1,6 +1,15 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+  
+  // Identificador del usuario en el módulo de usuarios (externo)
+  user_id: {
+    type: Number,
+    index: true,
+    unique: true,
+    sparse: true
+  },
+
   username: {
     type: String,
     required: true,
@@ -31,5 +40,6 @@ const userSchema = new mongoose.Schema({
 // Índices para optimizar consultas
 userSchema.index({ username: 1 });
 userSchema.index({ email: 1 });
+userSchema.index({ user_id: 1 });
 
 module.exports = mongoose.model('User', userSchema);

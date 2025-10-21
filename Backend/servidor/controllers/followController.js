@@ -18,6 +18,14 @@ const followUser = async (req, res) => {
       });
     }
 
+    // Opción B: mapping obligatorio + match
+    if (!req.actor?.mongo_id) {
+      return res.status(409).json({ error: 'Usuario no sincronizado en este servicio' });
+    }
+    if (String(req.actor.mongo_id) !== String(follower_user_id)) {
+      return res.status(403).json({ error: 'No puedes actuar en nombre de otro usuario' });
+    }
+
     if (follower_user_id === followed_user_id) {
       return res.status(400).json({
         error: 'Un usuario no puede seguirse a sí mismo'
@@ -56,8 +64,15 @@ const followUser = async (req, res) => {
 
     await follow.save();
 
-    // Publicar evento
-    createFollowEvent(follower_user_id, followed_user_id);
+    // Publicar evento con ids EXTERNOS si están disponibles
+    const followerExternalId = (typeof follower.user_id !== 'undefined' && follower.user_id !== null)
+      ? follower.user_id
+      : follower._id;
+    const followedExternalId = (typeof followed.user_id !== 'undefined' && followed.user_id !== null)
+      ? followed.user_id
+      : followed._id;
+
+    createFollowEvent(followerExternalId, followedExternalId);
 
     res.status(201).json({
       message: 'Usuario seguido exitosamente',
@@ -98,6 +113,13 @@ const unfollowUser = async (req, res) => {
       });
     }
 
+    if (!req.actor?.mongo_id) {
+      return res.status(409).json({ error: 'Usuario no sincronizado en este servicio' });
+    }
+    if (String(req.actor.mongo_id) !== String(follower_user_id)) {
+      return res.status(403).json({ error: 'No puedes actuar en nombre de otro usuario' });
+    }
+
     // Buscar y eliminar el seguimiento
     const follow = await Follow.findOneAndDelete({
       follower_user_id,
@@ -110,8 +132,12 @@ const unfollowUser = async (req, res) => {
       });
     }
 
-    // Publicar evento
-    createUnfollowEvent(follower_user_id, followed_user_id);
+  // Publicar evento con ids EXTERNOS si están disponibles
+  const follower = await User.findById(follower_user_id).select('user_id');
+  const followed = await User.findById(followed_user_id).select('user_id');
+  const followerExternalId = (follower && follower.user_id !== undefined && follower.user_id !== null) ? follower.user_id : follower_user_id;
+  const followedExternalId = (followed && followed.user_id !== undefined && followed.user_id !== null) ? followed.user_id : followed_user_id;
+  createUnfollowEvent(followerExternalId, followedExternalId);
 
     res.status(200).json({
       message: 'Has dejado de seguir al usuario'
