@@ -33,10 +33,6 @@ const userSchema = new mongoose.Schema({
     default: null
   },
   // Campos del Core
-  nombre: {
-    type: String,
-    trim: true
-  },
   pais: {
     type: String,
     default: null,
@@ -46,16 +42,6 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  // Tracking de sesiones (desde eventos del Core)
-  lastLogin: {
-    type: Date,
-    default: null
-  },
-  lastLogout: {
-    type: Date,
-    default: null
-  },
-  // Metadata
   syncedAt: {
     type: Date,
     default: Date.now
@@ -70,7 +56,7 @@ const userSchema = new mongoose.Schema({
 
 // Índices para optimizar consultas
 userSchema.index({ user_id: 1 });
-userSchema.index({ nombre: 1 });
+userSchema.index({ username: 1 });
 userSchema.index({ fechaRegistro: -1 });
 
 /**
@@ -92,7 +78,7 @@ userSchema.statics.createOrUpdateFromEvent = async function(eventData) {
 
   const userData = {
     user_id: idUsuario,
-    nombre: nombre || 'Usuario',
+    username: nombre || 'Usuario',
     email: email,
     pais: pais,
     fechaRegistro: fechaRegistro ? new Date(fechaRegistro) : new Date(),
@@ -106,60 +92,6 @@ userSchema.statics.createOrUpdateFromEvent = async function(eventData) {
   );
 
   return user;
-};
-
-/**
- * Actualizar última sesión iniciada
- * Maneja la estructura anidada del Core
- */
-userSchema.statics.updateLastLogin = async function(eventData) {
-  // Extraer userId del formato del Core
-  const actualData = eventData.data || eventData;
-  const userId = actualData.idUsuario || eventData.idUsuario || eventData.user_id;
-
-  if (!userId) {
-    throw new Error('No se pudo extraer idUsuario del evento de sesión');
-  }
-
-  return await this.findOneAndUpdate(
-    { user_id: userId },
-    { 
-      lastLogin: new Date(),
-      syncedAt: new Date(),
-      $setOnInsert: {
-        nombre: 'Usuario Temporal',
-        fechaRegistro: new Date()
-      }
-    },
-    { upsert: true, new: true }
-  );
-};
-
-/**
- * Actualizar última sesión finalizada
- * Maneja la estructura anidada del Core
- */
-userSchema.statics.updateLastLogout = async function(eventData) {
-  // Extraer userId del formato del Core
-  const actualData = eventData.data || eventData;
-  const userId = actualData.idUsuario || eventData.idUsuario || eventData.user_id;
-
-  if (!userId) {
-    throw new Error('No se pudo extraer idUsuario del evento de sesión');
-  }
-
-  return await this.findOneAndUpdate(
-    { user_id: userId },
-    { 
-      lastLogout: new Date(),
-      syncedAt: new Date(),
-      $setOnInsert: {
-        nombre: 'Usuario Temporal',
-        fechaRegistro: new Date()
-      }
-    },
-    { upsert: true, new: true }
-  );
 };
 
 module.exports = mongoose.model('User', userSchema);
