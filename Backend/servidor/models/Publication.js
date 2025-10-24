@@ -130,4 +130,12 @@ publicationSchema.virtual('text').get(function() {
   return this.body || this.content;
 });
 
+// Virtual populate alias: permitir populate('user', 'username') como alias de author_id
+publicationSchema.virtual('user', {
+  ref: 'User',
+  localField: 'author_id',
+  foreignField: '_id',
+  justOne: true
+});
+
 module.exports = mongoose.model('Publication', publicationSchema);
