@@ -81,7 +81,7 @@ async function checkRabbitMQ() {
     logSuccess('RabbitMQ está accesible');
 
     // Verificar exchange
-    const exchangeName = process.env.EXCHANGE_NAME || 'core_events';
+    const exchangeName = process.env.EXCHANGE_NAME || 'letterboxd_exchange';
     try {
       await channel.checkExchange(exchangeName);
       logSuccess(`Exchange '${exchangeName}' existe`);
@@ -161,8 +161,8 @@ function showConfiguration() {
   console.log(`\n${colors.cyan}=== Configuración Actual ===${colors.reset}`);
   console.log(`MongoDB URI:      ${process.env.MONGO_URI || 'Por defecto'}`);
   console.log(`RabbitMQ URL:     ${process.env.RABBIT_URL || 'Por defecto'}`);
-  console.log(`Exchange:         ${process.env.EXCHANGE_NAME || 'core_events'}`);
-  console.log(`Queue:            ${process.env.QUEUE_NAME || 'social_graph_queue'}`);
+  console.log(`Exchange:         ${process.env.EXCHANGE_NAME || 'letterboxd_exchange'}`);
+  console.log(`Queue:            ${process.env.QUEUE_NAME || 'core.social.queue'}`);
   console.log(`Port:             ${process.env.PORT || 3001}`);
   console.log(`Node Env:         ${process.env.NODE_ENV || 'development'}`);
   console.log('');

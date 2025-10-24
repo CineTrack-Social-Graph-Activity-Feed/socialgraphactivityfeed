@@ -20,8 +20,8 @@ class CoreConsumer {
       // Conectar a RabbitMQ
       await rabbitConnection.connect();
 
-      const exchangeName = process.env.EXCHANGE_NAME || 'core_events';
-      const queueName = process.env.QUEUE_NAME || 'social_graph_queue';
+      const exchangeName = process.env.EXCHANGE_NAME || 'letterboxd_exchange';
+      const queueName = process.env.QUEUE_NAME || 'core.social.queue';
       const routingKeysStr = process.env.ROUTING_KEYS || 'usuarios.#,resenas.#';
       const routingKeys = routingKeysStr.split(',').map(k => k.trim());
 
