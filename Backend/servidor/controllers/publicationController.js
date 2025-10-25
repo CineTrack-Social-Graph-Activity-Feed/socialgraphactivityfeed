@@ -193,7 +193,7 @@ const getUserPublications = async (req, res) => {
     let user;
     if (user_id.match(/^[0-9a-fA-F]{24}$/)) {
       // Es un ObjectId válido
-      user = await User.findById(user_id);
+      user = await User.findOne({ user_id: user_id });
     } else {
       // Buscar por user_id del Core
       user = await User.findOne({ user_id: user_id });

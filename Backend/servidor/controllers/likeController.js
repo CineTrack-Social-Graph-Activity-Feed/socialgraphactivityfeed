@@ -70,7 +70,7 @@ const addLike = async (req, res) => {
     // Verificar que el usuario exista (relajado para DEMO)
     let user = null;
     try {
-      user = await User.findById(user_id);
+      user = await User.findOne({ user_id: user_id });
     } catch (_) {}
     if (!DEMO_PUBLICATION_IDS.has(String(target_id))) {
       if (!user) {
