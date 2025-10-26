@@ -86,7 +86,7 @@ const addComment = async (req, res) => {
     // Verificar que el usuario exista (relajado para DEMO)
     let user = null;
     try {
-      user = await User.findOne({ user_id: user_id });
+      user = await User.findOne({ _id: user_id });
     } catch (_) {}
     if (!DEMO_PUBLICATION_IDS.has(String(target_id))) {
       if (!user) {
@@ -279,7 +279,7 @@ const getPublicationComments = async (req, res) => {
         error: "publication_id es requerido",
       });
     }
-    /*
+    
     // Verificar que la publicación exista
     const publication = await Publication.findById(publication_id);
     if (!publication) {
@@ -287,7 +287,7 @@ const getPublicationComments = async (req, res) => {
         error: 'Publicación no encontrada'
       });
     }
-    */
+    
     if (DEMO_PUBLICATION_IDS.has(String(publication_id))) {
       const mem = ensureDemoCommentsArray(String(publication_id));
 

@@ -169,7 +169,7 @@ const getFeed = async (req, res) => {
     }
 
     // Verificar que el usuario exista
-    const user = await User.findOne({ user_id: user_id });
+    const user = await User.findOne({ _id: user_id });
     if (!user) {
       return res.status(404).json({
         error: 'Usuario no encontrado'
