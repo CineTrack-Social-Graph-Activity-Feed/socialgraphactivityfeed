@@ -1,3 +1,6 @@
+.post-spoiler {
+  position: relative;
+}
 .post {
   background: #3e5c76;
   color: #f1f5f9;
@@ -9,6 +12,33 @@
   margin-inline: auto;
 }
 
+.blurred {
+  filter: blur(6px);
+  opacity: 0.7; /* opcional, para dar sensación de desactivado */
+  pointer-events: none; /* 🚫 evita clics y eventos dentro */
+  user-select: none;
+}
+
+.spam-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.btn-spoiler {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
 .post-header {
   display: flex;
   align-items: center;
