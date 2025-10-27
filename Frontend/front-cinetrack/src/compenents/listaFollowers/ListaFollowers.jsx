@@ -1,32 +1,45 @@
 import "./ListaFollowers.css";
 import { Eye, List, Heart, CheckCircle } from "lucide-react";
-import { use, useEffect, useState } from "react"
+import { use, useEffect, useState } from "react";
 import { API_URL } from "../../config/api";
-import { useUser } from "../../../UserContex";
+import { useAuth } from "../../config/AuthContext";
 
 const ListaFollowers = () => {
-  const { userId } = useUser();
-  const [user, setUser] = useState({});
+  const { user, fetchWithAuth, signOut } = useAuth(); // <- user de /me
+  const userId = user.user.user_id; // normalizamos ID
+  const [perfil, setPerfil] = useState(null);
+
   const [seguidores, setSeguidores] = useState([]);
   const [seguidos, setSeguidos] = useState([]);
   const [confirmUnfollow, setConfirmUnfollow] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/user/${userId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Usuario recibido:", data);
-        setUser(data.user);
-      })
-      .catch((err) => console.error("Error al traer usuario:", err));
-  }, []);
+    if (!userId) return;
+    (async () => {
+      try {
+        const res = await fetchWithAuth(
+          `http://localhost:3000/api/user/${userId}`
+        );
+        if (!res.ok) throw new Error("Error al traer usuario");
+        const data = await res.json();
+        setPerfil(data.user || data); // depende de tu shape
+      } catch (err) {
+        console.error("Error al traer usuario:", err);
+      }
+    })();
+  }, [userId, fetchWithAuth]);
 
+  const objectId = perfil?.id;
   // Traigo los usuarios que me siguen
   useEffect(() => {
+    if (!objectId) return;
     const fetchData = () => {
-      fetch(`${API_URL}/api/followers?user_id=${userId}`)
+      setLoading(true);
+      fetchWithAuth(`http://localhost:3000/api/followers?user_id=${objectId}`)
         .then((res) => res.json())
         .then((data) => setSeguidores(data.followers));
+      setLoading(false);
     };
 
     // Primera carga
@@ -38,99 +51,117 @@ const ListaFollowers = () => {
     return () => {
       window.removeEventListener("followersUpdated", fetchData);
     };
-  }, [userId]);
+  }, [objectId, fetchWithAuth]);
 
   // Traigo los usuarios que sigo
   useEffect(() => {
-    fetch(`${API_URL}/api/followed?user_id=${userId}`)
+    if (!objectId) return;
+
+    fetchWithAuth(`http://localhost:3000/api/followed?user_id=${objectId}`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Followers data:", data);
         // 👇 extraemos solo los _id en un array
         setSeguidos(data.followed.map((u) => u._id));
       });
-  }, [userId]);
+  }, [objectId, fetchWithAuth]);
 
   // Función para seguir/dejar de seguir
-  const toggleFollow = async (targetId) => {
+  const toggleFollow = async (targetIdRaw) => {
+    const targetId = String(targetIdRaw);
     const isFollowing = seguidos.includes(targetId);
 
     const url = isFollowing
-      ? `${API_URL}/api/unfollow`
-      : `${API_URL}/api/follow`;
+      ? "http://localhost:3000/api/unfollow"
+      : "http://localhost:3000/api/follow";
 
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        follower_user_id: userId,
-        followed_user_id: targetId,
-      }),
-    });
+    try {
+      const res = await fetchWithAuth(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          follower_user_id: perfil.id,
+          followed_user_id: targetId,
+        }),
+      });
 
-    if (res.ok) {
-      if (isFollowing) {
-        setSeguidos(seguidos.filter((id) => id !== targetId));
-      } else {
-        setSeguidos([...seguidos, targetId]);
+      if (!res.ok) {
+        const err = await res.text().catch(() => "");
+        throw new Error(
+          `Error ${isFollowing ? "unfollow" : "follow"}: ${res.status} ${err}`
+        );
       }
+
+      setSeguidos((prev) =>
+        isFollowing ? prev.filter((id) => id !== targetId) : [...prev, targetId]
+      );
       window.dispatchEvent(new Event("followersUpdated"));
-    } else {
-      const error = await res.json();
-      console.error("Error en toggleFollow:", error);
+    } catch (e) {
+      console.error("Error en toggleFollow:", e);
     }
   };
 
+  if (loading) {
+    return <div className="loading">Cargando seguidores...</div>;
+  }
+
+  console.log("Seguidos en ListaFollowers:", seguidos);
   return (
     <div className="container">
       <div className="list-table">
         {/* Rows */}
         <div className="user-list">
-          {seguidores.map((user) => (
-            <div key={user._id} className="user-row">
-              <div>
-                <a className="followed-user">
-                  <img
-                    src={user.avatar_url}
-                    alt="avatar user"
-                    className="avatar-post"
-                    style={{ width: "50px", height: "50px" }}
-                  />
-                  <div className="user-info">
-                    <h2 className="username">{user.username}</h2>
+          {seguidores.length === 0 ? (
+            <p className="no-following">
+              Por el momento nadie te esta siguiendo
+            </p>
+          ) : (
+            seguidores.map((user) => (
+              <div key={user._id} className="user-row">
+                <div>
+                  <a className="followed-user">
+                    <img
+                      src={user.avatar_url}
+                      alt="avatar user"
+                      className="avatar-post"
+                      style={{ width: "50px", height: "50px" }}
+                    />
+                    <div className="user-info">
+                      <h2 className="username">{user.username}</h2>
+                    </div>
+                  </a>
+                </div>
+
+                <div className="col watched numeric">
+                  <div className="stat"></div>
+                </div>
+
+                <div className="col lists numeric">
+                  <div className="stat"></div>
+                </div>
+
+                <div className="col likes numeric">
+                  <div className="followed-actions">
+                    <button
+                      type="button"
+                      className={`follow-btn ${
+                        seguidos.includes(user._id) ? "following" : ""
+                      }`}
+                      onClick={() => {
+                        if (seguidos.includes(user._id)) {
+                          setConfirmUnfollow(user); // 👈 abre modal
+                        } else {
+                          toggleFollow(user._id); // seguir directamente
+                        }
+                      }}
+                    >
+                      {seguidos.includes(user._id) ? "Siguiendo" : "Seguir"}
+                    </button>
                   </div>
-                </a>
-              </div>
-
-              <div className="col watched numeric">
-                <div className="stat"></div>
-              </div>
-
-              <div className="col lists numeric">
-                <div className="stat"></div>
-              </div>
-
-              <div className="col likes numeric">
-                <div className="followed-actions">
-                  <button
-                    type="button"
-                    className={`follow-btn ${
-                      seguidos.includes(user._id) ? "following" : ""
-                    }`}
-                    onClick={() => {
-                      if (seguidos.includes(user._id)) {
-                        setConfirmUnfollow(user); // 👈 abre modal
-                      } else {
-                        toggleFollow(user._id); // seguir directamente
-                      }
-                    }}
-                  >
-                    {seguidos.includes(user._id) ? "Siguiendo" : "Seguir"}
-                  </button>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
       {/* Modal de confirmación */}
@@ -167,4 +198,3 @@ const ListaFollowers = () => {
 };
 
 export default ListaFollowers;
-

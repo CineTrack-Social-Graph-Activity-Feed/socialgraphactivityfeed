@@ -56,6 +56,12 @@ body {
   scrollbar-width: none;
 }
 
+.no-following {
+  font-size: 14px;
+  color: #a0a7ad;
+  text-align: center;
+  margin-top: 20px;
+}
 /* each row card */
 .user-row {
   padding: 12px 14px;
@@ -121,4 +127,3 @@ body {
     padding: 12px;
   }
 }
-

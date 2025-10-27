@@ -166,6 +166,7 @@
 }
 
 .like-post-btn {
+  color: white;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -220,7 +221,7 @@
 }
 
 .comment-post-input {
-  width: 100%;
+  width: 90%;
   resize: none;
   overflow: hidden;
   padding: 5px 40px 5px 15px;

@@ -10,7 +10,7 @@ body {
   overflow: hidden;
 }
 
-.layout {
+.layout-feed {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -23,28 +23,25 @@ body {
   margin-bottom: 15px;
 }
 
-.navbar-container {
-  height: var(--nav-h);
-}
-
-.content {
+.content-feed {
   height: calc(100svh - var(--nav-h) - var(--foot-h));
   display: flex; /* tu row */
   min-height: 0; /* importante para que los hijos puedan hacer overflow */
 }
 
 .sidebar-feed {
-  flex: 0 0 15.5%;
+  flex: 0 0 15%;
   overflow: hidden;
   background: #3e5c78;
 }
 
 .main {
-  flex: 0 0 65%;
+  flex: 0 0 65.5%;
   min-width: 0;
   min-height: 0;
   overflow-y: auto;
   scrollbar-width: none;
+  padding-bottom: 30px;
 }
 
 .followed {
@@ -65,7 +62,7 @@ body {
   color: white;
   text-align: center;
   padding: 10px 0;
-  height: var(--foot-h);
+  height: 75px;
   width: 100%;
 }
 

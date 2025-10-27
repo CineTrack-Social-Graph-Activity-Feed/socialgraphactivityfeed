@@ -6,6 +6,11 @@ body {
   margin: 0;
   padding: 0;
 }
+.layout-follows {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
 
 /* container */
 .container {
@@ -50,15 +55,14 @@ body {
   flex-direction: column;
   gap: 10px;
   margin-top: 8px;
-    max-height: 70vh;   /* altura máxima visible */
-  overflow-y: auto;   /* scroll solo dentro de la lista */
+  max-height: 70vh; /* altura máxima visible */
+  overflow-y: auto; /* scroll solo dentro de la lista */
   padding-right: 6px; /* espacio para la barra de scroll */
   scrollbar-width: none;
 }
 
 /* each row card */
 .user-row {
-  
   padding: 12px 14px;
   border-radius: 10px;
   box-shadow: 0 3px 6px rgba(2, 6, 10, 0.5);

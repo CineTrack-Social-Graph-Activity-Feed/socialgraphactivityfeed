@@ -1,182 +1,125 @@
 import { useState, useEffect } from "react";
-import "./Post.css";
-import { useUser } from "../../../../UserContex";
+import "./postMiActividad.css";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/es";
-import { API_URL } from "../../../config/api";
-import { useAuth } from "../../../config/AuthContext";
+import { API_URL } from "../../config/api";
+import { useAuth } from "../../config/AuthContext";
 
 dayjs.extend(relativeTime);
 dayjs.locale("es");
 
-function Post({ post }) {
+function PostMiActividad({ post }) {
   const { user, fetchWithAuth, signOut } = useAuth(); // <- user de /me
   const userId = user.user.user_id; // normalizamos ID
+  const [perfil, setPerfil] = useState(null);
+  const [posts, setPosts] = useState([]);
   const [comment, setComment] = useState("");
-  const [commentsByPost, setCommentsByPost] = useState({});
+  const [commentsByPost, setCommentsByPost] = useState([]);
   const [showAllComments, setShowAllComments] = useState({});
   const [likesByPost, setLikesByPost] = useState({});
+  const [commentByPost, setCommentByPost] = useState({});
 
   // Sin datos locales: todo viene del backend
 
-  // Depuración inicial
-  console.log("👤 userId:", userId);
-
   /* Obtengo los datos del usuario logueado */
   useEffect(() => {
-    console.log("🔄 Obteniendo datos del usuario:", userId);
-    fetchWithAuth(`http://localhost:3000/api/user/${userId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("👤 Datos de usuario obtenidos:", data.user);
-
-        // Si no se puede obtener el usuario del backend, crearemos uno local para demostración
-        if (!data.user) {
-          console.log(
-            "⚠️ No se pudo obtener el usuario del backend, usando datos de demostración"
-          );
-          setUser({
-            id: userId,
-            username: "usuario_demo",
-            name: "Usuario Demo",
-            avatar_url: "https://i.pravatar.cc/60?img=1",
-          });
-          return;
-        }
-
-        setUser(data.user);
-      })
-      .catch((err) => {
-        console.error("Error al traer usuario:", err);
-
-        // En caso de error, usar un usuario de demostración
-        console.log(
-          "⚠️ Error al obtener usuario, usando datos de demostración"
+    if (!userId) return;
+    (async () => {
+      try {
+        const res = await fetchWithAuth(
+          `http://localhost:3000/api/user/${userId}`
         );
-        setUser({
-          id: userId,
-          username: "usuario_demo",
-          name: "Usuario Demo",
-          avatar_url: "https://i.pravatar.cc/60?img=1",
-        });
-      });
-  }, [userId]);
+        if (!res.ok) throw new Error("Error al traer usuario");
+        const data = await res.json();
+        setPerfil(data.user || data); // depende de tu shape
+      } catch (err) {
+        console.error("Error al traer usuario:", err);
+      }
+    })();
+  }, [userId, fetchWithAuth]);
+
+  console.log("👤 Perfil del usuario:", perfil);
+  /**
+   * Traigo mis posts desde el backend
+   */
+
+  useEffect(() => {
+    if (!userId) return; // por las dudas
+
+    (async () => {
+      try {
+        console.log("Trayendo mis reviews...");
+        const id = String(userId);
+        const res = await fetchWithAuth(
+          `http://localhost:3000/api/publication/user/${id}`
+        );
+
+        if (!res.ok) throw new Error(`Error ${res.status}`);
+
+        const data = await res.json();
+        setPosts(data.publications || []);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.error("❌ Error al cargar posts de actividad:", err);
+        }
+      }
+    })();
+  }, [userId, fetchWithAuth]);
+
+  console.log("📝 Posts de mi actividad:", posts);
 
   /* Guarda el comentario de una publicacion a la BD o localmente */
   const handleSubmit = async (e, post) => {
+    console.log("🚀 Enviando comentario para post:", post);
     e.preventDefault();
 
     if (!comment.trim()) return;
 
+    // Intentar primero con el backend
     try {
-      console.log("📝 Enviando comentario:", {
-        user_id: userId,
-        target_type: post.type,
-        target_id: post.id,
-        comment,
+      const res = await fetchWithAuth(`http://localhost:3000/api/comment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: perfil.id,
+          target_type: post.type,
+          target_id: post.id,
+          comment,
+        }),
       });
 
-      // Intentar primero con el backend
-      try {
-        console.log("🔄 Intentando guardar comentario en el backend...");
-        const res = await fetch(`${API_URL}/api/comment`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: userId,
-            target_type: post.type,
-            target_id: post.id,
-            comment,
-          }),
-        });
+      if (!res.ok) throw new Error(`Error ${res.status}`);
 
-        // Obtener respuesta como texto primero
-        const responseText = await res.text();
-        console.log("📄 Respuesta en texto:", responseText);
+      //después del POST, vuelvo a pedir todos los comentarios del post asi cuando agrego uno nuevo se actualiza la lista
+      const resComments = await fetchWithAuth(
+        `http://localhost:3000/api/comment/publication/${post.id}`
+      );
+      const dataComments = await resComments.json();
 
-        // Intentar parsear como JSON si es posible
-        let responseData;
-        try {
-          if (responseText) {
-            responseData = JSON.parse(responseText);
-          }
-        } catch (parseErr) {
-          console.error("❌ Error al parsear respuesta JSON:", parseErr);
-        }
-
-        console.log("📊 Respuesta al crear comentario:", {
-          status: res.status,
-          ok: res.ok,
-          data: responseData,
-        });
-
-        if (res.ok) {
-          // Si el backend funcionó, actualizamos con los datos del backend
-          try {
-            console.log(
-              "✅ Comentario guardado en backend, actualizando lista..."
-            );
-            const resComments = await fetch(
-              `${API_URL}/api/comment/publication/${post.id}`
-            );
-
-            if (resComments.ok) {
-              const dataComments = await resComments.json();
-              console.log(
-                "📊 Comentarios actualizados desde backend:",
-                dataComments
-              );
-              setCommentsByPost((prev) => ({
-                ...prev,
-                [post.id]: Array.isArray(dataComments.comments)
-                  ? dataComments.comments
-                  : [],
-              }));
-              setComment("");
-              return;
-            } else {
-              console.warn(
-                "⚠️ La respuesta del backend para obtener comentarios no fue exitosa:",
-                resComments.status
-              );
-              throw new Error(`GET comments failed: ${resComments.status}`);
-            }
-          } catch (fetchErr) {
-            console.warn(
-              "⚠️ Error al obtener comentarios actualizados:",
-              fetchErr
-            );
-            throw fetchErr;
-          }
-        } else {
-          console.warn(
-            "⚠️ La respuesta del backend no fue exitosa:",
-            res.status
-          );
-          throw new Error(`POST comment failed: ${res.status}`);
-        }
-      } catch (backendErr) {
-        console.warn(
-          "⚠️ Error con el backend al crear comentario:",
-          backendErr.message
+      setCommentsByPost((prev) => {
+        const unique = (dataComments.comments || []).filter(
+          (c, index, self) => index === self.findIndex((x) => x.id === c.id)
         );
-        alert(`No se pudo guardar el comentario: ${backendErr.message}`);
-      }
-      // Limpiar después del éxito; si falló, lo dejamos para reintentar
+        return {
+          ...prev,
+          [post.id]: unique,
+        };
+      });
+      setComment("");
+
+      // 🔹 LIMPIAR el textarea solo del post actual
+      setCommentByPost((prev) => ({ ...prev, [post.id]: "" }));
     } catch (err) {
       console.error("❌ Error al guardar comentario:", err);
       alert(`Error al guardar comentario: ${err.message}`);
     }
   };
 
-  /**
-   * Posts de ejemplo
-   * Esto es los que nos pasaria el modulo de reviews, tambien seguramente de peliculas y usuarios
-   */
-  const [posts, setPosts] = useState([
+  /*
+    const [posts, setPosts] = useState([
     {
       id: "65f5e1d77c65c827d8536abc", // ID de MongoDB válido (generado como ejemplo)
       type: "review",
@@ -223,6 +166,9 @@ function Post({ post }) {
         "https://a.ltrbxd.com/resized/film-poster/8/1/7/9/7/7/817977-f1-the-movie-0-1000-0-1500-crop.jpg?v=f5ae2b99b9",
     },
   ]);
+  */
+
+  //LIKE
 
   useEffect(() => {
     const fetchLikes = async () => {
@@ -230,8 +176,8 @@ function Post({ post }) {
         const results = await Promise.all(
           posts.map(async (p) => {
             try {
-              const res = await fetch(
-                `${API_URL}/api/like/publication/${p.id}`
+              const res = await fetchWithAuth(
+                `http://localhost:3000/api/like/publication/${p.id}`
               );
 
               if (!res.ok) throw new Error(`GET likes failed: ${res.status}`);
@@ -244,7 +190,7 @@ function Post({ post }) {
                   ? data.total_likes
                   : backendLikes.length;
               const myBackendLike = backendLikes.find(
-                (l) => String(l.user?.id) === String(userId)
+                (l) => String(l.user?.id) === String(perfil?.id)
               );
 
               return [
@@ -269,91 +215,42 @@ function Post({ post }) {
     };
 
     fetchLikes();
-  }, [posts, userId]);
-
-  // Eliminado: no se inyectan datos locales de demo
+  }, [posts, perfil?.id]);
 
   // Cargar comentarios desde backend o usar locales
+
   useEffect(() => {
     const loadComments = async () => {
       try {
-        console.log("🔄 Cargando comentarios para los posts...");
         const results = await Promise.all(
-          posts.map(async (p) => {
-            try {
-              console.log(
-                `📥 Intentando obtener comentarios para post ${p.id} del backend...`
-              );
-              const res = await fetch(
-                `${API_URL}/api/comment/publication/${p.id}`
-              );
-
-              // Loggear respuesta completa
-              const responseText = await res.text();
-              console.log(`📄 Respuesta para post ${p.id}:`, {
-                status: res.status,
-                ok: res.ok,
-                responseText,
-              });
-
-              if (!res.ok) {
-                console.warn(
-                  `⚠️ No se encontraron comentarios para el post ${p.id}.`
-                );
-                return [p.id, []];
-              }
-
-              // Parsear la respuesta de texto a JSON
-              let data;
-              try {
-                data = JSON.parse(responseText);
-              } catch (parseErr) {
-                console.error(
-                  `❌ Error al parsear la respuesta para post ${p.id}:`,
-                  parseErr
-                );
-                return [p.id, []];
-              }
-
-              const backendComments = Array.isArray(data.comments)
-                ? data.comments
-                : [];
-              const ordered = backendComments.sort(
-                (a, b) => new Date(b.created_at) - new Date(a.created_at)
-              );
-              console.log(
-                `✅ Post ${p.id} -> Comentarios desde backend:`,
-                ordered
-              );
-              return [p.id, ordered];
-            } catch (err) {
-              console.warn(
-                `⚠️ Error al obtener comentarios para post ${p.id}:`,
-                err
-              );
-              return [p.id, []];
-            }
-          })
+          posts.map((p) =>
+            fetchWithAuth(
+              `http://localhost:3000/api/comment/publication/${String(p.id)}`
+            )
+              .then((res) => res.json())
+              .then((data) => {
+                console.log("Post", p.id, "-> Comentarios:", data.comments);
+                return [p.id, data.comments || []];
+              })
+          )
         );
 
-        // Convertimos el array en objeto { postId: comments }
         const newCommentsByPost = results.reduce((acc, [id, comments]) => {
-          acc[id] = comments;
+          if (id) acc[id] = comments;
           return acc;
         }, {});
-
-        console.log(
-          "📊 Nuevo estado de comentarios por post:",
-          newCommentsByPost
-        );
         setCommentsByPost(newCommentsByPost);
       } catch (err) {
-        console.error("❌ Error al cargar comentarios:", err);
+        if (err.name !== "AbortError") {
+          console.error("Error al cargar comentarios:", err);
+        }
       }
     };
 
     loadComments();
-  }, [posts]);
+  }, [posts, fetchWithAuth]);
+
+  console.log("💬 Comentarios por post:", commentsByPost);
 
   const handleLike = async (post) => {
     try {
@@ -364,16 +261,16 @@ function Post({ post }) {
         if (!state.liked) {
           // 👉 Dar like
           console.log("Enviando like:", {
-            user_id: userId,
+            user_id: perfil.id,
             target_id: post.id,
             target_type: post.type,
           });
 
-          const res = await fetch(`${API_URL}/api/like`, {
+          const res = await fetchWithAuth(`http://localhost:3000/api/like`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              user_id: userId,
+              user_id: perfil.id,
               target_id: post.id,
               target_type: post.type,
             }),
@@ -399,11 +296,14 @@ function Post({ post }) {
             user_id: userId,
           });
 
-          const res = await fetch(`${API_URL}/api/like/${state.like_id}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ user_id: userId }),
-          });
+          const res = await fetchWithAuth(
+            `http://localhost:3000/api/like/${state.like_id}`,
+            {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ user_id: perfil.id }),
+            }
+          );
 
           if (res.ok) {
             // Éxito con el backend
@@ -430,7 +330,9 @@ function Post({ post }) {
       console.log(`Obteniendo likes para post ${postId}`);
 
       try {
-        const res = await fetch(`${API_URL}/api/like/publication/${postId}`);
+        const res = await fetchWithAuth(
+          `http://localhost:3000/api/like/publication/${postId}`
+        );
 
         if (!res.ok) return;
 
@@ -444,7 +346,7 @@ function Post({ post }) {
             ? data.total_likes
             : backendLikes.length;
         const myLike = backendLikes.find(
-          (l) => String(l.user?.id) === String(userId)
+          (l) => String(l.user?.id) === String(perfil.id)
         );
 
         const likeData = {
@@ -467,46 +369,41 @@ function Post({ post }) {
   };
 
   const handleDeleteComment = async (commentId, postId) => {
+    // Si no es local, intentar con el backend
     try {
-      // Si no es local, intentar con el backend
-      try {
-        const res = await fetch(`${API_URL}/api/comment/${commentId}`, {
+      const res = await fetchWithAuth(
+        `http://localhost:3000/api/comment/${commentId}`,
+        {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ user_id: userId }), // 👈 necesario para permisos
-        });
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.error || "Error al eliminar comentario");
+          body: JSON.stringify({ user_id: perfil.id }), // 👈 necesario para permisos
         }
+      );
 
-        console.log(`Comentario ${commentId} eliminado`);
-
-        // 👇 refrescar comentarios del post
-        const resComments = await fetch(
-          `${API_URL}/api/comment/publication/${postId}`
-        );
-        const dataComments = await resComments.json();
-
-        setCommentsByPost((prev) => ({
-          ...prev,
-          [postId]: Array.isArray(dataComments.comments)
-            ? dataComments.comments
-            : [],
-        }));
-      } catch (err) {
-        console.warn(
-          "Error al eliminar comentario con el backend:",
-          err.message
-        );
-        alert(`No se pudo eliminar el comentario: ${err.message}`);
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Error al eliminar comentario");
       }
+
+      console.log(`Comentario ${commentId} eliminado`);
+
+      // 👇 refrescar comentarios del post
+      const resComments = await fetchWithAuth(
+        `http://localhost:3000/api/comment/publication/${postId}`
+      );
+      const dataComments = await resComments.json();
+
+      setCommentsByPost((prev) => ({
+        ...prev,
+        [postId]: Array.isArray(dataComments.comments)
+          ? dataComments.comments
+          : [],
+      }));
     } catch (err) {
-      console.error("Error al eliminar comentario:", err.message);
-      alert(`Error al eliminar comentario: ${err.message}`);
+      console.warn("Error al eliminar comentario con el backend:", err.message);
+      alert(`No se pudo eliminar el comentario: ${err.message}`);
     }
   };
 
@@ -580,21 +477,21 @@ function Post({ post }) {
           <img src={post.author.avatar} alt="avatar" className="avatar-post" />
           <div>
             <div className="post-user-info">
-              <h4 className="name">{post.author.name}</h4>
+              <h4 className="name">{user.user.full_name}</h4>
               <span className="username-id">@{post.author.username}</span>{" "}
             </div>
-            <span className="time">{post.createdAt}</span>
+            <span className="time">{dayjs(post.created_at).fromNow()}</span>
           </div>
         </div>
 
         {/* Texto */}
         <div className="titulo-pelicula">
-          <h3>{post.pelicula_name}</h3>
-          <StarRating puntuacion={post.puntuacion} />{" "}
+          <h3>{post.title}</h3>
+          <StarRating puntuacion={post.rating} />{" "}
         </div>
         <div className="post-body">
           <div className="post-text-container">
-            <p className="post-text">{post.text}</p>
+            <p className="post-text">{post.content}</p>
           </div>
           <div className="post-image-container">
             {/* Imagen (si existe) */}
@@ -662,7 +559,7 @@ function Post({ post }) {
                 className="comment-post-input"
                 placeholder="Escribe un comentario..."
                 aria-label="Comentario"
-                value={comment}
+                value={commentByPost[post.id]}
                 onChange={(e) => setComment(e.target.value)}
                 rows={1}
                 onInput={(e) => {
@@ -728,7 +625,7 @@ function Post({ post }) {
                       </strong>
                       <p className="comment-text">{c.comment}</p>
                     </div>
-                    {c.user?.id === userId && (
+                    {String(c.user.id) === String(perfil?.id) && (
                       <button
                         className="delete-comment-btn"
                         aria-label="Delete comment"
@@ -791,9 +688,16 @@ function Post({ post }) {
 
   return (
     <div style={{ display: "grid", gap: "20px" }}>
-      {posts.map((post) => renderPostByType(post))}
+      {posts.length === 0 ? (
+        <p style={{ color: "#ccc", textAlign: "center", marginTop: "20px" }}>
+          Por el momento no has realizado ninguna reseña, anímate a escribir
+          una!
+        </p>
+      ) : (
+        posts.map((post) => renderPostByType(post))
+      )}
     </div>
   );
 }
 
-export default Post;
+export default PostMiActividad;
