@@ -1,0 +1,93 @@
+.followed-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.followed-title {
+  font-size: 20px;
+  margin-top: 25px;
+}
+
+.no-followed {
+  color: lightgray;
+  margin-top: 15px;
+}
+.followed-user {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  text-decoration: none;
+  gap: 10px;
+}
+
+.followed-user:hover {
+  scale: 1.02;
+  transition: all 0.3s ease;
+}
+
+.followed-user-name {
+  margin-left: 10px;
+  font-size: 20px;
+  color: white;
+}
+
+.followed-user-followers {
+  margin-left: 10px;
+  color: #16e0d3;
+}
+
+.followed-users {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 35px;
+  margin-top: 25px;
+}
+
+.avatar-user-followed {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.unfollow-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: white;
+  position: relative;
+}
+
+.unfollow-button svg {
+  width: 25px;
+  height: 25px;
+}
+
+.followed-actions {
+  position: relative; /* importante para que el menú se posicione relativo al botón */
+}
+
+.unfollow-menu {
+  position: absolute;
+  margin-top: 5px; /* espacio entre botón y menú */
+  background: white;
+  border-radius: 6px;
+  padding: 6px 10px;
+  z-index: 10;
+  left: -40px;
+  width: 120px;
+}
+
+.unfollow-menu button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: red;
+}
+
+.unfollow-svg {
+  width: 20px;
+  height: 20px;
+  margin-top: 5px;
+}

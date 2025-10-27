@@ -1,0 +1,131 @@
+html,
+body,
+.layout-login {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.login-user-main {
+  display: flex;
+  flex: 0.9;
+}
+.login-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  background-color: #3e5c76; /* fondo semitransparente */
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.form-container p {
+  text-align: center;
+}
+
+.form-container h2 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+.logo-login {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.logo-login p {
+  color: white;
+  font-size: 30px;
+  margin: 0;
+}
+
+.icono-login {
+  display: flex;
+  width: 70px;
+  height: 50px;
+}
+
+.form-login {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 70%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-size: 15px;
+  color: #ffffff;
+}
+
+.form-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: lightgray;
+  color: #000000;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #1d2d44; /* color del borde al enfocar */
+  background-color: #ffffff;
+}
+
+.btn-login {
+  background-color: #00d4d4; /* color de fondo del botón */
+  color: #ffffff; /* color del texto del botón */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-login:hover {
+  background-color: #16e0d3; /* color de fondo al pasar el mouse */
+}
+
+.btn-forgot-password {
+  margin-top: 10px;
+  font-size: 14px;
+  background-color: transparent;
+  text-decoration: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.btn-forgot-password:hover {
+  text-decoration: underline;
+  transform: scale(1.02);
+  transition: 1ms;
+}
+
+.form-error {
+  color: #e67979;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}

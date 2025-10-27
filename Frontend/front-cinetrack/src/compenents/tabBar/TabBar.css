@@ -1,0 +1,27 @@
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #1f242c;
+  margin-bottom: 16px;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  color: #8b959e;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: color 0.2s, border-bottom 0.2s;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-button:hover {
+  color: #e6eef8;
+}
+
+.tab-button.active {
+  color: #1db954; /* verde activo */
+  border-bottom: 2px solid #1db954;
+}

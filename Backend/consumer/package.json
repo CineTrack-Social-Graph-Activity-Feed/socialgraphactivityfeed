@@ -1,0 +1,34 @@
+{
+  "name": "consumer-service",
+  "version": "1.0.0",
+  "description": "Servicio consumer para eventos de RabbitMQ del Core (usuarios y reseñas)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:publish": "node testPublisher.js",
+    "test:publish:all": "node testPublisher.js all",
+    "test:publish:user": "node testPublisher.js user",
+    "test:publish:review": "node testPublisher.js review",
+    "check": "node checkEnvironment.js"
+  },
+  "keywords": [
+    "rabbitmq",
+    "consumer",
+    "microservices",
+    "mongodb",
+    "amqp"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
