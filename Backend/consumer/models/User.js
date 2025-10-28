@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   // ID del módulo de usuarios (desde el Core)
   user_id: {
-    type: String,
+    type: Number,
     unique: true,
     sparse: true, // Permite nulls pero unique cuando existe
     index: true
@@ -21,16 +21,20 @@ const userSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 30
   },
-  email: {
-    type: String,
-    unique: true,
-    sparse: true,
-    lowercase: true,
-    trim: true
-  },
   avatar_url: {
     type: String,
     default: null
+  },
+  // Presencia/sesiones
+  lastSeenAt: { type: Date, default: null },
+  lastLoginAt: { type: Date, default: null },
+  lastLogoutAt: { type: Date, default: null },
+  activeSessions: { type: Number, default: 0, min: 0 },
+  lastSession: {
+    id: { type: String, default: null },
+    device: { type: String, default: null },
+    startedAt: { type: Date, default: null },
+    endedAt: { type: Date, default: null }
   },
   // Campos del Core
   pais: {
@@ -68,7 +72,6 @@ userSchema.statics.createOrUpdateFromEvent = async function(eventData) {
   const actualData = eventData.data || eventData;
   const idUsuario = actualData.idUsuario || eventData.idUsuario || eventData.user_id;
   const nombre = actualData.nombre || eventData.nombre || actualData.name;
-  const email = actualData.email || eventData.email;
   const pais = actualData.pais || eventData.pais || actualData.country;
   const fechaRegistro = actualData.fechaRegistro || eventData.fechaRegistro || actualData.created_at;
 
@@ -76,11 +79,11 @@ userSchema.statics.createOrUpdateFromEvent = async function(eventData) {
     throw new Error('No se pudo extraer idUsuario del evento');
   }
 
+  // Construir set solo con campos definidos para evitar duplicados en índices únicos (email=null)
   const userData = {
     user_id: idUsuario,
-    username: nombre || 'Usuario',
-    email: email,
-    pais: pais,
+    username: nombre || undefined,
+    pais: pais || undefined,
     fechaRegistro: fechaRegistro ? new Date(fechaRegistro) : new Date(),
     syncedAt: new Date()
   };
@@ -90,6 +93,66 @@ userSchema.statics.createOrUpdateFromEvent = async function(eventData) {
     { $set: userData },
     { upsert: true, new: true, runValidators: false }
   );
+
+  return user;
+};
+
+/**
+ * Marcar inicio de sesión
+ * payload esperado (ya normalizado): { userId, sessionId, device, startedAt }
+ */
+userSchema.statics.markSessionStarted = async function({ userId, sessionId, device, startedAt }) {
+  const when = startedAt ? new Date(startedAt) : new Date();
+
+  const user = await this.findOneAndUpdate(
+    { user_id: userId },
+    {
+      $inc: { activeSessions: 1 },
+      $setOnInsert: { fechaRegistro: new Date() },
+      $set: {
+        lastSeenAt: when,
+        lastLoginAt: when,
+        'lastSession.id': sessionId || null,
+        'lastSession.device': device || null,
+        'lastSession.startedAt': when,
+        'lastSession.endedAt': null,
+        syncedAt: new Date()
+      }
+    },
+    { upsert: true, new: true }
+  );
+
+  return user;
+};
+
+/**
+ * Marcar fin de sesión
+ * payload esperado (ya normalizado): { userId, sessionId, endedAt }
+ */
+userSchema.statics.markSessionFinished = async function({ userId, sessionId, endedAt }) {
+  const when = endedAt ? new Date(endedAt) : new Date();
+
+  const user = await this.findOneAndUpdate(
+    { user_id: userId },
+    {
+      $inc: { activeSessions: -1 },
+      $setOnInsert: { fechaRegistro: new Date() },
+      $set: {
+        lastSeenAt: when,
+        lastLogoutAt: when,
+        'lastSession.id': sessionId || null,
+        'lastSession.endedAt': when,
+        syncedAt: new Date()
+      }
+    },
+    { upsert: true, new: true }
+  );
+
+  // Asegurar que no sea negativo
+  if (user.activeSessions < 0) {
+    user.activeSessions = 0;
+    await user.save();
+  }
 
   return user;
 };
