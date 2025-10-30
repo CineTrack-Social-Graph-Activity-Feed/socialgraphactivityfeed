@@ -5,6 +5,7 @@ const commentRoutes = require('./commentRoutes');
 const publicationRoutes = require('./publicationRoutes');
 const userRoutes = require('./userRoutes');
 const authRoutes = require('./authRoutes');
+const movieRoutes = require('./movieRoutes');
 const { authenticateJWT } = require('../middlewares/auth');
 const { attachActorFromToken } = require('../middlewares/auth');
 
@@ -31,6 +32,7 @@ router.use('/api', likeRoutes);
 router.use('/api', commentRoutes);
 router.use('/api', publicationRoutes);
 router.use('/api', userRoutes);
+router.use('/api/movie', movieRoutes);
 
 // Ruta catch-all para 404
 router.use('*', (req, res) => {

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Movie = require('./Movie');
 
 /**
  * Modelo UNIFICADO de Publication/Review
@@ -42,6 +43,13 @@ const publicationSchema = new mongoose.Schema({
     type: Number, // Desde el Core
     sparse: true,
     index: true
+  },
+  
+  // Referencia al modelo Movie
+  movie: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Movie',
+    sparse: true
   },
   
   // Título de la reseña (desde el Core)
