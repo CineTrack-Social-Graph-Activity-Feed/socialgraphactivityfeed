@@ -74,7 +74,7 @@ const getUser = async (req, res) => {
       });
     }
 
-    const user = await User.findById(user_id);
+    const user = await User.findOne({ user_id: user_id });
 
     if (!user) {
       return res.status(404).json({
@@ -85,6 +85,7 @@ const getUser = async (req, res) => {
     res.status(200).json({
       user: {
         id: user._id,
+        user_id: user.user_id,
         username: user.username,
         email: user.email,
         avatar_url: user.avatar_url,

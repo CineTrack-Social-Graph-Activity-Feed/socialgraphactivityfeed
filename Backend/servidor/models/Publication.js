@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Movie = require('./Movie');
 
 /**
  * Modelo UNIFICADO de Publication/Review
@@ -42,6 +43,13 @@ const publicationSchema = new mongoose.Schema({
     type: Number, // Desde el Core
     sparse: true,
     index: true
+  },
+  
+  // Referencia al modelo Movie
+  movie: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Movie',
+    sparse: true
   },
   
   // Título de la reseña (desde el Core)
@@ -128,6 +136,14 @@ publicationSchema.virtual('movieId').get(function() {
 // Virtual para obtener el contenido sin importar el campo
 publicationSchema.virtual('text').get(function() {
   return this.body || this.content;
+});
+
+// Virtual populate alias: permitir populate('user', 'username') como alias de author_id
+publicationSchema.virtual('user', {
+  ref: 'User',
+  localField: 'author_id',
+  foreignField: '_id',
+  justOne: true
 });
 
 module.exports = mongoose.model('Publication', publicationSchema);

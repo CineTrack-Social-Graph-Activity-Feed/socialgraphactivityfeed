@@ -66,8 +66,11 @@ const createPublication = async (req, res) => {
     const publication = new Publication(publicationData);
     await publication.save();
 
-    // Poblar con información del autor
-    await publication.populate('author_id', 'username avatar_url');
+    // Poblar con información del autor y película
+    await publication.populate([
+      { path: 'author_id', select: 'username avatar_url' },
+      { path: 'movie', select: 'movie_id poster titulo' }
+    ]);
 
     // Publicar evento
     createNewPublicationEvent(author_id, publication._id, type);
@@ -76,13 +79,19 @@ const createPublication = async (req, res) => {
       message: 'Publicación creada exitosamente',
       publication: {
         id: publication._id,
-        author: {
+        author: publication.author_id ? {
           id: publication.author_id._id,
           username: publication.author_id.username,
           avatar_url: publication.author_id.avatar_url
-        },
+        } : null,
+        movie: publication.movie ? {
+          id: publication.movie.movie_id,
+          poster: publication.movie.poster,
+          titulo: publication.movie.titulo
+        } : null,
         type: publication.type,
         target_id: publication.target_id,
+        movie_id: publication.movie_id,
         content: publication.content,
         title: publication.title,
         rating: publication.rating,
@@ -116,7 +125,8 @@ const getPublication = async (req, res) => {
     }
 
     const publication = await Publication.findById(publication_id)
-      .populate('author_id', 'username avatar_url');
+      .populate('author_id', 'username avatar_url')
+      .populate('movie', 'movie_id poster titulo');
 
     if (!publication) {
       return res.status(404).json({
@@ -139,6 +149,15 @@ const getPublication = async (req, res) => {
       review_id: publication.review_id, // Si viene del Core
       movie_id: publication.movie_id || publication.target_id
     };
+
+    // Manejar película
+    if (publication.movie) {
+      response.movie = {
+        id: publication.movie.movie_id,
+        poster: publication.movie.poster,
+        titulo: publication.movie.titulo
+      };
+    }
 
     // Manejar autor (puede ser author_id o user_id)
     if (publication.author_id) {
@@ -193,7 +212,7 @@ const getUserPublications = async (req, res) => {
     let user;
     if (user_id.match(/^[0-9a-fA-F]{24}$/)) {
       // Es un ObjectId válido
-      user = await User.findById(user_id);
+      user = await User.findOne({ user_id: user_id });
     } else {
       // Buscar por user_id del Core
       user = await User.findOne({ user_id: user_id });
@@ -226,6 +245,7 @@ const getUserPublications = async (req, res) => {
     // Obtener publicaciones
     const publications = await Publication.find(filter)
       .populate('author_id', 'username avatar_url')
+      .populate('movie', 'movie_id poster titulo')
       .sort({ created_at: -1 })
       .skip(skip)
       .limit(limit);
@@ -249,6 +269,15 @@ const getUserPublications = async (req, res) => {
         review_id: pub.review_id, // Si viene del Core
         isDeleted: pub.isDeleted
       };
+
+      // Manejar película
+      if (pub.movie) {
+        pubData.movie = {
+          id: pub.movie.movie_id,
+          poster: pub.movie.poster,
+          titulo: pub.movie.titulo
+        };
+      }
 
       // Manejar autor
       if (pub.author_id) {
@@ -324,6 +353,7 @@ const getMoviePublications = async (req, res) => {
     // Obtener publicaciones
     const publications = await Publication.find(filter)
       .populate('author_id', 'username avatar_url')
+      .populate('movie', 'movie_id poster titulo')
       .sort({ created_at: -1 })
       .skip(skip)
       .limit(limit);
@@ -346,6 +376,15 @@ const getMoviePublications = async (req, res) => {
         created_at: pub.created_at,
         review_id: pub.review_id
       };
+
+      // Manejar película
+      if (pub.movie) {
+        pubData.movie = {
+          id: pub.movie.movie_id,
+          poster: pub.movie.poster,
+          titulo: pub.movie.titulo
+        };
+      }
 
       // Manejar autor
       if (pub.author_id) {

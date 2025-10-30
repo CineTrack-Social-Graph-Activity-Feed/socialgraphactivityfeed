@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./User');
 
 /**
  * Modelo UNIFICADO de Publication/Review
@@ -130,6 +131,14 @@ publicationSchema.virtual('text').get(function() {
   return this.body || this.content;
 });
 
+// Virtual populate alias: permitir populate('user', 'username') como alias de author_id
+publicationSchema.virtual('user', {
+  ref: 'User',
+  localField: 'author_id',
+  foreignField: '_id',
+  justOne: true
+});
+
 /**
  * Crear publicación desde evento de reseña creada del Core
  * Maneja la estructura de datos que puede estar anidada en data.data
@@ -166,6 +175,18 @@ publicationSchema.statics.createFromEvent = async function(eventData) {
     updated_at: new Date(),
     syncedAt: new Date()
   };
+
+  // Si el usuario ya existe localmente, asociar referencia ObjectId
+  try {
+    if (user_id !== undefined && user_id !== null) {
+      const userDoc = await User.findOne({ user_id: String(user_id) }).select('_id');
+      if (userDoc) {
+        publicationData.author_id = userDoc._id;
+      }
+    }
+  } catch (e) {
+    // No bloquear creación por fallo en lookup
+  }
 
   const publication = await this.create(publicationData);
   return publication;
@@ -208,6 +229,19 @@ publicationSchema.statics.updateFromEvent = async function(eventData) {
     updateData,
     { new: true, runValidators: true }
   );
+
+  // Si la publicación existe pero aún no tiene author_id, intentar asociarlo
+  if (publication && !publication.author_id && publication.user_id) {
+    try {
+      const userDoc = await User.findOne({ user_id: String(publication.user_id) }).select('_id');
+      if (userDoc) {
+        publication.author_id = userDoc._id;
+        await publication.save();
+      }
+    } catch (e) {
+      // Ignorar errores de lookup/guardado aquí
+    }
+  }
 
   return publication;
 };
