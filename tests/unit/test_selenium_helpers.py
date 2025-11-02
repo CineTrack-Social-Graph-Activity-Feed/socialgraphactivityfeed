@@ -94,6 +94,57 @@ class TestWebDriverUtils:
         assert result == mock_element
     
     @patch('tests.utils.selenium_helpers.WebDriverWait')
+    def test_wait_for_elements_visible_success(self, mock_wait_class, utils, mock_element):
+        """Test successful multiple elements visibility wait."""
+        mock_wait_instance = Mock()
+        mock_wait_class.return_value = mock_wait_instance
+        mock_elements = [mock_element, mock_element]
+        mock_wait_instance.until.return_value = mock_elements
+        
+        locator = (By.CLASS_NAME, "list-item")
+        result = utils.wait_for_elements_visible(locator)
+        
+        assert result == mock_elements
+        assert len(result) == 2
+    
+    @patch('tests.utils.selenium_helpers.WebDriverWait')
+    def test_wait_for_text_present_success(self, mock_wait_class, utils):
+        """Test successful text presence wait."""
+        mock_wait_instance = Mock()
+        mock_wait_class.return_value = mock_wait_instance
+        mock_wait_instance.until.return_value = True
+        
+        locator = (By.ID, "message")
+        text = "Success message"
+        result = utils.wait_for_text_present(locator, text)
+        
+        assert result is True
+    
+    @patch('tests.utils.selenium_helpers.WebDriverWait')
+    def test_is_element_visible_true(self, mock_wait_class, utils, mock_element):
+        """Test element visibility check - element visible."""
+        mock_wait_instance = Mock()
+        mock_wait_class.return_value = mock_wait_instance
+        mock_wait_instance.until.return_value = mock_element
+        
+        locator = (By.ID, "visible-element")
+        result = utils.is_element_visible(locator)
+        
+        assert result is True
+    
+    @patch('tests.utils.selenium_helpers.WebDriverWait')
+    def test_is_element_visible_false(self, mock_wait_class, utils):
+        """Test element visibility check - element not visible."""
+        mock_wait_instance = Mock()
+        mock_wait_class.return_value = mock_wait_instance
+        mock_wait_instance.until.side_effect = TimeoutException()
+        
+        locator = (By.ID, "invisible-element")
+        result = utils.is_element_visible(locator, timeout=1)
+        
+        assert result is False
+    
+    @patch('tests.utils.selenium_helpers.WebDriverWait')
     def test_safe_click_success(self, mock_wait_class, utils, mock_element):
         """Test successful safe click."""
         mock_wait_instance = Mock()
@@ -287,5 +338,46 @@ class TestFrameContextManager:
         context_manager = utils.switch_to_frame_and_back(frame_locator)
         
         assert context_manager is not None
-        # Note: Full context manager testing would require more complex mocking
-        # of frame switching behavior, which could be added in integration tests
+    
+    @patch('tests.utils.selenium_helpers.WebDriverWait')
+    def test_frame_context_manager_enter_with_tuple(self, mock_wait_class):
+        """Test frame context manager __enter__ with tuple locator."""
+        mock_driver = Mock()
+        mock_element = Mock()
+        mock_wait_instance = Mock()
+        mock_wait_class.return_value = mock_wait_instance
+        mock_wait_instance.until.return_value = mock_element
+        
+        utils = WebDriverUtils(mock_driver)
+        frame_locator = (By.ID, "test-frame")
+        
+        with utils.switch_to_frame_and_back(frame_locator) as driver:
+            assert driver == mock_driver
+            mock_driver.switch_to.frame.assert_called_once_with(mock_element)
+        
+        # After exiting, should switch back to default content
+        mock_driver.switch_to.default_content.assert_called_once()
+    
+    def test_frame_context_manager_enter_with_string(self):
+        """Test frame context manager __enter__ with string locator."""
+        mock_driver = Mock()
+        utils = WebDriverUtils(mock_driver)
+        frame_name = "frame-name"
+        
+        with utils.switch_to_frame_and_back(frame_name) as driver:
+            assert driver == mock_driver
+            mock_driver.switch_to.frame.assert_called_once_with(frame_name)
+        
+        mock_driver.switch_to.default_content.assert_called_once()
+    
+    def test_frame_context_manager_enter_with_index(self):
+        """Test frame context manager __enter__ with index."""
+        mock_driver = Mock()
+        utils = WebDriverUtils(mock_driver)
+        frame_index = 0
+        
+        with utils.switch_to_frame_and_back(frame_index) as driver:
+            assert driver == mock_driver
+            mock_driver.switch_to.frame.assert_called_once_with(frame_index)
+        
+        mock_driver.switch_to.default_content.assert_called_once()

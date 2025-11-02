@@ -13,6 +13,12 @@ import logging
 from pathlib import Path
 from dotenv import load_dotenv
 from faker import Faker
+from datetime import datetime
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from tests.utils.checklist import TestChecklist
 
 # Add project root to Python path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -98,6 +104,76 @@ def mock_api_response():
         "data": {"id": 1, "message": "Test data"},
         "error": None
     }
+
+@pytest.fixture(scope="function")
+def driver(test_config):
+    """WebDriver fixture for E2E tests."""
+    options = Options()
+    
+    if test_config["headless"] or os.getenv("CI"):
+        options.add_argument("--headless=new")
+    
+    options.add_argument("--start-maximized")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    
+    try:
+        driver_path = ChromeDriverManager().install()
+        service = Service(driver_path)
+        driver = webdriver.Chrome(service=service, options=options)
+        driver.implicitly_wait(10)
+        
+        yield driver
+        
+        driver.quit()
+    except Exception as e:
+        pytest.skip(f"WebDriver not available: {e}")
+
+@pytest.fixture(scope="function")
+def checklist(request):
+    """Checklist fixture for tracking test steps."""
+    test_name = request.node.name
+    module_name = request.node.module.__name__
+    
+    checklist = TestChecklist(
+        test_name=test_name,
+        module_name=module_name,
+        started_at=datetime.now()
+    )
+    
+    yield checklist
+    
+    # Log summary after test
+    if checklist.failed > 0:
+        logging.error(f"Test {test_name} had {checklist.failed} failed steps")
+    else:
+        logging.info(f"Test {test_name} completed successfully")
+
+@pytest.fixture(scope="session")
+def api_session():
+    """Requests session for API tests."""
+    import requests
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": "CineTrack-Test-Suite/1.0",
+        "Accept": "application/json"
+    })
+    
+    yield session
+    
+    session.close()
+
+@pytest.fixture
+def setup_test_timing(request):
+    """Track test execution time."""
+    start_time = datetime.now()
+    
+    yield
+    
+    duration = (datetime.now() - start_time).total_seconds()
+    logging.info(f"Test {request.node.name} took {duration:.2f}s")
 
 # Pytest hooks
 def pytest_configure(config):

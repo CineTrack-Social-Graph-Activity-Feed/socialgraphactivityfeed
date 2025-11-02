@@ -1,0 +1,32 @@
+[run]
+source = tests/utils,tests/pages
+omit = 
+    */tests/unit/*
+    */tests/integration/*
+    */tests/e2e/*
+    */tests/selenium/*
+    */tests/fixtures/*
+    */__pycache__/*
+    */conftest.py
+    */test_*.py
+    *_test.py
+
+[report]
+precision = 2
+show_missing = True
+skip_covered = False
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstractmethod
+    @abc.abstractmethod
+
+[html]
+directory = reports/coverage_html
+
+[xml]
+output = reports/coverage.xml

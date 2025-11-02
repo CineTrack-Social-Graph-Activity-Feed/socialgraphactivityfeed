@@ -7,16 +7,16 @@ components like checklist, selenium helpers, etc.
 
 import pytest
 from datetime import datetime
-from tests.utils.checklist import TestChecklist, TestStep
+from tests.utils.checklist import TestChecklist, ChecklistStep
 
 
-class TestTestStep:
-    """Unit tests for TestStep class."""
+class TestChecklistStep:
+    """Unit tests for ChecklistStep class."""
     
     @pytest.mark.unit
-    def test_test_step_creation(self):
-        """Test TestStep object creation and properties."""
-        step = TestStep(name="Test Step", ok=True, message="Success")
+    def test_checklist_step_creation(self):
+        """Test ChecklistStep object creation and properties."""
+        step = ChecklistStep(name="Test Step", ok=True, message="Success")
         
         assert step.name == "Test Step"
         assert step.ok is True
@@ -27,9 +27,9 @@ class TestTestStep:
         assert step.extra_data == {}
     
     @pytest.mark.unit
-    def test_test_step_to_dict(self):
-        """Test TestStep serialization to dictionary."""
-        step = TestStep(
+    def test_checklist_step_to_dict(self):
+        """Test ChecklistStep serialization to dictionary."""
+        step = ChecklistStep(
             name="Test Step",
             ok=False,
             message="Failed",

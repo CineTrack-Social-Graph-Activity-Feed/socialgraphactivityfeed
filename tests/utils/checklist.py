@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class TestStep:
+class ChecklistStep:
     """Represents a single test step with result and metadata."""
     
     name: str
@@ -44,6 +44,8 @@ class TestStep:
 class TestChecklist:
     """
     Enhanced test checklist for comprehensive test reporting.
+    This class name starts with 'Test' but is NOT a pytest test class
+    because it has an __init__ constructor.
     
     Provides step tracking, timing, screenshots, and detailed reporting
     capabilities for automated testing.
@@ -52,7 +54,7 @@ class TestChecklist:
     test_name: str
     module_name: str
     started_at: datetime
-    steps: List[TestStep] = field(default_factory=list)
+    steps: List[ChecklistStep] = field(default_factory=list)
     tags: List[str] = field(default_factory=list)
     environment: str = "unknown"
     browser: str = "unknown"
@@ -90,7 +92,7 @@ class TestChecklist:
             duration_ms = (datetime.now() - self._current_step_start).total_seconds() * 1000
             self._current_step_start = None
         
-        step = TestStep(
+        step = ChecklistStep(
             name=name,
             ok=bool(condition),
             message=message,
@@ -166,7 +168,7 @@ class TestChecklist:
         """Check if all steps passed."""
         return self.failed == 0 and self.total > 0
     
-    def get_failed_steps(self) -> List[TestStep]:
+    def get_failed_steps(self) -> List[ChecklistStep]:
         """Get list of failed steps."""
         return [step for step in self.steps if not step.ok]
     

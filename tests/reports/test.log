@@ -707,3 +707,1464 @@
 2025-10-13 14:22:34,178 - root - INFO - Completed test: test_homepage_api_response
 2025-10-13 14:26:09,939 - root - INFO - Starting test: test_home_page_loads_successfully
 2025-10-13 14:26:10,079 - root - INFO - Completed test: test_home_page_loads_successfully
+2025-11-02 12:38:30,800 - root - INFO - Starting test: test_home_page_loads_successfully
+2025-11-02 12:38:30,926 - root - INFO - Completed test: test_home_page_loads_successfully
+2025-11-02 12:38:30,930 - root - INFO - Starting test: test_activity_feed_displays_content
+2025-11-02 12:38:30,934 - root - INFO - Completed test: test_activity_feed_displays_content
+2025-11-02 12:38:30,937 - root - INFO - Starting test: test_application_is_accessible
+2025-11-02 12:38:30,943 - root - INFO - Completed test: test_application_is_accessible
+2025-11-02 12:38:30,946 - root - INFO - Starting test: test_main_content_displays
+2025-11-02 12:38:30,951 - root - INFO - Completed test: test_main_content_displays
+2025-11-02 12:38:30,955 - root - INFO - Starting test: test_basic_navigation_works
+2025-11-02 12:38:30,962 - root - INFO - Completed test: test_basic_navigation_works
+2025-11-02 12:44:47,826 - root - INFO - Starting test: test_init_default_timeout
+2025-11-02 12:44:47,832 - root - INFO - Completed test: test_init_default_timeout
+2025-11-02 12:44:47,835 - root - INFO - Starting test: test_init_custom_timeout
+2025-11-02 12:44:47,839 - root - INFO - Completed test: test_init_custom_timeout
+2025-11-02 12:44:47,843 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-11-02 12:44:47,851 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-11-02 12:44:47,853 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-11-02 12:44:47,860 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-11-02 12:44:47,863 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-11-02 12:44:47,872 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-11-02 12:44:47,876 - root - INFO - Starting test: test_safe_click_success
+2025-11-02 12:44:47,885 - root - INFO - Completed test: test_safe_click_success
+2025-11-02 12:44:47,888 - root - INFO - Starting test: test_safe_click_failure
+2025-11-02 12:44:47,896 - root - INFO - Completed test: test_safe_click_failure
+2025-11-02 12:44:47,899 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-11-02 12:44:47,909 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-11-02 12:44:47,913 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-11-02 12:44:47,921 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-11-02 12:44:47,924 - root - INFO - Starting test: test_get_text_safe_success
+2025-11-02 12:44:47,932 - root - INFO - Completed test: test_get_text_safe_success
+2025-11-02 12:44:47,935 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-11-02 12:44:47,941 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-11-02 12:44:47,944 - root - INFO - Starting test: test_is_element_present_true
+2025-11-02 12:44:47,952 - root - INFO - Completed test: test_is_element_present_true
+2025-11-02 12:44:47,955 - root - INFO - Starting test: test_is_element_present_false
+2025-11-02 12:44:47,960 - root - INFO - Completed test: test_is_element_present_false
+2025-11-02 12:44:47,963 - root - INFO - Starting test: test_scroll_to_element_success
+2025-11-02 12:44:47,972 - root - INFO - Completed test: test_scroll_to_element_success
+2025-11-02 12:44:47,975 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-11-02 12:44:47,982 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-11-02 12:44:47,986 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-11-02 12:44:47,990 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-11-02 12:44:47,994 - root - INFO - Starting test: test_wait_vis_function
+2025-11-02 12:44:47,999 - root - INFO - Completed test: test_wait_vis_function
+2025-11-02 12:44:48,002 - root - INFO - Starting test: test_wait_css_function
+2025-11-02 12:44:48,009 - root - INFO - Completed test: test_wait_css_function
+2025-11-02 12:44:48,012 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-11-02 12:44:48,016 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-11-02 12:44:48,020 - root - INFO - Starting test: test_checklist_step_creation
+2025-11-02 12:44:48,023 - root - INFO - Completed test: test_checklist_step_creation
+2025-11-02 12:44:48,027 - root - INFO - Starting test: test_checklist_step_to_dict
+2025-11-02 12:44:48,030 - root - INFO - Completed test: test_checklist_step_to_dict
+2025-11-02 12:44:48,033 - root - INFO - Starting test: test_checklist_creation
+2025-11-02 12:44:48,036 - root - INFO - Completed test: test_checklist_creation
+2025-11-02 12:44:48,040 - root - INFO - Starting test: test_check_method
+2025-11-02 12:44:48,043 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-11-02 12:44:48,044 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-11-02 12:44:48,046 - root - INFO - Completed test: test_check_method
+2025-11-02 12:44:48,049 - root - INFO - Starting test: test_step_counts
+2025-11-02 12:44:48,050 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-11-02 12:44:48,051 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-11-02 12:44:48,051 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-11-02 12:44:48,053 - root - INFO - Completed test: test_step_counts
+2025-11-02 12:44:48,056 - root - INFO - Starting test: test_is_success_property
+2025-11-02 12:44:48,058 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:44:48,058 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:44:48,058 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-11-02 12:44:48,062 - root - INFO - Completed test: test_is_success_property
+2025-11-02 12:44:48,065 - root - INFO - Starting test: test_get_failed_steps
+2025-11-02 12:44:48,067 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-11-02 12:44:48,067 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-11-02 12:44:48,067 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-11-02 12:44:48,069 - root - INFO - Completed test: test_get_failed_steps
+2025-11-02 12:44:48,072 - root - INFO - Starting test: test_add_tag
+2025-11-02 12:44:48,076 - root - INFO - Completed test: test_add_tag
+2025-11-02 12:44:48,079 - root - INFO - Starting test: test_set_environment_info
+2025-11-02 12:44:48,083 - root - INFO - Completed test: test_set_environment_info
+2025-11-02 12:44:48,085 - root - INFO - Starting test: test_add_test_data
+2025-11-02 12:44:48,089 - root - INFO - Completed test: test_add_test_data
+2025-11-02 12:44:48,093 - root - INFO - Starting test: test_summary_dict
+2025-11-02 12:44:48,095 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 12:44:48,096 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 12:44:48,108 - root - INFO - Completed test: test_summary_dict
+2025-11-02 12:44:48,113 - root - INFO - Starting test: test_assert_all_passed_success
+2025-11-02 12:44:48,115 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:44:48,116 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:44:48,119 - root - INFO - Completed test: test_assert_all_passed_success
+2025-11-02 12:44:48,121 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-11-02 12:44:48,123 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:44:48,123 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-11-02 12:44:48,126 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-11-02 12:44:48,129 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-11-02 12:44:48,130 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-11-02 12:44:48,132 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-11-02 12:44:48,135 - root - INFO - Starting test: test_to_json
+2025-11-02 12:44:48,149 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 12:44:48,150 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 12:44:48,152 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-0\test_to_json0\test_results.json
+2025-11-02 12:44:48,174 - root - INFO - Completed test: test_to_json
+2025-11-02 12:44:48,178 - root - INFO - Starting test: test_duration_calculation
+2025-11-02 12:44:48,179 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:44:48,293 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:44:48,300 - root - INFO - Completed test: test_duration_calculation
+2025-11-02 12:44:48,306 - root - INFO - Starting test: test_empty_checklist_properties
+2025-11-02 12:44:48,312 - root - INFO - Completed test: test_empty_checklist_properties
+2025-11-02 12:45:01,083 - root - INFO - Starting test: test_home_page_loads_successfully
+2025-11-02 12:45:01,095 - root - INFO - Completed test: test_home_page_loads_successfully
+2025-11-02 12:45:01,098 - root - INFO - Starting test: test_activity_feed_displays_content
+2025-11-02 12:45:01,102 - root - INFO - Completed test: test_activity_feed_displays_content
+2025-11-02 12:45:01,105 - root - INFO - Starting test: test_application_is_accessible
+2025-11-02 12:45:01,111 - root - INFO - Completed test: test_application_is_accessible
+2025-11-02 12:45:01,114 - root - INFO - Starting test: test_main_content_displays
+2025-11-02 12:45:01,119 - root - INFO - Completed test: test_main_content_displays
+2025-11-02 12:45:01,122 - root - INFO - Starting test: test_basic_navigation_works
+2025-11-02 12:45:01,128 - root - INFO - Completed test: test_basic_navigation_works
+2025-11-02 12:45:01,131 - root - INFO - Starting test: test_responsive_ui_elements
+2025-11-02 12:45:01,135 - root - INFO - Completed test: test_responsive_ui_elements
+2025-11-02 12:45:01,138 - root - INFO - Starting test: test_acceptable_load_times
+2025-11-02 12:45:01,144 - root - INFO - Completed test: test_acceptable_load_times
+2025-11-02 12:45:01,147 - root - INFO - Starting test: test_error_handling_basics
+2025-11-02 12:45:01,153 - root - INFO - Completed test: test_error_handling_basics
+2025-11-02 12:45:01,156 - root - INFO - Starting test: test_feed_interaction_complete_flow
+2025-11-02 12:45:01,163 - root - INFO - Completed test: test_feed_interaction_complete_flow
+2025-11-02 12:45:01,166 - root - INFO - Starting test: test_network_follow_unfollow_flow
+2025-11-02 12:45:01,171 - root - INFO - Completed test: test_network_follow_unfollow_flow
+2025-11-02 12:45:01,175 - root - INFO - Starting test: test_homepage_api_response
+2025-11-02 12:45:01,182 - root - INFO - Completed test: test_homepage_api_response
+2025-11-02 12:45:01,184 - root - INFO - Starting test: test_homepage_ui_data_integration
+2025-11-02 12:45:01,192 - root - INFO - Completed test: test_homepage_ui_data_integration
+2025-11-02 12:46:40,058 - root - INFO - Starting test: test_init_default_timeout
+2025-11-02 12:46:40,065 - root - INFO - Completed test: test_init_default_timeout
+2025-11-02 12:46:40,067 - root - INFO - Starting test: test_init_custom_timeout
+2025-11-02 12:46:40,073 - root - INFO - Completed test: test_init_custom_timeout
+2025-11-02 12:46:40,075 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-11-02 12:46:40,084 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-11-02 12:46:40,087 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-11-02 12:46:40,096 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-11-02 12:46:40,098 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-11-02 12:46:40,106 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-11-02 12:46:40,111 - root - INFO - Starting test: test_safe_click_success
+2025-11-02 12:46:40,119 - root - INFO - Completed test: test_safe_click_success
+2025-11-02 12:46:40,122 - root - INFO - Starting test: test_safe_click_failure
+2025-11-02 12:46:40,128 - root - INFO - Completed test: test_safe_click_failure
+2025-11-02 12:46:40,132 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-11-02 12:46:40,146 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-11-02 12:46:40,149 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-11-02 12:46:40,157 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-11-02 12:46:40,160 - root - INFO - Starting test: test_get_text_safe_success
+2025-11-02 12:46:40,168 - root - INFO - Completed test: test_get_text_safe_success
+2025-11-02 12:46:40,171 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-11-02 12:46:40,179 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-11-02 12:46:40,182 - root - INFO - Starting test: test_is_element_present_true
+2025-11-02 12:46:40,190 - root - INFO - Completed test: test_is_element_present_true
+2025-11-02 12:46:40,192 - root - INFO - Starting test: test_is_element_present_false
+2025-11-02 12:46:40,201 - root - INFO - Completed test: test_is_element_present_false
+2025-11-02 12:46:40,204 - root - INFO - Starting test: test_scroll_to_element_success
+2025-11-02 12:46:40,212 - root - INFO - Completed test: test_scroll_to_element_success
+2025-11-02 12:46:40,215 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-11-02 12:46:40,221 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-11-02 12:46:40,224 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-11-02 12:46:40,230 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-11-02 12:46:40,233 - root - INFO - Starting test: test_wait_vis_function
+2025-11-02 12:46:40,238 - root - INFO - Completed test: test_wait_vis_function
+2025-11-02 12:46:40,242 - root - INFO - Starting test: test_wait_css_function
+2025-11-02 12:46:40,248 - root - INFO - Completed test: test_wait_css_function
+2025-11-02 12:46:40,251 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-11-02 12:46:40,255 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-11-02 12:46:40,257 - root - INFO - Starting test: test_checklist_step_creation
+2025-11-02 12:46:40,260 - root - INFO - Completed test: test_checklist_step_creation
+2025-11-02 12:46:40,264 - root - INFO - Starting test: test_checklist_step_to_dict
+2025-11-02 12:46:40,267 - root - INFO - Completed test: test_checklist_step_to_dict
+2025-11-02 12:46:40,270 - root - INFO - Starting test: test_checklist_creation
+2025-11-02 12:46:40,273 - root - INFO - Completed test: test_checklist_creation
+2025-11-02 12:46:40,275 - root - INFO - Starting test: test_check_method
+2025-11-02 12:46:40,277 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-11-02 12:46:40,277 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-11-02 12:46:40,280 - root - INFO - Completed test: test_check_method
+2025-11-02 12:46:40,283 - root - INFO - Starting test: test_step_counts
+2025-11-02 12:46:40,285 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-11-02 12:46:40,285 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-11-02 12:46:40,285 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-11-02 12:46:40,287 - root - INFO - Completed test: test_step_counts
+2025-11-02 12:46:40,290 - root - INFO - Starting test: test_is_success_property
+2025-11-02 12:46:40,292 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:46:40,292 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:46:40,292 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-11-02 12:46:40,295 - root - INFO - Completed test: test_is_success_property
+2025-11-02 12:46:40,298 - root - INFO - Starting test: test_get_failed_steps
+2025-11-02 12:46:40,300 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-11-02 12:46:40,300 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-11-02 12:46:40,300 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-11-02 12:46:40,302 - root - INFO - Completed test: test_get_failed_steps
+2025-11-02 12:46:40,305 - root - INFO - Starting test: test_add_tag
+2025-11-02 12:46:40,308 - root - INFO - Completed test: test_add_tag
+2025-11-02 12:46:40,310 - root - INFO - Starting test: test_set_environment_info
+2025-11-02 12:46:40,314 - root - INFO - Completed test: test_set_environment_info
+2025-11-02 12:46:40,317 - root - INFO - Starting test: test_add_test_data
+2025-11-02 12:46:40,320 - root - INFO - Completed test: test_add_test_data
+2025-11-02 12:46:40,323 - root - INFO - Starting test: test_summary_dict
+2025-11-02 12:46:40,324 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 12:46:40,324 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 12:46:40,327 - root - INFO - Completed test: test_summary_dict
+2025-11-02 12:46:40,330 - root - INFO - Starting test: test_assert_all_passed_success
+2025-11-02 12:46:40,332 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:46:40,332 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:46:40,335 - root - INFO - Completed test: test_assert_all_passed_success
+2025-11-02 12:46:40,337 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-11-02 12:46:40,339 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:46:40,339 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-11-02 12:46:40,342 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-11-02 12:46:40,345 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-11-02 12:46:40,347 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-11-02 12:46:40,350 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-11-02 12:46:40,353 - root - INFO - Starting test: test_to_json
+2025-11-02 12:46:40,365 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 12:46:40,365 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 12:46:40,367 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-1\test_to_json0\test_results.json
+2025-11-02 12:46:40,389 - root - INFO - Completed test: test_to_json
+2025-11-02 12:46:40,391 - root - INFO - Starting test: test_duration_calculation
+2025-11-02 12:46:40,394 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:46:40,504 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:46:40,511 - root - INFO - Completed test: test_duration_calculation
+2025-11-02 12:46:40,517 - root - INFO - Starting test: test_empty_checklist_properties
+2025-11-02 12:46:40,523 - root - INFO - Completed test: test_empty_checklist_properties
+2025-11-02 12:47:46,220 - root - INFO - Starting test: test_init_default_timeout
+2025-11-02 12:47:46,229 - root - INFO - Completed test: test_init_default_timeout
+2025-11-02 12:47:46,233 - root - INFO - Starting test: test_init_custom_timeout
+2025-11-02 12:47:46,241 - root - INFO - Completed test: test_init_custom_timeout
+2025-11-02 12:47:46,245 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-11-02 12:47:46,261 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-11-02 12:47:46,265 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-11-02 12:47:46,276 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-11-02 12:47:46,281 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-11-02 12:47:46,294 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-11-02 12:47:46,299 - root - INFO - Starting test: test_safe_click_success
+2025-11-02 12:47:46,313 - root - INFO - Completed test: test_safe_click_success
+2025-11-02 12:47:46,317 - root - INFO - Starting test: test_safe_click_failure
+2025-11-02 12:47:46,327 - root - INFO - Completed test: test_safe_click_failure
+2025-11-02 12:47:46,332 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-11-02 12:47:46,345 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-11-02 12:47:46,349 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-11-02 12:47:46,362 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-11-02 12:47:46,367 - root - INFO - Starting test: test_get_text_safe_success
+2025-11-02 12:47:46,379 - root - INFO - Completed test: test_get_text_safe_success
+2025-11-02 12:47:46,383 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-11-02 12:47:46,396 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-11-02 12:47:46,399 - root - INFO - Starting test: test_is_element_present_true
+2025-11-02 12:47:46,416 - root - INFO - Completed test: test_is_element_present_true
+2025-11-02 12:47:46,422 - root - INFO - Starting test: test_is_element_present_false
+2025-11-02 12:47:46,430 - root - INFO - Completed test: test_is_element_present_false
+2025-11-02 12:47:46,437 - root - INFO - Starting test: test_scroll_to_element_success
+2025-11-02 12:47:46,460 - root - INFO - Completed test: test_scroll_to_element_success
+2025-11-02 12:47:46,463 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-11-02 12:47:46,473 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-11-02 12:47:46,477 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-11-02 12:47:46,487 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-11-02 12:47:46,492 - root - INFO - Starting test: test_wait_vis_function
+2025-11-02 12:47:46,500 - root - INFO - Completed test: test_wait_vis_function
+2025-11-02 12:47:46,506 - root - INFO - Starting test: test_wait_css_function
+2025-11-02 12:47:46,514 - root - INFO - Completed test: test_wait_css_function
+2025-11-02 12:47:46,518 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-11-02 12:47:46,525 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-11-02 12:47:46,530 - root - INFO - Starting test: test_checklist_step_creation
+2025-11-02 12:47:46,534 - root - INFO - Completed test: test_checklist_step_creation
+2025-11-02 12:47:46,540 - root - INFO - Starting test: test_checklist_step_to_dict
+2025-11-02 12:47:46,545 - root - INFO - Completed test: test_checklist_step_to_dict
+2025-11-02 12:47:46,549 - root - INFO - Starting test: test_checklist_creation
+2025-11-02 12:47:46,554 - root - INFO - Completed test: test_checklist_creation
+2025-11-02 12:47:46,558 - root - INFO - Starting test: test_check_method
+2025-11-02 12:47:46,561 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-11-02 12:47:46,561 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-11-02 12:47:46,565 - root - INFO - Completed test: test_check_method
+2025-11-02 12:47:46,569 - root - INFO - Starting test: test_step_counts
+2025-11-02 12:47:46,573 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-11-02 12:47:46,573 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-11-02 12:47:46,574 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-11-02 12:47:46,578 - root - INFO - Completed test: test_step_counts
+2025-11-02 12:47:46,582 - root - INFO - Starting test: test_is_success_property
+2025-11-02 12:47:46,583 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:47:46,584 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:47:46,585 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-11-02 12:47:46,589 - root - INFO - Completed test: test_is_success_property
+2025-11-02 12:47:46,594 - root - INFO - Starting test: test_get_failed_steps
+2025-11-02 12:47:46,596 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-11-02 12:47:46,596 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-11-02 12:47:46,596 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-11-02 12:47:46,600 - root - INFO - Completed test: test_get_failed_steps
+2025-11-02 12:47:46,605 - root - INFO - Starting test: test_add_tag
+2025-11-02 12:47:46,610 - root - INFO - Completed test: test_add_tag
+2025-11-02 12:47:46,614 - root - INFO - Starting test: test_set_environment_info
+2025-11-02 12:47:46,620 - root - INFO - Completed test: test_set_environment_info
+2025-11-02 12:47:46,625 - root - INFO - Starting test: test_add_test_data
+2025-11-02 12:47:46,629 - root - INFO - Completed test: test_add_test_data
+2025-11-02 12:47:46,633 - root - INFO - Starting test: test_summary_dict
+2025-11-02 12:47:46,635 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 12:47:46,636 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 12:47:46,640 - root - INFO - Completed test: test_summary_dict
+2025-11-02 12:47:46,644 - root - INFO - Starting test: test_assert_all_passed_success
+2025-11-02 12:47:46,646 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:47:46,646 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:47:46,650 - root - INFO - Completed test: test_assert_all_passed_success
+2025-11-02 12:47:46,656 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-11-02 12:47:46,658 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:47:46,658 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-11-02 12:47:46,661 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-11-02 12:47:46,666 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-11-02 12:47:46,668 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-11-02 12:47:46,673 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-11-02 12:47:46,677 - root - INFO - Starting test: test_to_json
+2025-11-02 12:47:46,691 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 12:47:46,692 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 12:47:46,694 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-2\test_to_json0\test_results.json
+2025-11-02 12:47:46,719 - root - INFO - Completed test: test_to_json
+2025-11-02 12:47:46,724 - root - INFO - Starting test: test_duration_calculation
+2025-11-02 12:47:46,726 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:47:46,840 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:47:46,844 - root - INFO - Completed test: test_duration_calculation
+2025-11-02 12:47:46,850 - root - INFO - Starting test: test_empty_checklist_properties
+2025-11-02 12:47:46,858 - root - INFO - Completed test: test_empty_checklist_properties
+2025-11-02 12:48:49,155 - root - INFO - Starting test: test_home_page_loads_successfully
+2025-11-02 12:48:49,158 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:48:51,292 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:48:51,430 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:48:51,493 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:48:51,637 - root - INFO - Completed test: test_home_page_loads_successfully
+2025-11-02 12:48:51,642 - root - INFO - Starting test: test_activity_feed_displays_content
+2025-11-02 12:48:51,643 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:48:53,522 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:48:53,585 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:48:53,645 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:48:53,652 - root - INFO - Completed test: test_activity_feed_displays_content
+2025-11-02 12:48:53,655 - root - INFO - Starting test: test_navigation_to_network_page
+2025-11-02 12:48:53,657 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:48:55,576 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:48:55,641 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:48:55,710 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:48:55,719 - root - INFO - Completed test: test_navigation_to_network_page
+2025-11-02 12:48:55,723 - root - INFO - Starting test: test_network_page_functionality
+2025-11-02 12:48:55,724 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:48:57,678 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:48:57,741 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:48:57,804 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:48:57,811 - root - INFO - Completed test: test_network_page_functionality
+2025-11-02 12:48:57,814 - root - INFO - Starting test: test_movie_content_verification
+2025-11-02 12:48:57,816 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:00,065 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:00,140 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:00,216 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:49:00,224 - root - INFO - Completed test: test_movie_content_verification
+2025-11-02 12:49:00,232 - root - INFO - Starting test: test_page_responsive_elements
+2025-11-02 12:49:00,233 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:02,326 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:02,393 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:02,472 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:49:02,485 - root - INFO - Completed test: test_page_responsive_elements
+2025-11-02 12:49:02,489 - root - INFO - Starting test: test_full_user_journey
+2025-11-02 12:49:02,490 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:04,454 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:04,524 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:04,587 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:49:04,595 - root - INFO - Completed test: test_full_user_journey
+2025-11-02 12:49:04,598 - root - INFO - Starting test: test_performance_and_load_times
+2025-11-02 12:49:04,599 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:06,617 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:06,673 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:06,734 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:49:06,742 - root - INFO - Completed test: test_performance_and_load_times
+2025-11-02 12:49:06,747 - root - INFO - Starting test: test_application_is_accessible
+2025-11-02 12:49:06,748 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:08,706 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:08,763 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:08,836 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:49:08,844 - root - INFO - Completed test: test_application_is_accessible
+2025-11-02 12:49:08,847 - root - INFO - Starting test: test_main_content_displays
+2025-11-02 12:49:08,848 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:13,725 - root - INFO - Completed test: test_main_content_displays
+2025-11-02 12:49:39,248 - root - INFO - Starting test: test_home_page_loads_successfully
+2025-11-02 12:49:39,250 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:41,751 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:41,832 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:41,899 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:49:41,917 - root - INFO - Completed test: test_home_page_loads_successfully
+2025-11-02 12:49:41,923 - root - INFO - Starting test: test_activity_feed_displays_content
+2025-11-02 12:49:41,924 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:44,341 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:44,399 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:44,458 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:49:44,465 - root - INFO - Completed test: test_activity_feed_displays_content
+2025-11-02 12:49:44,469 - root - INFO - Starting test: test_navigation_to_network_page
+2025-11-02 12:49:44,469 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:46,782 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:46,840 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:46,901 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:49:46,996 - root - INFO - Completed test: test_navigation_to_network_page
+2025-11-02 12:49:47,006 - root - INFO - Starting test: test_network_page_functionality
+2025-11-02 12:49:47,008 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:49,265 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:49,330 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:49,389 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:49:49,398 - root - INFO - Completed test: test_network_page_functionality
+2025-11-02 12:49:49,403 - root - INFO - Starting test: test_movie_content_verification
+2025-11-02 12:49:49,404 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:51,707 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:51,780 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:51,837 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:49:51,844 - root - INFO - Completed test: test_movie_content_verification
+2025-11-02 12:49:51,848 - root - INFO - Starting test: test_page_responsive_elements
+2025-11-02 12:49:51,848 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:54,185 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:54,252 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:49:54,315 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:49:54,321 - root - INFO - Completed test: test_page_responsive_elements
+2025-11-02 12:49:54,325 - root - INFO - Starting test: test_full_user_journey
+2025-11-02 12:49:54,327 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:49:57,958 - root - INFO - Completed test: test_full_user_journey
+2025-11-02 12:52:18,836 - root - INFO - Starting test: test_home_page_loads_successfully
+2025-11-02 12:52:18,838 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:21,337 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:21,416 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:21,502 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:21,516 - root - INFO - Completed test: test_home_page_loads_successfully
+2025-11-02 12:52:21,520 - root - INFO - Starting test: test_activity_feed_displays_content
+2025-11-02 12:52:21,521 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:23,973 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:24,037 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:24,096 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:24,103 - root - INFO - Completed test: test_activity_feed_displays_content
+2025-11-02 12:52:24,108 - root - INFO - Starting test: test_navigation_to_network_page
+2025-11-02 12:52:24,109 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:26,447 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:26,517 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:26,581 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:26,600 - root - INFO - Completed test: test_navigation_to_network_page
+2025-11-02 12:52:26,605 - root - INFO - Starting test: test_network_page_functionality
+2025-11-02 12:52:26,606 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:28,882 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:28,942 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:28,997 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:29,004 - root - INFO - Completed test: test_network_page_functionality
+2025-11-02 12:52:29,008 - root - INFO - Starting test: test_movie_content_verification
+2025-11-02 12:52:29,009 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:31,261 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:31,318 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:31,376 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:31,382 - root - INFO - Completed test: test_movie_content_verification
+2025-11-02 12:52:31,386 - root - INFO - Starting test: test_page_responsive_elements
+2025-11-02 12:52:31,387 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:33,513 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:33,585 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:33,648 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:33,656 - root - INFO - Completed test: test_page_responsive_elements
+2025-11-02 12:52:33,660 - root - INFO - Starting test: test_full_user_journey
+2025-11-02 12:52:33,661 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:35,605 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:35,672 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:35,729 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:35,739 - root - INFO - Completed test: test_full_user_journey
+2025-11-02 12:52:35,742 - root - INFO - Starting test: test_performance_and_load_times
+2025-11-02 12:52:35,743 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:37,637 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:37,704 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:37,763 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:37,769 - root - INFO - Completed test: test_performance_and_load_times
+2025-11-02 12:52:37,773 - root - INFO - Starting test: test_application_is_accessible
+2025-11-02 12:52:37,774 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:39,670 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:39,733 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:39,784 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:39,793 - root - INFO - Completed test: test_application_is_accessible
+2025-11-02 12:52:39,795 - root - INFO - Starting test: test_main_content_displays
+2025-11-02 12:52:39,796 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:41,701 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:41,762 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:41,828 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:41,835 - root - INFO - Completed test: test_main_content_displays
+2025-11-02 12:52:41,838 - root - INFO - Starting test: test_basic_navigation_works
+2025-11-02 12:52:41,839 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:43,845 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:43,912 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:43,968 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:43,974 - root - INFO - Completed test: test_basic_navigation_works
+2025-11-02 12:52:43,978 - root - INFO - Starting test: test_responsive_ui_elements
+2025-11-02 12:52:43,978 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:45,987 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:46,048 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:46,109 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:46,117 - root - INFO - Completed test: test_responsive_ui_elements
+2025-11-02 12:52:46,120 - root - INFO - Starting test: test_acceptable_load_times
+2025-11-02 12:52:46,121 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:48,017 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:48,077 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:48,145 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:48,152 - root - INFO - Completed test: test_acceptable_load_times
+2025-11-02 12:52:48,155 - root - INFO - Starting test: test_error_handling_basics
+2025-11-02 12:52:48,156 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:50,054 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:50,111 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:50,170 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:50,178 - root - INFO - Completed test: test_error_handling_basics
+2025-11-02 12:52:50,181 - root - INFO - Starting test: test_homepage_content_regression
+2025-11-02 12:52:50,182 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:52,095 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:52,170 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:52,229 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:52,237 - root - INFO - Completed test: test_homepage_content_regression
+2025-11-02 12:52:52,240 - root - INFO - Starting test: test_navigation_regression
+2025-11-02 12:52:52,241 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:54,350 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:54,414 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:54,474 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:54,487 - root - INFO - Completed test: test_navigation_regression
+2025-11-02 12:52:54,490 - root - INFO - Starting test: test_performance_regression
+2025-11-02 12:52:54,490 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:56,409 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:56,470 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:56,549 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:56,561 - root - INFO - Completed test: test_performance_regression
+2025-11-02 12:52:56,564 - root - INFO - Starting test: test_data_integrity_regression
+2025-11-02 12:52:56,565 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:52:58,539 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:58,602 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:52:58,657 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:52:58,669 - root - INFO - Completed test: test_data_integrity_regression
+2025-11-02 12:52:58,672 - root - INFO - Starting test: test_feed_interaction_complete_flow
+2025-11-02 12:52:58,674 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:00,651 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:00,717 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:00,772 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:00,784 - root - INFO - Completed test: test_feed_interaction_complete_flow
+2025-11-02 12:53:00,787 - root - INFO - Starting test: test_feed_loading_performance
+2025-11-02 12:53:00,788 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:02,765 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:02,823 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:02,879 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:02,887 - root - INFO - Completed test: test_feed_loading_performance
+2025-11-02 12:53:02,890 - root - INFO - Starting test: test_network_follow_unfollow_flow
+2025-11-02 12:53:02,892 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:04,866 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:04,936 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:04,997 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:05,010 - root - INFO - Completed test: test_network_follow_unfollow_flow
+2025-11-02 12:53:05,014 - root - INFO - Starting test: test_network_page_navigation
+2025-11-02 12:53:05,015 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:06,969 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:07,036 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:07,095 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:07,107 - root - INFO - Completed test: test_network_page_navigation
+2025-11-02 12:53:07,110 - root - INFO - Starting test: test_complete_user_journey
+2025-11-02 12:53:07,111 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:09,114 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:09,178 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:09,242 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:09,254 - root - INFO - Completed test: test_complete_user_journey
+2025-11-02 12:53:09,259 - root - INFO - Starting test: test_homepage_api_response
+2025-11-02 12:53:09,770 - tests.utils.checklist - INFO - Step 'Homepage API request successful': PASS - Response status: 200
+2025-11-02 12:53:09,770 - tests.utils.checklist - INFO - Step 'Content type is HTML': PASS - Content type: text/html
+2025-11-02 12:53:09,771 - tests.utils.checklist - INFO - Step 'Response has content': PASS - Response length: 521 characters
+2025-11-02 12:53:09,771 - tests.utils.checklist - INFO - Step 'HTML contains 'cinetrack'': PASS - Content 'cinetrack' found: True
+2025-11-02 12:53:09,771 - tests.utils.checklist - ERROR - Step 'HTML contains 'bienvenido'': FAIL - Content 'bienvenido' found: False
+2025-11-02 12:53:09,772 - tests.utils.checklist - ERROR - Step 'HTML contains 'amigos'': FAIL - Content 'amigos' found: False
+2025-11-02 12:53:09,990 - root - ERROR - Test test_homepage_api_response had 2 failed steps
+2025-11-02 12:53:09,992 - root - INFO - Completed test: test_homepage_api_response
+2025-11-02 12:53:09,994 - root - INFO - Starting test: test_network_page_api_response
+2025-11-02 12:53:11,057 - tests.utils.checklist - INFO - Step 'Network page API request': PASS - Response status: 200
+2025-11-02 12:53:11,058 - tests.utils.checklist - INFO - Step 'Network page has content': PASS - Response length: 521 characters
+2025-11-02 12:53:11,058 - tests.utils.checklist - ERROR - Step 'Contains network-related content': FAIL - Found indicators: []
+2025-11-02 12:53:11,088 - root - ERROR - Test test_network_page_api_response had 1 failed steps
+2025-11-02 12:53:11,089 - root - INFO - Completed test: test_network_page_api_response
+2025-11-02 12:53:11,092 - root - INFO - Starting test: test_static_assets_availability
+2025-11-02 12:53:11,616 - tests.utils.checklist - INFO - Step 'Static asset /static/css/main.css': PASS - Status: 200, Size: 521 bytes
+2025-11-02 12:53:12,800 - tests.utils.checklist - INFO - Step 'Static asset /static/js/main.js': PASS - Status: 200, Size: 521 bytes
+2025-11-02 12:53:13,680 - tests.utils.checklist - INFO - Step 'Static asset /assets/style.css': PASS - Status: 200, Size: 521 bytes
+2025-11-02 12:53:14,336 - tests.utils.checklist - INFO - Step 'Static asset /css/style.css': PASS - Status: 200, Size: 521 bytes
+2025-11-02 12:53:14,803 - tests.utils.checklist - INFO - Step 'Static asset /js/app.js': PASS - Status: 200, Size: 521 bytes
+2025-11-02 12:53:15,684 - tests.utils.checklist - INFO - Step 'Static asset /favicon.ico': PASS - Status: 200, Size: 521 bytes
+2025-11-02 12:53:15,685 - tests.utils.checklist - INFO - Step 'Some static assets available': PASS - Successfully loaded 6 out of 6 assets
+2025-11-02 12:53:15,689 - root - INFO - Test test_static_assets_availability completed successfully
+2025-11-02 12:53:15,689 - root - INFO - Completed test: test_static_assets_availability
+2025-11-02 12:53:15,693 - root - INFO - Starting test: test_api_endpoints_discovery
+2025-11-02 12:53:16,625 - tests.utils.checklist - INFO - Step 'API endpoint /api/': PASS - Status: 200, Content-Type: text/html
+2025-11-02 12:53:17,517 - tests.utils.checklist - INFO - Step 'API endpoint /api/v1/': PASS - Status: 200, Content-Type: text/html
+2025-11-02 12:53:18,215 - tests.utils.checklist - INFO - Step 'API endpoint /api/users': PASS - Status: 200, Content-Type: text/html
+2025-11-02 12:53:18,684 - tests.utils.checklist - INFO - Step 'API endpoint /api/movies': PASS - Status: 200, Content-Type: text/html
+2025-11-02 12:53:19,548 - tests.utils.checklist - INFO - Step 'API endpoint /api/reviews': PASS - Status: 200, Content-Type: text/html
+2025-11-02 12:53:20,070 - tests.utils.checklist - INFO - Step 'API endpoint /api/follows': PASS - Status: 200, Content-Type: text/html
+2025-11-02 12:53:20,691 - tests.utils.checklist - INFO - Step 'API endpoint /api/feed': PASS - Status: 200, Content-Type: text/html
+2025-11-02 12:53:21,503 - tests.utils.checklist - INFO - Step 'API endpoint /rest/': PASS - Status: 200, Content-Type: text/html
+2025-11-02 12:53:22,526 - tests.utils.checklist - INFO - Step 'API endpoint /graphql': PASS - Status: 200, Content-Type: text/html
+2025-11-02 12:53:22,526 - tests.utils.checklist - INFO - Step 'API endpoint discovery complete': PASS - Potential API endpoints found: True
+2025-11-02 12:53:22,530 - root - INFO - Test test_api_endpoints_discovery completed successfully
+2025-11-02 12:53:22,531 - root - INFO - Completed test: test_api_endpoints_discovery
+2025-11-02 12:53:22,535 - root - INFO - Starting test: test_server_headers_and_security
+2025-11-02 12:53:22,615 - tests.utils.checklist - INFO - Step 'Server header present': PASS - Server: AmazonS3
+2025-11-02 12:53:22,615 - tests.utils.checklist - INFO - Step 'Security header x-content-type-options': PASS - Present: False, Value: 
+2025-11-02 12:53:22,616 - tests.utils.checklist - INFO - Step 'Security header x-frame-options': PASS - Present: False, Value: 
+2025-11-02 12:53:22,616 - tests.utils.checklist - INFO - Step 'Security header x-xss-protection': PASS - Present: False, Value: 
+2025-11-02 12:53:22,616 - tests.utils.checklist - INFO - Step 'Security header strict-transport-security': PASS - Present: False, Value: 
+2025-11-02 12:53:22,623 - tests.utils.checklist - INFO - Step 'Reasonable content size': PASS - Content size: 0.5 KB
+2025-11-02 12:53:22,626 - root - INFO - Test test_server_headers_and_security completed successfully
+2025-11-02 12:53:22,627 - root - INFO - Completed test: test_server_headers_and_security
+2025-11-02 12:53:22,631 - root - INFO - Starting test: test_response_times_and_performance
+2025-11-02 12:53:22,701 - tests.utils.checklist - INFO - Step 'Homepage response time': PASS - Response time: 0.07 seconds
+2025-11-02 12:53:22,702 - tests.utils.checklist - INFO - Step 'Response status successful': PASS - Status code: 200
+2025-11-02 12:53:22,723 - tests.utils.checklist - INFO - Step 'Request 1 performance': PASS - Time: 0.02s, Status: 200
+2025-11-02 12:53:22,745 - tests.utils.checklist - INFO - Step 'Request 2 performance': PASS - Time: 0.02s, Status: 200
+2025-11-02 12:53:22,787 - tests.utils.checklist - INFO - Step 'Request 3 performance': PASS - Time: 0.04s, Status: 200
+2025-11-02 12:53:22,788 - tests.utils.checklist - INFO - Step 'Response time consistency': PASS - Avg: 0.03s, Max: 0.04s, Min: 0.02s
+2025-11-02 12:53:22,794 - root - INFO - Test test_response_times_and_performance completed successfully
+2025-11-02 12:53:22,795 - root - INFO - Completed test: test_response_times_and_performance
+2025-11-02 12:53:22,800 - root - INFO - Starting test: test_data_consistency_check
+2025-11-02 12:53:22,876 - tests.utils.checklist - INFO - Step 'Homepage load 1': PASS - Status: 200
+2025-11-02 12:53:22,896 - tests.utils.checklist - INFO - Step 'Homepage load 2': PASS - Status: 200
+2025-11-02 12:53:22,896 - tests.utils.checklist - INFO - Step 'Content consistency across loads': PASS - Content patterns match: True
+2025-11-02 12:53:22,900 - root - INFO - Test test_data_consistency_check completed successfully
+2025-11-02 12:53:22,901 - root - INFO - Completed test: test_data_consistency_check
+2025-11-02 12:53:22,906 - root - INFO - Starting test: test_homepage_ui_data_integration
+2025-11-02 12:53:22,907 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:24,938 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:25,009 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:25,066 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:25,078 - root - INFO - Completed test: test_homepage_ui_data_integration
+2025-11-02 12:53:25,081 - root - INFO - Starting test: test_navigation_integration_with_backend
+2025-11-02 12:53:25,082 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:27,231 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:27,291 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:27,361 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:27,369 - root - INFO - Completed test: test_navigation_integration_with_backend
+2025-11-02 12:53:27,373 - root - INFO - Starting test: test_real_time_data_consistency
+2025-11-02 12:53:27,374 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:29,371 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:29,557 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:29,612 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:29,627 - root - INFO - Completed test: test_real_time_data_consistency
+2025-11-02 12:53:29,631 - root - INFO - Starting test: test_frontend_backend_error_handling
+2025-11-02 12:53:29,633 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:31,662 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:31,724 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:31,783 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:31,795 - root - INFO - Completed test: test_frontend_backend_error_handling
+2025-11-02 12:53:31,798 - root - INFO - Starting test: test_concurrent_ui_backend_operations
+2025-11-02 12:53:31,800 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:33,842 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:33,899 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:33,958 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:33,970 - root - INFO - Completed test: test_concurrent_ui_backend_operations
+2025-11-02 12:53:33,974 - root - INFO - Starting test: test_frontend_backend_performance_integration
+2025-11-02 12:53:33,975 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:35,987 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:36,048 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:36,104 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:36,116 - root - INFO - Completed test: test_frontend_backend_performance_integration
+2025-11-02 12:53:36,119 - root - INFO - Starting test: test_cross_page_data_flow
+2025-11-02 12:53:36,121 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:38,081 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:38,171 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:38,228 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:38,240 - root - INFO - Completed test: test_cross_page_data_flow
+2025-11-02 12:53:38,243 - root - INFO - Starting test: test_hello_world
+2025-11-02 12:53:38,247 - root - INFO - Completed test: test_hello_world
+2025-11-02 12:53:38,254 - root - INFO - Starting test: test_init_default_timeout
+2025-11-02 12:53:38,262 - root - INFO - Completed test: test_init_default_timeout
+2025-11-02 12:53:38,266 - root - INFO - Starting test: test_init_custom_timeout
+2025-11-02 12:53:38,277 - root - INFO - Completed test: test_init_custom_timeout
+2025-11-02 12:53:38,281 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-11-02 12:53:38,294 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-11-02 12:53:38,298 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-11-02 12:53:38,308 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-11-02 12:53:38,313 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-11-02 12:53:38,326 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-11-02 12:53:38,331 - root - INFO - Starting test: test_safe_click_success
+2025-11-02 12:53:38,345 - root - INFO - Completed test: test_safe_click_success
+2025-11-02 12:53:38,349 - root - INFO - Starting test: test_safe_click_failure
+2025-11-02 12:53:38,358 - root - INFO - Completed test: test_safe_click_failure
+2025-11-02 12:53:38,363 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-11-02 12:53:38,378 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-11-02 12:53:38,383 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-11-02 12:53:38,398 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-11-02 12:53:38,402 - root - INFO - Starting test: test_get_text_safe_success
+2025-11-02 12:53:38,420 - root - INFO - Completed test: test_get_text_safe_success
+2025-11-02 12:53:38,424 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-11-02 12:53:38,435 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-11-02 12:53:38,441 - root - INFO - Starting test: test_is_element_present_true
+2025-11-02 12:53:38,456 - root - INFO - Completed test: test_is_element_present_true
+2025-11-02 12:53:38,461 - root - INFO - Starting test: test_is_element_present_false
+2025-11-02 12:53:38,471 - root - INFO - Completed test: test_is_element_present_false
+2025-11-02 12:53:38,477 - root - INFO - Starting test: test_scroll_to_element_success
+2025-11-02 12:53:38,493 - root - INFO - Completed test: test_scroll_to_element_success
+2025-11-02 12:53:38,497 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-11-02 12:53:38,508 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-11-02 12:53:38,513 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-11-02 12:53:38,522 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-11-02 12:53:38,528 - root - INFO - Starting test: test_wait_vis_function
+2025-11-02 12:53:38,536 - root - INFO - Completed test: test_wait_vis_function
+2025-11-02 12:53:38,541 - root - INFO - Starting test: test_wait_css_function
+2025-11-02 12:53:38,552 - root - INFO - Completed test: test_wait_css_function
+2025-11-02 12:53:38,556 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-11-02 12:53:38,564 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-11-02 12:53:38,568 - root - INFO - Starting test: test_checklist_step_creation
+2025-11-02 12:53:38,573 - root - INFO - Completed test: test_checklist_step_creation
+2025-11-02 12:53:38,579 - root - INFO - Starting test: test_checklist_step_to_dict
+2025-11-02 12:53:38,585 - root - INFO - Completed test: test_checklist_step_to_dict
+2025-11-02 12:53:38,589 - root - INFO - Starting test: test_checklist_creation
+2025-11-02 12:53:38,596 - root - INFO - Completed test: test_checklist_creation
+2025-11-02 12:53:38,600 - root - INFO - Starting test: test_check_method
+2025-11-02 12:53:38,602 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-11-02 12:53:38,602 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-11-02 12:53:38,606 - root - INFO - Completed test: test_check_method
+2025-11-02 12:53:38,616 - root - INFO - Starting test: test_step_counts
+2025-11-02 12:53:38,619 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-11-02 12:53:38,619 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-11-02 12:53:38,620 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-11-02 12:53:38,623 - root - INFO - Completed test: test_step_counts
+2025-11-02 12:53:38,633 - root - INFO - Starting test: test_is_success_property
+2025-11-02 12:53:38,636 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:53:38,636 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:53:38,637 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-11-02 12:53:38,643 - root - INFO - Completed test: test_is_success_property
+2025-11-02 12:53:38,651 - root - INFO - Starting test: test_get_failed_steps
+2025-11-02 12:53:38,655 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-11-02 12:53:38,655 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-11-02 12:53:38,656 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-11-02 12:53:38,663 - root - INFO - Completed test: test_get_failed_steps
+2025-11-02 12:53:38,666 - root - INFO - Starting test: test_add_tag
+2025-11-02 12:53:38,672 - root - INFO - Completed test: test_add_tag
+2025-11-02 12:53:38,679 - root - INFO - Starting test: test_set_environment_info
+2025-11-02 12:53:38,684 - root - INFO - Completed test: test_set_environment_info
+2025-11-02 12:53:38,688 - root - INFO - Starting test: test_add_test_data
+2025-11-02 12:53:38,696 - root - INFO - Completed test: test_add_test_data
+2025-11-02 12:53:38,702 - root - INFO - Starting test: test_summary_dict
+2025-11-02 12:53:38,705 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 12:53:38,706 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 12:53:38,717 - root - INFO - Completed test: test_summary_dict
+2025-11-02 12:53:38,723 - root - INFO - Starting test: test_assert_all_passed_success
+2025-11-02 12:53:38,727 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:53:38,728 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:53:38,731 - root - INFO - Completed test: test_assert_all_passed_success
+2025-11-02 12:53:38,736 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-11-02 12:53:38,739 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:53:38,740 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-11-02 12:53:38,746 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-11-02 12:53:38,752 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-11-02 12:53:38,755 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-11-02 12:53:38,760 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-11-02 12:53:38,766 - root - INFO - Starting test: test_to_json
+2025-11-02 12:53:38,785 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 12:53:38,785 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 12:53:38,788 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-3\test_to_json0\test_results.json
+2025-11-02 12:53:38,816 - root - INFO - Completed test: test_to_json
+2025-11-02 12:53:38,819 - root - INFO - Starting test: test_duration_calculation
+2025-11-02 12:53:38,822 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:53:38,925 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:53:38,928 - root - INFO - Completed test: test_duration_calculation
+2025-11-02 12:53:38,932 - root - INFO - Starting test: test_empty_checklist_properties
+2025-11-02 12:53:38,935 - root - INFO - Completed test: test_empty_checklist_properties
+2025-11-02 12:53:39,525 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:41,547 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:41,610 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:41,676 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:53:52,139 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:53:54,167 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:54,239 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:53:54,294 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:54:05,211 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:54:07,233 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:54:07,299 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:54:07,356 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:54:16,839 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:54:18,832 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:54:18,887 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:54:18,948 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:54:29,773 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:54:31,780 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:54:31,842 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:54:31,904 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:54:40,844 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:54:42,848 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:54:42,911 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:54:42,978 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:54:51,342 - WDM - INFO - ====== WebDriver manager ======
+2025-11-02 12:54:53,385 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:54:53,450 - WDM - INFO - Get LATEST chromedriver version for google-chrome
+2025-11-02 12:54:53,513 - WDM - INFO - Driver [C:\Users\juanv\.wdm\drivers\chromedriver\win64\141.0.7390.122\chromedriver-win32/THIRD_PARTY_NOTICES.chromedriver] found in cache
+2025-11-02 12:59:40,937 - root - INFO - Starting test: test_init_default_timeout
+2025-11-02 12:59:40,949 - root - INFO - Completed test: test_init_default_timeout
+2025-11-02 12:59:40,953 - root - INFO - Starting test: test_init_custom_timeout
+2025-11-02 12:59:40,961 - root - INFO - Completed test: test_init_custom_timeout
+2025-11-02 12:59:40,964 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-11-02 12:59:40,980 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-11-02 12:59:40,984 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-11-02 12:59:40,996 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-11-02 12:59:41,001 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-11-02 12:59:41,015 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-11-02 12:59:41,019 - root - INFO - Starting test: test_safe_click_success
+2025-11-02 12:59:41,031 - root - INFO - Completed test: test_safe_click_success
+2025-11-02 12:59:41,036 - root - INFO - Starting test: test_safe_click_failure
+2025-11-02 12:59:41,045 - root - INFO - Completed test: test_safe_click_failure
+2025-11-02 12:59:41,050 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-11-02 12:59:41,065 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-11-02 12:59:41,069 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-11-02 12:59:41,082 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-11-02 12:59:41,086 - root - INFO - Starting test: test_get_text_safe_success
+2025-11-02 12:59:41,100 - root - INFO - Completed test: test_get_text_safe_success
+2025-11-02 12:59:41,104 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-11-02 12:59:41,115 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-11-02 12:59:41,119 - root - INFO - Starting test: test_is_element_present_true
+2025-11-02 12:59:41,132 - root - INFO - Completed test: test_is_element_present_true
+2025-11-02 12:59:41,136 - root - INFO - Starting test: test_is_element_present_false
+2025-11-02 12:59:41,147 - root - INFO - Completed test: test_is_element_present_false
+2025-11-02 12:59:41,151 - root - INFO - Starting test: test_scroll_to_element_success
+2025-11-02 12:59:41,166 - root - INFO - Completed test: test_scroll_to_element_success
+2025-11-02 12:59:41,170 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-11-02 12:59:41,181 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-11-02 12:59:41,185 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-11-02 12:59:41,195 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-11-02 12:59:41,200 - root - INFO - Starting test: test_wait_vis_function
+2025-11-02 12:59:41,207 - root - INFO - Completed test: test_wait_vis_function
+2025-11-02 12:59:41,212 - root - INFO - Starting test: test_wait_css_function
+2025-11-02 12:59:41,220 - root - INFO - Completed test: test_wait_css_function
+2025-11-02 12:59:41,224 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-11-02 12:59:41,229 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-11-02 12:59:41,235 - root - INFO - Starting test: test_checklist_step_creation
+2025-11-02 12:59:41,240 - root - INFO - Completed test: test_checklist_step_creation
+2025-11-02 12:59:41,244 - root - INFO - Starting test: test_checklist_step_to_dict
+2025-11-02 12:59:41,249 - root - INFO - Completed test: test_checklist_step_to_dict
+2025-11-02 12:59:41,254 - root - INFO - Starting test: test_checklist_creation
+2025-11-02 12:59:41,259 - root - INFO - Completed test: test_checklist_creation
+2025-11-02 12:59:41,265 - root - INFO - Starting test: test_check_method
+2025-11-02 12:59:41,267 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-11-02 12:59:41,267 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-11-02 12:59:41,270 - root - INFO - Completed test: test_check_method
+2025-11-02 12:59:41,274 - root - INFO - Starting test: test_step_counts
+2025-11-02 12:59:41,276 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-11-02 12:59:41,277 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-11-02 12:59:41,278 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-11-02 12:59:41,287 - root - INFO - Completed test: test_step_counts
+2025-11-02 12:59:41,291 - root - INFO - Starting test: test_is_success_property
+2025-11-02 12:59:41,294 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:59:41,295 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:59:41,296 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-11-02 12:59:41,300 - root - INFO - Completed test: test_is_success_property
+2025-11-02 12:59:41,307 - root - INFO - Starting test: test_get_failed_steps
+2025-11-02 12:59:41,313 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-11-02 12:59:41,314 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-11-02 12:59:41,315 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-11-02 12:59:41,320 - root - INFO - Completed test: test_get_failed_steps
+2025-11-02 12:59:41,325 - root - INFO - Starting test: test_add_tag
+2025-11-02 12:59:41,334 - root - INFO - Completed test: test_add_tag
+2025-11-02 12:59:41,341 - root - INFO - Starting test: test_set_environment_info
+2025-11-02 12:59:41,349 - root - INFO - Completed test: test_set_environment_info
+2025-11-02 12:59:41,354 - root - INFO - Starting test: test_add_test_data
+2025-11-02 12:59:41,359 - root - INFO - Completed test: test_add_test_data
+2025-11-02 12:59:41,368 - root - INFO - Starting test: test_summary_dict
+2025-11-02 12:59:41,371 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 12:59:41,372 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 12:59:41,382 - root - INFO - Completed test: test_summary_dict
+2025-11-02 12:59:41,386 - root - INFO - Starting test: test_assert_all_passed_success
+2025-11-02 12:59:41,389 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:59:41,390 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:59:41,396 - root - INFO - Completed test: test_assert_all_passed_success
+2025-11-02 12:59:41,401 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-11-02 12:59:41,403 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:59:41,403 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-11-02 12:59:41,408 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-11-02 12:59:41,416 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-11-02 12:59:41,417 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-11-02 12:59:41,421 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-11-02 12:59:41,428 - root - INFO - Starting test: test_to_json
+2025-11-02 12:59:41,448 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 12:59:41,449 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 12:59:41,454 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-4\test_to_json0\test_results.json
+2025-11-02 12:59:41,486 - root - INFO - Completed test: test_to_json
+2025-11-02 12:59:41,492 - root - INFO - Starting test: test_duration_calculation
+2025-11-02 12:59:41,497 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 12:59:41,613 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 12:59:41,624 - root - INFO - Completed test: test_duration_calculation
+2025-11-02 12:59:41,637 - root - INFO - Starting test: test_empty_checklist_properties
+2025-11-02 12:59:41,649 - root - INFO - Completed test: test_empty_checklist_properties
+2025-11-02 13:00:06,452 - root - INFO - Starting test: test_init_default_timeout
+2025-11-02 13:00:06,462 - root - INFO - Completed test: test_init_default_timeout
+2025-11-02 13:00:06,466 - root - INFO - Starting test: test_init_custom_timeout
+2025-11-02 13:00:06,471 - root - INFO - Completed test: test_init_custom_timeout
+2025-11-02 13:00:06,477 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-11-02 13:00:06,494 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-11-02 13:00:06,498 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-11-02 13:00:06,509 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-11-02 13:00:06,513 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-11-02 13:00:06,526 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-11-02 13:00:06,530 - root - INFO - Starting test: test_safe_click_success
+2025-11-02 13:00:06,546 - root - INFO - Completed test: test_safe_click_success
+2025-11-02 13:00:06,550 - root - INFO - Starting test: test_safe_click_failure
+2025-11-02 13:00:06,561 - root - INFO - Completed test: test_safe_click_failure
+2025-11-02 13:00:06,565 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-11-02 13:00:06,578 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-11-02 13:00:06,583 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-11-02 13:00:06,596 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-11-02 13:00:06,600 - root - INFO - Starting test: test_get_text_safe_success
+2025-11-02 13:00:06,615 - root - INFO - Completed test: test_get_text_safe_success
+2025-11-02 13:00:06,619 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-11-02 13:00:06,629 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-11-02 13:00:06,633 - root - INFO - Starting test: test_is_element_present_true
+2025-11-02 13:00:06,646 - root - INFO - Completed test: test_is_element_present_true
+2025-11-02 13:00:06,650 - root - INFO - Starting test: test_is_element_present_false
+2025-11-02 13:00:06,661 - root - INFO - Completed test: test_is_element_present_false
+2025-11-02 13:00:06,664 - root - INFO - Starting test: test_scroll_to_element_success
+2025-11-02 13:00:06,680 - root - INFO - Completed test: test_scroll_to_element_success
+2025-11-02 13:00:06,684 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-11-02 13:00:06,695 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-11-02 13:00:06,699 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-11-02 13:00:06,716 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-11-02 13:00:06,742 - root - INFO - Starting test: test_wait_vis_function
+2025-11-02 13:00:06,754 - root - INFO - Completed test: test_wait_vis_function
+2025-11-02 13:00:06,787 - root - INFO - Starting test: test_wait_css_function
+2025-11-02 13:00:06,804 - root - INFO - Completed test: test_wait_css_function
+2025-11-02 13:00:06,830 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-11-02 13:00:06,856 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-11-02 13:00:06,862 - root - INFO - Starting test: test_checklist_step_creation
+2025-11-02 13:00:06,868 - root - INFO - Completed test: test_checklist_step_creation
+2025-11-02 13:00:06,875 - root - INFO - Starting test: test_checklist_step_to_dict
+2025-11-02 13:00:06,880 - root - INFO - Completed test: test_checklist_step_to_dict
+2025-11-02 13:00:06,892 - root - INFO - Starting test: test_checklist_creation
+2025-11-02 13:00:06,906 - root - INFO - Completed test: test_checklist_creation
+2025-11-02 13:00:06,912 - root - INFO - Starting test: test_check_method
+2025-11-02 13:00:06,915 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-11-02 13:00:06,915 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-11-02 13:00:06,919 - root - INFO - Completed test: test_check_method
+2025-11-02 13:00:06,924 - root - INFO - Starting test: test_step_counts
+2025-11-02 13:00:06,926 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-11-02 13:00:06,927 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-11-02 13:00:06,927 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-11-02 13:00:06,930 - root - INFO - Completed test: test_step_counts
+2025-11-02 13:00:06,934 - root - INFO - Starting test: test_is_success_property
+2025-11-02 13:00:06,937 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:00:06,937 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:00:06,937 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-11-02 13:00:06,942 - root - INFO - Completed test: test_is_success_property
+2025-11-02 13:00:06,946 - root - INFO - Starting test: test_get_failed_steps
+2025-11-02 13:00:06,948 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-11-02 13:00:06,948 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-11-02 13:00:06,948 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-11-02 13:00:06,952 - root - INFO - Completed test: test_get_failed_steps
+2025-11-02 13:00:06,956 - root - INFO - Starting test: test_add_tag
+2025-11-02 13:00:06,962 - root - INFO - Completed test: test_add_tag
+2025-11-02 13:00:06,966 - root - INFO - Starting test: test_set_environment_info
+2025-11-02 13:00:06,970 - root - INFO - Completed test: test_set_environment_info
+2025-11-02 13:00:06,974 - root - INFO - Starting test: test_add_test_data
+2025-11-02 13:00:06,979 - root - INFO - Completed test: test_add_test_data
+2025-11-02 13:00:06,982 - root - INFO - Starting test: test_summary_dict
+2025-11-02 13:00:06,985 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:00:06,986 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:00:06,988 - root - INFO - Completed test: test_summary_dict
+2025-11-02 13:00:06,994 - root - INFO - Starting test: test_assert_all_passed_success
+2025-11-02 13:00:06,996 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:00:06,997 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:00:06,999 - root - INFO - Completed test: test_assert_all_passed_success
+2025-11-02 13:00:07,003 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-11-02 13:00:07,005 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:00:07,005 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-11-02 13:00:07,011 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-11-02 13:00:07,015 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-11-02 13:00:07,017 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-11-02 13:00:07,020 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-11-02 13:00:07,025 - root - INFO - Starting test: test_to_json
+2025-11-02 13:00:07,037 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:00:07,038 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:00:07,043 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-5\test_to_json0\test_results.json
+2025-11-02 13:00:07,066 - root - INFO - Completed test: test_to_json
+2025-11-02 13:00:07,071 - root - INFO - Starting test: test_duration_calculation
+2025-11-02 13:00:07,076 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:00:07,181 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:00:07,190 - root - INFO - Completed test: test_duration_calculation
+2025-11-02 13:00:07,202 - root - INFO - Starting test: test_empty_checklist_properties
+2025-11-02 13:00:07,215 - root - INFO - Completed test: test_empty_checklist_properties
+2025-11-02 13:03:10,858 - root - INFO - Starting test: test_init_default_timeout
+2025-11-02 13:03:10,979 - root - INFO - Completed test: test_init_default_timeout
+2025-11-02 13:03:10,988 - root - INFO - Starting test: test_init_custom_timeout
+2025-11-02 13:03:10,997 - root - INFO - Completed test: test_init_custom_timeout
+2025-11-02 13:03:11,002 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-11-02 13:03:11,016 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-11-02 13:03:11,021 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-11-02 13:03:11,031 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-11-02 13:03:11,036 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-11-02 13:03:11,048 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-11-02 13:03:11,054 - root - INFO - Starting test: test_safe_click_success
+2025-11-02 13:03:11,066 - root - INFO - Completed test: test_safe_click_success
+2025-11-02 13:03:11,072 - root - INFO - Starting test: test_safe_click_failure
+2025-11-02 13:03:11,080 - root - INFO - Completed test: test_safe_click_failure
+2025-11-02 13:03:11,086 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-11-02 13:03:11,101 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-11-02 13:03:11,107 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-11-02 13:03:11,119 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-11-02 13:03:11,123 - root - INFO - Starting test: test_get_text_safe_success
+2025-11-02 13:03:11,136 - root - INFO - Completed test: test_get_text_safe_success
+2025-11-02 13:03:11,139 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-11-02 13:03:11,148 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-11-02 13:03:11,153 - root - INFO - Starting test: test_is_element_present_true
+2025-11-02 13:03:11,164 - root - INFO - Completed test: test_is_element_present_true
+2025-11-02 13:03:11,169 - root - INFO - Starting test: test_is_element_present_false
+2025-11-02 13:03:11,179 - root - INFO - Completed test: test_is_element_present_false
+2025-11-02 13:03:11,183 - root - INFO - Starting test: test_scroll_to_element_success
+2025-11-02 13:03:11,198 - root - INFO - Completed test: test_scroll_to_element_success
+2025-11-02 13:03:11,203 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-11-02 13:03:11,213 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-11-02 13:03:11,217 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-11-02 13:03:11,228 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-11-02 13:03:11,232 - root - INFO - Starting test: test_wait_vis_function
+2025-11-02 13:03:11,241 - root - INFO - Completed test: test_wait_vis_function
+2025-11-02 13:03:11,245 - root - INFO - Starting test: test_wait_css_function
+2025-11-02 13:03:11,252 - root - INFO - Completed test: test_wait_css_function
+2025-11-02 13:03:11,256 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-11-02 13:03:11,261 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-11-02 13:03:11,266 - root - INFO - Starting test: test_checklist_step_creation
+2025-11-02 13:03:11,272 - root - INFO - Completed test: test_checklist_step_creation
+2025-11-02 13:03:11,276 - root - INFO - Starting test: test_checklist_step_to_dict
+2025-11-02 13:03:11,280 - root - INFO - Completed test: test_checklist_step_to_dict
+2025-11-02 13:03:11,285 - root - INFO - Starting test: test_checklist_creation
+2025-11-02 13:03:11,292 - root - INFO - Completed test: test_checklist_creation
+2025-11-02 13:03:11,296 - root - INFO - Starting test: test_check_method
+2025-11-02 13:03:11,299 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-11-02 13:03:11,299 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-11-02 13:03:11,304 - root - INFO - Completed test: test_check_method
+2025-11-02 13:03:11,308 - root - INFO - Starting test: test_step_counts
+2025-11-02 13:03:11,309 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-11-02 13:03:11,310 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-11-02 13:03:11,310 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-11-02 13:03:11,319 - root - INFO - Completed test: test_step_counts
+2025-11-02 13:03:11,323 - root - INFO - Starting test: test_is_success_property
+2025-11-02 13:03:11,325 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:03:11,325 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:03:11,326 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-11-02 13:03:11,329 - root - INFO - Completed test: test_is_success_property
+2025-11-02 13:03:11,334 - root - INFO - Starting test: test_get_failed_steps
+2025-11-02 13:03:11,337 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-11-02 13:03:11,337 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-11-02 13:03:11,338 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-11-02 13:03:11,341 - root - INFO - Completed test: test_get_failed_steps
+2025-11-02 13:03:11,345 - root - INFO - Starting test: test_add_tag
+2025-11-02 13:03:11,351 - root - INFO - Completed test: test_add_tag
+2025-11-02 13:03:11,356 - root - INFO - Starting test: test_set_environment_info
+2025-11-02 13:03:11,360 - root - INFO - Completed test: test_set_environment_info
+2025-11-02 13:03:11,365 - root - INFO - Starting test: test_add_test_data
+2025-11-02 13:03:11,372 - root - INFO - Completed test: test_add_test_data
+2025-11-02 13:03:11,376 - root - INFO - Starting test: test_summary_dict
+2025-11-02 13:03:11,378 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:03:11,378 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:03:11,383 - root - INFO - Completed test: test_summary_dict
+2025-11-02 13:03:11,388 - root - INFO - Starting test: test_assert_all_passed_success
+2025-11-02 13:03:11,390 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:03:11,390 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:03:11,393 - root - INFO - Completed test: test_assert_all_passed_success
+2025-11-02 13:03:11,397 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-11-02 13:03:11,399 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:03:11,399 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-11-02 13:03:11,403 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-11-02 13:03:11,407 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-11-02 13:03:11,409 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-11-02 13:03:11,412 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-11-02 13:03:11,418 - root - INFO - Starting test: test_to_json
+2025-11-02 13:03:11,435 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:03:11,436 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:03:11,439 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-6\test_to_json0\test_results.json
+2025-11-02 13:03:11,465 - root - INFO - Completed test: test_to_json
+2025-11-02 13:03:11,470 - root - INFO - Starting test: test_duration_calculation
+2025-11-02 13:03:11,472 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:03:11,586 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:03:11,594 - root - INFO - Completed test: test_duration_calculation
+2025-11-02 13:03:11,604 - root - INFO - Starting test: test_empty_checklist_properties
+2025-11-02 13:03:11,613 - root - INFO - Completed test: test_empty_checklist_properties
+2025-11-02 13:07:33,569 - root - INFO - Starting test: test_init_default_timeout
+2025-11-02 13:07:33,579 - root - INFO - Completed test: test_init_default_timeout
+2025-11-02 13:07:33,584 - root - INFO - Starting test: test_init_custom_timeout
+2025-11-02 13:07:33,591 - root - INFO - Completed test: test_init_custom_timeout
+2025-11-02 13:07:33,594 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-11-02 13:07:33,609 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-11-02 13:07:33,614 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-11-02 13:07:33,627 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-11-02 13:07:33,631 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-11-02 13:07:33,644 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-11-02 13:07:33,648 - root - INFO - Starting test: test_safe_click_success
+2025-11-02 13:07:33,670 - root - INFO - Completed test: test_safe_click_success
+2025-11-02 13:07:33,674 - root - INFO - Starting test: test_safe_click_failure
+2025-11-02 13:07:33,683 - root - INFO - Completed test: test_safe_click_failure
+2025-11-02 13:07:33,689 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-11-02 13:07:33,703 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-11-02 13:07:33,707 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-11-02 13:07:33,729 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-11-02 13:07:33,735 - root - INFO - Starting test: test_get_text_safe_success
+2025-11-02 13:07:33,747 - root - INFO - Completed test: test_get_text_safe_success
+2025-11-02 13:07:33,754 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-11-02 13:07:33,763 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-11-02 13:07:33,769 - root - INFO - Starting test: test_is_element_present_true
+2025-11-02 13:07:33,781 - root - INFO - Completed test: test_is_element_present_true
+2025-11-02 13:07:33,786 - root - INFO - Starting test: test_is_element_present_false
+2025-11-02 13:07:33,796 - root - INFO - Completed test: test_is_element_present_false
+2025-11-02 13:07:33,802 - root - INFO - Starting test: test_scroll_to_element_success
+2025-11-02 13:07:33,818 - root - INFO - Completed test: test_scroll_to_element_success
+2025-11-02 13:07:33,822 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-11-02 13:07:33,837 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-11-02 13:07:33,842 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-11-02 13:07:33,854 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-11-02 13:07:33,858 - root - INFO - Starting test: test_wait_vis_function
+2025-11-02 13:07:33,867 - root - INFO - Completed test: test_wait_vis_function
+2025-11-02 13:07:33,872 - root - INFO - Starting test: test_wait_css_function
+2025-11-02 13:07:33,879 - root - INFO - Completed test: test_wait_css_function
+2025-11-02 13:07:33,885 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-11-02 13:07:33,891 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-11-02 13:07:33,895 - root - INFO - Starting test: test_checklist_step_creation
+2025-11-02 13:07:33,900 - root - INFO - Completed test: test_checklist_step_creation
+2025-11-02 13:07:33,905 - root - INFO - Starting test: test_checklist_step_to_dict
+2025-11-02 13:07:33,910 - root - INFO - Completed test: test_checklist_step_to_dict
+2025-11-02 13:07:33,914 - root - INFO - Starting test: test_checklist_creation
+2025-11-02 13:07:33,921 - root - INFO - Completed test: test_checklist_creation
+2025-11-02 13:07:33,925 - root - INFO - Starting test: test_check_method
+2025-11-02 13:07:33,927 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-11-02 13:07:33,927 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-11-02 13:07:33,931 - root - INFO - Completed test: test_check_method
+2025-11-02 13:07:33,936 - root - INFO - Starting test: test_step_counts
+2025-11-02 13:07:33,939 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-11-02 13:07:33,939 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-11-02 13:07:33,939 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-11-02 13:07:33,943 - root - INFO - Completed test: test_step_counts
+2025-11-02 13:07:33,947 - root - INFO - Starting test: test_is_success_property
+2025-11-02 13:07:33,950 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:07:33,951 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:07:33,952 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-11-02 13:07:33,956 - root - INFO - Completed test: test_is_success_property
+2025-11-02 13:07:33,959 - root - INFO - Starting test: test_get_failed_steps
+2025-11-02 13:07:33,961 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-11-02 13:07:33,962 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-11-02 13:07:33,962 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-11-02 13:07:33,966 - root - INFO - Completed test: test_get_failed_steps
+2025-11-02 13:07:33,972 - root - INFO - Starting test: test_add_tag
+2025-11-02 13:07:33,977 - root - INFO - Completed test: test_add_tag
+2025-11-02 13:07:33,980 - root - INFO - Starting test: test_set_environment_info
+2025-11-02 13:07:33,987 - root - INFO - Completed test: test_set_environment_info
+2025-11-02 13:07:33,991 - root - INFO - Starting test: test_add_test_data
+2025-11-02 13:07:33,996 - root - INFO - Completed test: test_add_test_data
+2025-11-02 13:07:34,002 - root - INFO - Starting test: test_summary_dict
+2025-11-02 13:07:34,004 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:07:34,005 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:07:34,008 - root - INFO - Completed test: test_summary_dict
+2025-11-02 13:07:34,012 - root - INFO - Starting test: test_assert_all_passed_success
+2025-11-02 13:07:34,015 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:07:34,015 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:07:34,021 - root - INFO - Completed test: test_assert_all_passed_success
+2025-11-02 13:07:34,024 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-11-02 13:07:34,026 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:07:34,026 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-11-02 13:07:34,030 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-11-02 13:07:34,036 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-11-02 13:07:34,038 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-11-02 13:07:34,042 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-11-02 13:07:34,045 - root - INFO - Starting test: test_to_json
+2025-11-02 13:07:34,059 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:07:34,060 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:07:34,063 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-7\test_to_json0\test_results.json
+2025-11-02 13:07:34,089 - root - INFO - Completed test: test_to_json
+2025-11-02 13:07:34,093 - root - INFO - Starting test: test_duration_calculation
+2025-11-02 13:07:34,096 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:07:34,207 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:07:34,211 - root - INFO - Completed test: test_duration_calculation
+2025-11-02 13:07:34,214 - root - INFO - Starting test: test_empty_checklist_properties
+2025-11-02 13:07:34,221 - root - INFO - Completed test: test_empty_checklist_properties
+2025-11-02 13:07:52,285 - root - INFO - Starting test: test_init_default_timeout
+2025-11-02 13:07:52,294 - root - INFO - Completed test: test_init_default_timeout
+2025-11-02 13:07:52,300 - root - INFO - Starting test: test_init_custom_timeout
+2025-11-02 13:07:52,308 - root - INFO - Completed test: test_init_custom_timeout
+2025-11-02 13:07:52,312 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-11-02 13:07:52,325 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-11-02 13:07:52,330 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-11-02 13:07:52,343 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-11-02 13:07:52,348 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-11-02 13:07:52,360 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-11-02 13:07:52,365 - root - INFO - Starting test: test_safe_click_success
+2025-11-02 13:07:52,378 - root - INFO - Completed test: test_safe_click_success
+2025-11-02 13:07:52,384 - root - INFO - Starting test: test_safe_click_failure
+2025-11-02 13:07:52,393 - root - INFO - Completed test: test_safe_click_failure
+2025-11-02 13:07:52,398 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-11-02 13:07:52,412 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-11-02 13:07:52,417 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-11-02 13:07:52,428 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-11-02 13:07:52,435 - root - INFO - Starting test: test_get_text_safe_success
+2025-11-02 13:07:52,448 - root - INFO - Completed test: test_get_text_safe_success
+2025-11-02 13:07:52,454 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-11-02 13:07:52,464 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-11-02 13:07:52,470 - root - INFO - Starting test: test_is_element_present_true
+2025-11-02 13:07:52,486 - root - INFO - Completed test: test_is_element_present_true
+2025-11-02 13:07:52,492 - root - INFO - Starting test: test_is_element_present_false
+2025-11-02 13:07:52,503 - root - INFO - Completed test: test_is_element_present_false
+2025-11-02 13:07:52,507 - root - INFO - Starting test: test_scroll_to_element_success
+2025-11-02 13:07:52,522 - root - INFO - Completed test: test_scroll_to_element_success
+2025-11-02 13:07:52,526 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-11-02 13:07:52,535 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-11-02 13:07:52,539 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-11-02 13:07:52,549 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-11-02 13:07:52,554 - root - INFO - Starting test: test_wait_vis_function
+2025-11-02 13:07:52,561 - root - INFO - Completed test: test_wait_vis_function
+2025-11-02 13:07:52,567 - root - INFO - Starting test: test_wait_css_function
+2025-11-02 13:07:52,577 - root - INFO - Completed test: test_wait_css_function
+2025-11-02 13:07:52,582 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-11-02 13:07:52,587 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-11-02 13:07:52,591 - root - INFO - Starting test: test_checklist_step_creation
+2025-11-02 13:07:52,596 - root - INFO - Completed test: test_checklist_step_creation
+2025-11-02 13:07:52,602 - root - INFO - Starting test: test_checklist_step_to_dict
+2025-11-02 13:07:52,607 - root - INFO - Completed test: test_checklist_step_to_dict
+2025-11-02 13:07:52,611 - root - INFO - Starting test: test_checklist_creation
+2025-11-02 13:07:52,618 - root - INFO - Completed test: test_checklist_creation
+2025-11-02 13:07:52,623 - root - INFO - Starting test: test_check_method
+2025-11-02 13:07:52,625 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-11-02 13:07:52,625 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-11-02 13:07:52,628 - root - INFO - Completed test: test_check_method
+2025-11-02 13:07:52,633 - root - INFO - Starting test: test_step_counts
+2025-11-02 13:07:52,636 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-11-02 13:07:52,636 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-11-02 13:07:52,636 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-11-02 13:07:52,640 - root - INFO - Completed test: test_step_counts
+2025-11-02 13:07:52,643 - root - INFO - Starting test: test_is_success_property
+2025-11-02 13:07:52,645 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:07:52,645 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:07:52,646 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-11-02 13:07:52,650 - root - INFO - Completed test: test_is_success_property
+2025-11-02 13:07:52,655 - root - INFO - Starting test: test_get_failed_steps
+2025-11-02 13:07:52,656 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-11-02 13:07:52,657 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-11-02 13:07:52,657 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-11-02 13:07:52,661 - root - INFO - Completed test: test_get_failed_steps
+2025-11-02 13:07:52,666 - root - INFO - Starting test: test_add_tag
+2025-11-02 13:07:52,671 - root - INFO - Completed test: test_add_tag
+2025-11-02 13:07:52,675 - root - INFO - Starting test: test_set_environment_info
+2025-11-02 13:07:52,680 - root - INFO - Completed test: test_set_environment_info
+2025-11-02 13:07:52,685 - root - INFO - Starting test: test_add_test_data
+2025-11-02 13:07:52,690 - root - INFO - Completed test: test_add_test_data
+2025-11-02 13:07:52,694 - root - INFO - Starting test: test_summary_dict
+2025-11-02 13:07:52,696 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:07:52,696 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:07:52,701 - root - INFO - Completed test: test_summary_dict
+2025-11-02 13:07:52,705 - root - INFO - Starting test: test_assert_all_passed_success
+2025-11-02 13:07:52,707 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:07:52,707 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:07:52,710 - root - INFO - Completed test: test_assert_all_passed_success
+2025-11-02 13:07:52,716 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-11-02 13:07:52,718 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:07:52,719 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-11-02 13:07:52,722 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-11-02 13:07:52,726 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-11-02 13:07:52,728 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-11-02 13:07:52,733 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-11-02 13:07:52,737 - root - INFO - Starting test: test_to_json
+2025-11-02 13:07:52,751 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:07:52,751 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:07:52,755 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-8\test_to_json0\test_results.json
+2025-11-02 13:07:52,781 - root - INFO - Completed test: test_to_json
+2025-11-02 13:07:52,786 - root - INFO - Starting test: test_duration_calculation
+2025-11-02 13:07:52,788 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:07:52,900 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:07:52,904 - root - INFO - Completed test: test_duration_calculation
+2025-11-02 13:07:52,907 - root - INFO - Starting test: test_empty_checklist_properties
+2025-11-02 13:07:52,912 - root - INFO - Completed test: test_empty_checklist_properties
+2025-11-02 13:08:54,491 - root - INFO - Starting test: test_init_default_timeout
+2025-11-02 13:08:54,501 - root - INFO - Completed test: test_init_default_timeout
+2025-11-02 13:08:54,503 - root - INFO - Starting test: test_init_custom_timeout
+2025-11-02 13:08:54,512 - root - INFO - Completed test: test_init_custom_timeout
+2025-11-02 13:08:54,515 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-11-02 13:08:54,529 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-11-02 13:08:54,533 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-11-02 13:08:54,545 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-11-02 13:08:54,548 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-11-02 13:08:54,562 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-11-02 13:08:54,567 - root - INFO - Starting test: test_safe_click_success
+2025-11-02 13:08:54,580 - root - INFO - Completed test: test_safe_click_success
+2025-11-02 13:08:54,584 - root - INFO - Starting test: test_safe_click_failure
+2025-11-02 13:08:54,594 - root - INFO - Completed test: test_safe_click_failure
+2025-11-02 13:08:54,598 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-11-02 13:08:54,614 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-11-02 13:08:54,617 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-11-02 13:08:54,630 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-11-02 13:08:54,634 - root - INFO - Starting test: test_get_text_safe_success
+2025-11-02 13:08:54,647 - root - INFO - Completed test: test_get_text_safe_success
+2025-11-02 13:08:54,651 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-11-02 13:08:54,663 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-11-02 13:08:54,667 - root - INFO - Starting test: test_is_element_present_true
+2025-11-02 13:08:54,680 - root - INFO - Completed test: test_is_element_present_true
+2025-11-02 13:08:54,683 - root - INFO - Starting test: test_is_element_present_false
+2025-11-02 13:08:54,695 - root - INFO - Completed test: test_is_element_present_false
+2025-11-02 13:08:54,699 - root - INFO - Starting test: test_scroll_to_element_success
+2025-11-02 13:08:54,714 - root - INFO - Completed test: test_scroll_to_element_success
+2025-11-02 13:08:54,717 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-11-02 13:08:54,727 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-11-02 13:08:54,731 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-11-02 13:08:54,741 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-11-02 13:08:54,745 - root - INFO - Starting test: test_wait_vis_function
+2025-11-02 13:08:54,753 - root - INFO - Completed test: test_wait_vis_function
+2025-11-02 13:08:54,758 - root - INFO - Starting test: test_wait_css_function
+2025-11-02 13:08:54,766 - root - INFO - Completed test: test_wait_css_function
+2025-11-02 13:08:54,769 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-11-02 13:08:54,775 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-11-02 13:08:54,780 - root - INFO - Starting test: test_checklist_step_creation
+2025-11-02 13:08:54,784 - root - INFO - Completed test: test_checklist_step_creation
+2025-11-02 13:08:54,788 - root - INFO - Starting test: test_checklist_step_to_dict
+2025-11-02 13:08:54,794 - root - INFO - Completed test: test_checklist_step_to_dict
+2025-11-02 13:08:54,798 - root - INFO - Starting test: test_checklist_creation
+2025-11-02 13:08:54,803 - root - INFO - Completed test: test_checklist_creation
+2025-11-02 13:08:54,809 - root - INFO - Starting test: test_check_method
+2025-11-02 13:08:54,811 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-11-02 13:08:54,811 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-11-02 13:08:54,814 - root - INFO - Completed test: test_check_method
+2025-11-02 13:08:54,818 - root - INFO - Starting test: test_step_counts
+2025-11-02 13:08:54,820 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-11-02 13:08:54,821 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-11-02 13:08:54,821 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-11-02 13:08:54,825 - root - INFO - Completed test: test_step_counts
+2025-11-02 13:08:54,829 - root - INFO - Starting test: test_is_success_property
+2025-11-02 13:08:54,831 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:08:54,831 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:08:54,832 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-11-02 13:08:54,835 - root - INFO - Completed test: test_is_success_property
+2025-11-02 13:08:54,839 - root - INFO - Starting test: test_get_failed_steps
+2025-11-02 13:08:54,842 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-11-02 13:08:54,842 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-11-02 13:08:54,843 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-11-02 13:08:54,847 - root - INFO - Completed test: test_get_failed_steps
+2025-11-02 13:08:54,851 - root - INFO - Starting test: test_add_tag
+2025-11-02 13:08:54,855 - root - INFO - Completed test: test_add_tag
+2025-11-02 13:08:54,861 - root - INFO - Starting test: test_set_environment_info
+2025-11-02 13:08:54,865 - root - INFO - Completed test: test_set_environment_info
+2025-11-02 13:08:54,869 - root - INFO - Starting test: test_add_test_data
+2025-11-02 13:08:54,874 - root - INFO - Completed test: test_add_test_data
+2025-11-02 13:08:54,878 - root - INFO - Starting test: test_summary_dict
+2025-11-02 13:08:54,880 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:08:54,881 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:08:54,884 - root - INFO - Completed test: test_summary_dict
+2025-11-02 13:08:54,888 - root - INFO - Starting test: test_assert_all_passed_success
+2025-11-02 13:08:54,891 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:08:54,892 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:08:54,895 - root - INFO - Completed test: test_assert_all_passed_success
+2025-11-02 13:08:54,899 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-11-02 13:08:54,901 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:08:54,901 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-11-02 13:08:54,904 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-11-02 13:08:54,910 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-11-02 13:08:54,912 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-11-02 13:08:54,915 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-11-02 13:08:54,918 - root - INFO - Starting test: test_to_json
+2025-11-02 13:08:54,936 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:08:54,936 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:08:54,940 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-9\test_to_json0\test_results.json
+2025-11-02 13:08:54,965 - root - INFO - Completed test: test_to_json
+2025-11-02 13:08:54,969 - root - INFO - Starting test: test_duration_calculation
+2025-11-02 13:08:54,970 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:08:55,079 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:08:55,090 - root - INFO - Completed test: test_duration_calculation
+2025-11-02 13:08:55,099 - root - INFO - Starting test: test_empty_checklist_properties
+2025-11-02 13:08:55,106 - root - INFO - Completed test: test_empty_checklist_properties
+2025-11-02 13:13:02,571 - root - INFO - Starting test: test_init_default_timeout
+2025-11-02 13:13:02,689 - root - INFO - Completed test: test_init_default_timeout
+2025-11-02 13:13:02,696 - root - INFO - Starting test: test_init_custom_timeout
+2025-11-02 13:13:02,703 - root - INFO - Completed test: test_init_custom_timeout
+2025-11-02 13:13:02,706 - root - INFO - Starting test: test_wait_for_element_visible_success
+2025-11-02 13:13:02,720 - root - INFO - Completed test: test_wait_for_element_visible_success
+2025-11-02 13:13:02,726 - root - INFO - Starting test: test_wait_for_element_visible_timeout
+2025-11-02 13:13:02,737 - root - INFO - Completed test: test_wait_for_element_visible_timeout
+2025-11-02 13:13:02,743 - root - INFO - Starting test: test_wait_for_element_clickable_success
+2025-11-02 13:13:02,755 - root - INFO - Completed test: test_wait_for_element_clickable_success
+2025-11-02 13:13:02,760 - root - INFO - Starting test: test_wait_for_elements_visible_success
+2025-11-02 13:13:02,772 - root - INFO - Completed test: test_wait_for_elements_visible_success
+2025-11-02 13:13:02,778 - root - INFO - Starting test: test_wait_for_text_present_success
+2025-11-02 13:13:02,788 - root - INFO - Completed test: test_wait_for_text_present_success
+2025-11-02 13:13:02,794 - root - INFO - Starting test: test_is_element_visible_true
+2025-11-02 13:13:02,806 - root - INFO - Completed test: test_is_element_visible_true
+2025-11-02 13:13:02,812 - root - INFO - Starting test: test_is_element_visible_false
+2025-11-02 13:13:02,821 - root - INFO - Completed test: test_is_element_visible_false
+2025-11-02 13:13:02,827 - root - INFO - Starting test: test_safe_click_success
+2025-11-02 13:13:02,839 - root - INFO - Completed test: test_safe_click_success
+2025-11-02 13:13:02,843 - root - INFO - Starting test: test_safe_click_failure
+2025-11-02 13:13:02,853 - root - INFO - Completed test: test_safe_click_failure
+2025-11-02 13:13:02,858 - root - INFO - Starting test: test_safe_send_keys_success_with_clear
+2025-11-02 13:13:02,872 - root - INFO - Completed test: test_safe_send_keys_success_with_clear
+2025-11-02 13:13:02,877 - root - INFO - Starting test: test_safe_send_keys_no_clear
+2025-11-02 13:13:02,890 - root - INFO - Completed test: test_safe_send_keys_no_clear
+2025-11-02 13:13:02,897 - root - INFO - Starting test: test_get_text_safe_success
+2025-11-02 13:13:02,915 - root - INFO - Completed test: test_get_text_safe_success
+2025-11-02 13:13:02,919 - root - INFO - Starting test: test_get_text_safe_element_not_found
+2025-11-02 13:13:02,930 - root - INFO - Completed test: test_get_text_safe_element_not_found
+2025-11-02 13:13:02,935 - root - INFO - Starting test: test_is_element_present_true
+2025-11-02 13:13:02,947 - root - INFO - Completed test: test_is_element_present_true
+2025-11-02 13:13:02,951 - root - INFO - Starting test: test_is_element_present_false
+2025-11-02 13:13:02,962 - root - INFO - Completed test: test_is_element_present_false
+2025-11-02 13:13:02,966 - root - INFO - Starting test: test_scroll_to_element_success
+2025-11-02 13:13:02,982 - root - INFO - Completed test: test_scroll_to_element_success
+2025-11-02 13:13:02,985 - root - INFO - Starting test: test_wait_for_page_load_success
+2025-11-02 13:13:02,997 - root - INFO - Completed test: test_wait_for_page_load_success
+2025-11-02 13:13:03,001 - root - INFO - Starting test: test_wait_for_page_load_timeout
+2025-11-02 13:13:03,011 - root - INFO - Completed test: test_wait_for_page_load_timeout
+2025-11-02 13:13:03,016 - root - INFO - Starting test: test_wait_vis_function
+2025-11-02 13:13:03,023 - root - INFO - Completed test: test_wait_vis_function
+2025-11-02 13:13:03,030 - root - INFO - Starting test: test_wait_css_function
+2025-11-02 13:13:03,037 - root - INFO - Completed test: test_wait_css_function
+2025-11-02 13:13:03,042 - root - INFO - Starting test: test_frame_context_manager_creation
+2025-11-02 13:13:03,048 - root - INFO - Completed test: test_frame_context_manager_creation
+2025-11-02 13:13:03,052 - root - INFO - Starting test: test_frame_context_manager_enter_with_tuple
+2025-11-02 13:13:03,063 - root - INFO - Completed test: test_frame_context_manager_enter_with_tuple
+2025-11-02 13:13:03,067 - root - INFO - Starting test: test_frame_context_manager_enter_with_string
+2025-11-02 13:13:03,076 - root - INFO - Completed test: test_frame_context_manager_enter_with_string
+2025-11-02 13:13:03,081 - root - INFO - Starting test: test_frame_context_manager_enter_with_index
+2025-11-02 13:13:03,092 - root - INFO - Completed test: test_frame_context_manager_enter_with_index
+2025-11-02 13:13:03,098 - root - INFO - Starting test: test_checklist_step_creation
+2025-11-02 13:13:03,103 - root - INFO - Completed test: test_checklist_step_creation
+2025-11-02 13:13:03,109 - root - INFO - Starting test: test_checklist_step_to_dict
+2025-11-02 13:13:03,115 - root - INFO - Completed test: test_checklist_step_to_dict
+2025-11-02 13:13:03,118 - root - INFO - Starting test: test_checklist_creation
+2025-11-02 13:13:03,124 - root - INFO - Completed test: test_checklist_creation
+2025-11-02 13:13:03,129 - root - INFO - Starting test: test_check_method
+2025-11-02 13:13:03,131 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success message
+2025-11-02 13:13:03,132 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure message
+2025-11-02 13:13:03,136 - root - INFO - Completed test: test_check_method
+2025-11-02 13:13:03,140 - root - INFO - Starting test: test_step_counts
+2025-11-02 13:13:03,144 - tests.utils.checklist - INFO - Step 'Pass 1': PASS
+2025-11-02 13:13:03,144 - tests.utils.checklist - INFO - Step 'Pass 2': PASS
+2025-11-02 13:13:03,145 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL
+2025-11-02 13:13:03,153 - root - INFO - Completed test: test_step_counts
+2025-11-02 13:13:03,158 - root - INFO - Starting test: test_is_success_property
+2025-11-02 13:13:03,160 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:13:03,161 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:13:03,161 - tests.utils.checklist - ERROR - Step 'Step 3': FAIL
+2025-11-02 13:13:03,165 - root - INFO - Completed test: test_is_success_property
+2025-11-02 13:13:03,168 - root - INFO - Starting test: test_get_failed_steps
+2025-11-02 13:13:03,170 - tests.utils.checklist - INFO - Step 'Pass': PASS
+2025-11-02 13:13:03,171 - tests.utils.checklist - ERROR - Step 'Fail 1': FAIL - Error 1
+2025-11-02 13:13:03,171 - tests.utils.checklist - ERROR - Step 'Fail 2': FAIL - Error 2
+2025-11-02 13:13:03,176 - root - INFO - Completed test: test_get_failed_steps
+2025-11-02 13:13:03,180 - root - INFO - Starting test: test_add_tag
+2025-11-02 13:13:03,184 - root - INFO - Completed test: test_add_tag
+2025-11-02 13:13:03,189 - root - INFO - Starting test: test_set_environment_info
+2025-11-02 13:13:03,195 - root - INFO - Completed test: test_set_environment_info
+2025-11-02 13:13:03,199 - root - INFO - Starting test: test_add_test_data
+2025-11-02 13:13:03,203 - root - INFO - Completed test: test_add_test_data
+2025-11-02 13:13:03,209 - root - INFO - Starting test: test_summary_dict
+2025-11-02 13:13:03,212 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:13:03,212 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:13:03,217 - root - INFO - Completed test: test_summary_dict
+2025-11-02 13:13:03,221 - root - INFO - Starting test: test_assert_all_passed_success
+2025-11-02 13:13:03,223 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:13:03,223 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:13:03,228 - root - INFO - Completed test: test_assert_all_passed_success
+2025-11-02 13:13:03,232 - root - INFO - Starting test: test_assert_all_passed_failure
+2025-11-02 13:13:03,234 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:13:03,234 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - This failed
+2025-11-02 13:13:03,238 - root - INFO - Completed test: test_assert_all_passed_failure
+2025-11-02 13:13:03,244 - root - INFO - Starting test: test_assert_all_passed_custom_message
+2025-11-02 13:13:03,246 - tests.utils.checklist - ERROR - Step 'Step 1': FAIL
+2025-11-02 13:13:03,249 - root - INFO - Completed test: test_assert_all_passed_custom_message
+2025-11-02 13:13:03,252 - root - INFO - Starting test: test_to_json
+2025-11-02 13:13:03,268 - tests.utils.checklist - INFO - Step 'Step 1': PASS - Success
+2025-11-02 13:13:03,268 - tests.utils.checklist - ERROR - Step 'Step 2': FAIL - Failure
+2025-11-02 13:13:03,271 - tests.utils.checklist - INFO - Test results saved to: C:\Users\juanv\AppData\Local\Temp\pytest-of-juanv\pytest-10\test_to_json0\test_results.json
+2025-11-02 13:13:03,297 - root - INFO - Completed test: test_to_json
+2025-11-02 13:13:03,301 - root - INFO - Starting test: test_duration_calculation
+2025-11-02 13:13:03,303 - tests.utils.checklist - INFO - Step 'Step 1': PASS
+2025-11-02 13:13:03,412 - tests.utils.checklist - INFO - Step 'Step 2': PASS
+2025-11-02 13:13:03,415 - root - INFO - Completed test: test_duration_calculation
+2025-11-02 13:13:03,419 - root - INFO - Starting test: test_empty_checklist_properties
+2025-11-02 13:13:03,424 - root - INFO - Completed test: test_empty_checklist_properties
