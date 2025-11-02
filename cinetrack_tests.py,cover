@@ -34,12 +34,12 @@
       
 >     service = Service(ChromeDriverManager().install())
 >     driver_instance = webdriver.Chrome(service=service, options=options)
->     driver_instance.implicitly_wait(10)
+!     driver_instance.implicitly_wait(10)
       
->     yield driver_instance
+!     yield driver_instance
       
->     try:
->         driver_instance.quit()
+!     try:
+!         driver_instance.quit()
 !     except Exception:
 !         pass
   
@@ -120,60 +120,60 @@
       
 >     def test_frontend_backend_communication(self, driver):
 >         """🔗 Test integración: Frontend-Backend communication."""
->         print("\n🔗 INTEGRATION TESTS - Frontend ↔ Backend")
+!         print("\n🔗 INTEGRATION TESTS - Frontend ↔ Backend")
           
->         start_time = time.time()
+!         start_time = time.time()
           
           # Cargar página a través del navegador
->         driver.get("https://dj07hexl3m0a6.cloudfront.net")
->         load_duration = time.time() - start_time
+!         driver.get("https://dj07hexl3m0a6.cloudfront.net")
+!         load_duration = time.time() - start_time
           
           # Verificar elementos cargados dinámicamente
->         page_source = driver.page_source.lower()
+!         page_source = driver.page_source.lower()
           
->         tests = {
->             "page_load": len(page_source) > 100,
->             "frontend_js_execution": "script" in page_source or len(driver.get_cookies()) >= 0,
->             "backend_data_delivery": "cinetrack" in page_source,
->             "dynamic_content": any(movie in page_source for movie in ["conjuring", "superman"]),
->             "user_interface": any(ui in page_source for ui in ["button", "input", "form"]),
->         }
+!         tests = {
+!             "page_load": len(page_source) > 100,
+!             "frontend_js_execution": "script" in page_source or len(driver.get_cookies()) >= 0,
+!             "backend_data_delivery": "cinetrack" in page_source,
+!             "dynamic_content": any(movie in page_source for movie in ["conjuring", "superman"]),
+!             "user_interface": any(ui in page_source for ui in ["button", "input", "form"]),
+!         }
           
->         TestResult.show_step("page_load_performance", load_duration < 5.0, 
->                            f"Load time: {load_duration:.2f}s", load_duration)
+!         TestResult.show_step("page_load_performance", load_duration < 5.0, 
+!                            f"Load time: {load_duration:.2f}s", load_duration)
           
->         for test_name, result in tests.items():
->             TestResult.show_step(test_name, result)
+!         for test_name, result in tests.items():
+!             TestResult.show_step(test_name, result)
           
->         assert all(tests.values())
+!         assert all(tests.values())
       
 >     def test_navigation_integration(self, driver):
 >         """🧭 Test integración: Navegación entre páginas."""
->         print("\n🔗 INTEGRATION TESTS - Navigation")
+!         print("\n🔗 INTEGRATION TESTS - Navigation")
           
           # Página inicial
->         driver.get("https://dj07hexl3m0a6.cloudfront.net")
->         initial_url = driver.current_url
+!         driver.get("https://dj07hexl3m0a6.cloudfront.net")
+!         initial_url = driver.current_url
           
->         TestResult.show_step("home_page_load", "dj07hexl3m0a6.cloudfront.net" in initial_url)
+!         TestResult.show_step("home_page_load", "dj07hexl3m0a6.cloudfront.net" in initial_url)
           
           # Navegación a network
->         driver.get("https://dj07hexl3m0a6.cloudfront.net/follows")
->         time.sleep(2)
+!         driver.get("https://dj07hexl3m0a6.cloudfront.net/follows")
+!         time.sleep(2)
           
->         network_url = driver.current_url
->         network_content = driver.page_source.lower()
+!         network_url = driver.current_url
+!         network_content = driver.page_source.lower()
           
->         tests = {
->             "url_routing": "follows" in network_url,
->             "content_change": len(network_content) > 100,
->             "backend_response": driver.execute_script("return document.readyState") == "complete"
->         }
+!         tests = {
+!             "url_routing": "follows" in network_url,
+!             "content_change": len(network_content) > 100,
+!             "backend_response": driver.execute_script("return document.readyState") == "complete"
+!         }
           
->         for test_name, result in tests.items():
->             TestResult.show_step(test_name, result)
+!         for test_name, result in tests.items():
+!             TestResult.show_step(test_name, result)
           
->         assert all(tests.values())
+!         assert all(tests.values())
   
   
   # ============================================================================
@@ -185,81 +185,81 @@
       
 >     def test_user_homepage_journey(self, driver):
 >         """🎭 Test E2E: Flujo completo del usuario en homepage."""
->         print("\n🎭 E2E TESTS - User Homepage Journey")
+!         print("\n🎭 E2E TESTS - User Homepage Journey")
           
           # Paso 1: Carga inicial
->         start_time = time.time()
->         driver.get("https://dj07hexl3m0a6.cloudfront.net")
->         load_time = time.time() - start_time
+!         start_time = time.time()
+!         driver.get("https://dj07hexl3m0a6.cloudfront.net")
+!         load_time = time.time() - start_time
           
->         TestResult.show_step("homepage_load", load_time < 10.0, 
->                            f"Load time: {load_time:.2f}s", load_time)
+!         TestResult.show_step("homepage_load", load_time < 10.0, 
+!                            f"Load time: {load_time:.2f}s", load_time)
           
           # Paso 2: Verificar contenido del feed
->         page_content = driver.page_source.lower()
+!         page_content = driver.page_source.lower()
           
->         feed_tests = {
->             "welcome_message": "bienvenido" in page_content,
->             "movie_posts": any(movie in page_content for movie in ["conjuring", "superman", "f1"]),
->             "user_activity": any(user in page_content for user in ["paul rudd", "jane foster"]),
->             "review_content": "reseña" in page_content or "review" in page_content,
->         }
+!         feed_tests = {
+!             "welcome_message": "bienvenido" in page_content,
+!             "movie_posts": any(movie in page_content for movie in ["conjuring", "superman", "f1"]),
+!             "user_activity": any(user in page_content for user in ["paul rudd", "jane foster"]),
+!             "review_content": "reseña" in page_content or "review" in page_content,
+!         }
           
->         for test_name, result in feed_tests.items():
->             TestResult.show_step(test_name, result)
+!         for test_name, result in feed_tests.items():
+!             TestResult.show_step(test_name, result)
           
           # Paso 3: Interacción con la página
->         try:
+!         try:
               # Scroll test
->             initial_scroll = driver.execute_script("return window.pageYOffset;")
->             driver.execute_script("window.scrollTo(0, 500);")
->             time.sleep(1)
->             new_scroll = driver.execute_script("return window.pageYOffset;")
+!             initial_scroll = driver.execute_script("return window.pageYOffset;")
+!             driver.execute_script("window.scrollTo(0, 500);")
+!             time.sleep(1)
+!             new_scroll = driver.execute_script("return window.pageYOffset;")
               
->             TestResult.show_step("page_interaction", new_scroll != initial_scroll)
+!             TestResult.show_step("page_interaction", new_scroll != initial_scroll)
               
 !         except Exception as e:
 !             TestResult.show_step("page_interaction", False, str(e))
           
->         assert all(feed_tests.values())
+!         assert all(feed_tests.values())
       
 >     def test_user_navigation_journey(self, driver):
 >         """🧭 Test E2E: Flujo de navegación completo."""
->         print("\n🎭 E2E TESTS - User Navigation Journey")
+!         print("\n🎭 E2E TESTS - User Navigation Journey")
           
           # Paso 1: Inicio en homepage
->         driver.get("https://dj07hexl3m0a6.cloudfront.net")
->         TestResult.show_step("start_homepage", True)
+!         driver.get("https://dj07hexl3m0a6.cloudfront.net")
+!         TestResult.show_step("start_homepage", True)
           
           # Paso 2: Navegación a network
->         start_nav = time.time()
->         driver.get("https://dj07hexl3m0a6.cloudfront.net/follows")
->         nav_time = time.time() - start_nav
+!         start_nav = time.time()
+!         driver.get("https://dj07hexl3m0a6.cloudfront.net/follows")
+!         nav_time = time.time() - start_nav
           
->         TestResult.show_step("navigate_to_network", nav_time < 5.0, 
->                            f"Navigation time: {nav_time:.2f}s", nav_time)
+!         TestResult.show_step("navigate_to_network", nav_time < 5.0, 
+!                            f"Navigation time: {nav_time:.2f}s", nav_time)
           
           # Paso 3: Verificar página de network
->         network_content = driver.page_source.lower()
+!         network_content = driver.page_source.lower()
           
->         network_tests = {
->             "network_page_loaded": len(network_content) > 100,
->             "url_correct": "follows" in driver.current_url,
->             "content_loaded": "html" in network_content and "body" in network_content  # Verificar estructura básica
->         }
+!         network_tests = {
+!             "network_page_loaded": len(network_content) > 100,
+!             "url_correct": "follows" in driver.current_url,
+!             "content_loaded": "html" in network_content and "body" in network_content  # Verificar estructura básica
+!         }
           
->         for test_name, result in network_tests.items():
->             TestResult.show_step(test_name, result)
+!         for test_name, result in network_tests.items():
+!             TestResult.show_step(test_name, result)
           
           # Paso 4: Regreso a homepage
->         driver.get("https://dj07hexl3m0a6.cloudfront.net")
->         time.sleep(1)
+!         driver.get("https://dj07hexl3m0a6.cloudfront.net")
+!         time.sleep(1)
           
->         TestResult.show_step("return_to_homepage", 
->                            "dj07hexl3m0a6.cloudfront.net" in driver.current_url and 
->                            "follows" not in driver.current_url)
+!         TestResult.show_step("return_to_homepage", 
+!                            "dj07hexl3m0a6.cloudfront.net" in driver.current_url and 
+!                            "follows" not in driver.current_url)
           
->         assert all(network_tests.values())
+!         assert all(network_tests.values())
   
   
   # ============================================================================
@@ -271,60 +271,60 @@
       
 >     def test_load_performance(self, driver):
 >         """⚡ Test performance: Tiempos de carga."""
->         print("\n⚡ PERFORMANCE TESTS - Load Times")
+!         print("\n⚡ PERFORMANCE TESTS - Load Times")
           
           # Test múltiples cargas para promedio
->         load_times = []
+!         load_times = []
           
->         for i in range(3):
->             start_time = time.time()
->             driver.get("https://dj07hexl3m0a6.cloudfront.net")
+!         for i in range(3):
+!             start_time = time.time()
+!             driver.get("https://dj07hexl3m0a6.cloudfront.net")
               
               # Esperar contenido completo
->             WebDriverWait(driver, 10).until(
->                 lambda d: len(d.page_source) > 100
->             )
+!             WebDriverWait(driver, 10).until(
+!                 lambda d: len(d.page_source) > 100
+!             )
               
->             load_time = time.time() - start_time
->             load_times.append(load_time)
+!             load_time = time.time() - start_time
+!             load_times.append(load_time)
               
->             TestResult.show_step(f"load_test_{i+1}", load_time < 8.0, 
->                                f"Time: {load_time:.2f}s", load_time)
+!             TestResult.show_step(f"load_test_{i+1}", load_time < 8.0, 
+!                                f"Time: {load_time:.2f}s", load_time)
           
           # Métricas agregadas
->         avg_time = sum(load_times) / len(load_times)
->         max_time = max(load_times)
+!         avg_time = sum(load_times) / len(load_times)
+!         max_time = max(load_times)
           
->         TestResult.show_step("average_load_time", avg_time < 5.0, 
->                            f"Avg: {avg_time:.2f}s", avg_time)
->         TestResult.show_step("max_load_time", max_time < 10.0, 
->                            f"Max: {max_time:.2f}s", max_time)
+!         TestResult.show_step("average_load_time", avg_time < 5.0, 
+!                            f"Avg: {avg_time:.2f}s", avg_time)
+!         TestResult.show_step("max_load_time", max_time < 10.0, 
+!                            f"Max: {max_time:.2f}s", max_time)
           
->         assert avg_time < 5.0 and max_time < 10.0
+!         assert avg_time < 5.0 and max_time < 10.0
       
 >     def test_content_size_performance(self, driver):
 >         """📊 Test performance: Tamaño de contenido."""
->         print("\n⚡ PERFORMANCE TESTS - Content Size")
+!         print("\n⚡ PERFORMANCE TESTS - Content Size")
           
->         driver.get("https://dj07hexl3m0a6.cloudfront.net")
+!         driver.get("https://dj07hexl3m0a6.cloudfront.net")
           
->         content_size = len(driver.page_source)
->         content_kb = content_size / 1024
+!         content_size = len(driver.page_source)
+!         content_kb = content_size / 1024
           
->         size_tests = {
->             "reasonable_size": content_kb < 500,  # Menos de 500KB
->             "sufficient_content": content_kb > 5,  # Más de 5KB
->             "not_empty": content_size > 0
->         }
+!         size_tests = {
+!             "reasonable_size": content_kb < 500,  # Menos de 500KB
+!             "sufficient_content": content_kb > 5,  # Más de 5KB
+!             "not_empty": content_size > 0
+!         }
           
->         TestResult.show_step("content_size", size_tests["reasonable_size"], 
->                            f"Size: {content_kb:.1f} KB")
+!         TestResult.show_step("content_size", size_tests["reasonable_size"], 
+!                            f"Size: {content_kb:.1f} KB")
           
->         for test_name, result in size_tests.items():
->             if test_name != "reasonable_size":  # Ya mostrado arriba
->                 TestResult.show_step(test_name, result)
+!         for test_name, result in size_tests.items():
+!             if test_name != "reasonable_size":  # Ya mostrado arriba
+!                 TestResult.show_step(test_name, result)
           
->         assert all(size_tests.values())
+!         assert all(size_tests.values())
   
   
   # ============================================================================
@@ -336,37 +336,37 @@
       
 >     def test_critical_functionality(self, driver):
 >         """🔥 Smoke test: Funcionalidad crítica del sistema."""
->         print("\n🔥 SMOKE TESTS - Critical Functionality")
+!         print("\n🔥 SMOKE TESTS - Critical Functionality")
           
           # Test crítico: ¿La aplicación está viva?
->         start_time = time.time()
->         driver.get("https://dj07hexl3m0a6.cloudfront.net")
->         response_time = time.time() - start_time
+!         start_time = time.time()
+!         driver.get("https://dj07hexl3m0a6.cloudfront.net")
+!         response_time = time.time() - start_time
           
->         page_content = driver.page_source.lower()
->         title = driver.title
+!         page_content = driver.page_source.lower()
+!         title = driver.title
           
->         critical_tests = {
->             "application_responds": response_time < 15.0,
->             "content_loads": len(page_content) > 500,
->             "branding_present": "cinetrack" in page_content,
->             "page_title": len(title) > 0,
->             "basic_structure": "html" in page_content and "body" in page_content
->         }
+!         critical_tests = {
+!             "application_responds": response_time < 15.0,
+!             "content_loads": len(page_content) > 500,
+!             "branding_present": "cinetrack" in page_content,
+!             "page_title": len(title) > 0,
+!             "basic_structure": "html" in page_content and "body" in page_content
+!         }
           
->         TestResult.show_step("system_health", all(critical_tests.values()),
->                            f"Response: {response_time:.2f}s, Content: {len(page_content)} chars")
+!         TestResult.show_step("system_health", all(critical_tests.values()),
+!                            f"Response: {response_time:.2f}s, Content: {len(page_content)} chars")
           
->         for test_name, result in critical_tests.items():
->             TestResult.show_step(test_name, result)
+!         for test_name, result in critical_tests.items():
+!             TestResult.show_step(test_name, result)
           
           # Test crítico de navegación
->         driver.get("https://dj07hexl3m0a6.cloudfront.net/follows")
->         navigation_works = len(driver.page_source) > 100
+!         driver.get("https://dj07hexl3m0a6.cloudfront.net/follows")
+!         navigation_works = len(driver.page_source) > 100
           
->         TestResult.show_step("navigation_works", navigation_works)
+!         TestResult.show_step("navigation_works", navigation_works)
           
->         assert all(critical_tests.values()) and navigation_works
+!         assert all(critical_tests.values()) and navigation_works
   
   
   # ============================================================================
