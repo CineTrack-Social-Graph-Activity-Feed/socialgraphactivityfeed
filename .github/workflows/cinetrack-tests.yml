@@ -2,7 +2,7 @@ name: CineTrack Testing Suite
 
 on:
   push:
-    branches: ['main', 'develop']  # Solo cuando hay commits en main
+    branches: ['main']  # Solo cuando hay commits en main
   pull_request:
     branches: ['main']
   workflow_dispatch:
@@ -62,3 +62,4 @@ jobs:
           flags: unittests
           name: codecov-cinetrack
           fail_ci_if_error: false
+
