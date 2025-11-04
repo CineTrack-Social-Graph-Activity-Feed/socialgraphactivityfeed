@@ -146,6 +146,13 @@
   font-size: 20px;
   font-weight: 500;
 }
+
+.titulo-pelicula h3 {
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 0;
+  margin-right: 10px;
+}
 .estrella {
   color: #facc15;
   margin-right: 5px;

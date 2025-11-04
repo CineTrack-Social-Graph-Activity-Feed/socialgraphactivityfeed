@@ -14,6 +14,7 @@ function PostMiActividad({ post }) {
   const userId = user.user.user_id; // normalizamos ID
   const [perfil, setPerfil] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [postsConPeli, setPostsConPeli] = useState([]);
   const [comment, setComment] = useState("");
   const [commentsByPost, setCommentsByPost] = useState([]);
   const [showAllComments, setShowAllComments] = useState({});
@@ -39,36 +40,74 @@ function PostMiActividad({ post }) {
     })();
   }, [userId, fetchWithAuth]);
 
-  console.log("👤 Perfil del usuario:", perfil);
   /**
    * Traigo mis posts desde el backend
    */
 
   useEffect(() => {
-    if (!userId) return; // por las dudas
+    if (!userId) return;
 
     (async () => {
       try {
-        console.log("Trayendo mis reviews...");
-        const id = String(userId);
+        console.log("Trayendo las reviews de mis amigos...");
+        const idUser = String(userId);
         const res = await fetchWithAuth(
-          `http://localhost:3000/api/publication/user/${id}`
+          `http://localhost:3000/api/publication/user/${idUser}`
         );
-
         if (!res.ok) throw new Error(`Error ${res.status}`);
 
         const data = await res.json();
-        setPosts(data.publications || []);
+        const feed = data.publications || [];
+        setPosts(feed);
+
+        console.log("Publicaciones obtenidas:", feed);
+        // 1) juntar movie_ids únicos
+        const idsUnicos = [
+          ...new Set(
+            feed
+              .map((p) => p.movie_id)
+              .filter((id) => id !== null && id !== undefined) // <-- clave: no elimina 0
+          ),
+        ];
+
+        console.log("IDs de películas únicos:", idsUnicos);
+        // 2) traer películas en paralelo (evita duplicados)
+        const peliculas = await Promise.all(
+          idsUnicos.map(async (id) => {
+            try {
+              const r = await fetchWithAuth(
+                `http://localhost:3000/api/movie/${id}`
+              );
+              if (!r.ok) throw new Error(`Movie ${id}: ${r.status}`);
+              const movieData = await r.json();
+              return { id, movie: movieData };
+            } catch (e) {
+              console.error("Error trayendo película", id, e);
+              return { id, movie: null }; // tolerante a errores
+            }
+          })
+        );
+
+        // 3) armar un map id -> movie
+        const movieMap = new Map(peliculas.map(({ id, movie }) => [id, movie]));
+
+        // 4) mergear cada post con su película
+
+        const enriquecidos = feed.map((post) => ({
+          ...post,
+          movie: movieMap.get(post.movie_id) ?? null, // <-- usar _doc.movie_id
+        }));
+
+        setPostsConPeli(enriquecidos);
       } catch (err) {
         if (err.name !== "AbortError") {
-          console.error("❌ Error al cargar posts de actividad:", err);
+          console.error("❌ Error al cargar posts o películas:", err);
         }
       }
     })();
   }, [userId, fetchWithAuth]);
 
-  console.log("📝 Posts de mi actividad:", posts);
-
+  console.log("Posts con película:", postsConPeli);
   /* Guarda el comentario de una publicacion a la BD o localmente */
   const handleSubmit = async (e, post) => {
     console.log("🚀 Enviando comentario para post:", post);
@@ -117,56 +156,6 @@ function PostMiActividad({ post }) {
       alert(`Error al guardar comentario: ${err.message}`);
     }
   };
-
-  /*
-    const [posts, setPosts] = useState([
-    {
-      id: "65f5e1d77c65c827d8536abc", // ID de MongoDB válido (generado como ejemplo)
-      type: "review",
-      author: {
-        name: "Paul Rudd",
-        username: "antman_wasp",
-        avatar: "https://i.pravatar.cc/60?img=15",
-      },
-      createdAt: "4h ago",
-      pelicula_name: "The Conjuring: Last Rites",
-      text: "The Conjuring: Last Rites me sorprendió bastante. Tiene un montón de sustos bien logrados y la atmósfera es súper tensa. Me gustó mucho cómo cerraron la historia de los Warren, se siente más personal y emotiva que otras entregas. Eso sí, en algunas partes el ritmo decae un poco y la trama se vuelve predecible, pero en general salí conforme. Creo que es un buen final para la saga.",
-      puntuacion: 4.5,
-      image:
-        "https://a.ltrbxd.com/resized/film-poster/9/3/6/0/6/5/936065-the-conjuring-last-rites-0-1000-0-1500-crop.jpg?v=597eedcd06",
-    },
-    {
-      id: "65f5e1d77c65c827d8536abd", // ID de MongoDB válido (generado como ejemplo)
-      type: "review",
-      author: {
-        name: "Jane Foster",
-        username: "jane_foster",
-        avatar: "https://i.pravatar.cc/60?img=10",
-      },
-      createdAt: "1 day ago",
-      pelicula_name: "Superman",
-      text: "Superman (2025) me dejó con sentimientos encontrados. Por un lado, las escenas de acción son impresionantes y la cinematografía es de primera, realmente capturan la grandeza del personaje. Sin embargo, siento que la historia no estuvo a la altura de las expectativas; algunos giros fueron bastante predecibles y los personajes secundarios no tuvieron mucho desarrollo. Aun así, disfruté viendo a Superman en pantalla",
-      puntuacion: 3,
-      image:
-        "https://a.ltrbxd.com/resized/film-poster/9/5/7/0/5/0/957050-superman-2025-0-1000-0-1500-crop.jpg?v=54e41a55ff",
-    },
-    {
-      id: "65f5e1d77c65c827d8536abe", // ID de MongoDB válido (generado como ejemplo)
-      type: "review",
-      author: {
-        name: "Jane Foster",
-        username: "jane_foster",
-        avatar: "https://i.pravatar.cc/60?img=10",
-      },
-      createdAt: "1 day ago",
-      pelicula_name: "F1",
-      text: "F1 (2024) es una película que realmente captura la emoción y la adrenalina del automovilismo. Las escenas de carrera son espectaculares, con tomas que te hacen sentir como si estuvieras en el asiento del conductor. Además, la historia detrás de los pilotos añade una capa emocional que me mantuvo enganchado. Sin embargo, creo que algunos personajes podrían haberse desarrollado más para darle mayor profundidad a la trama. En general, es una película emocionante que cualquier fanático de la Fórmula 1 debería ver.",
-      puntuacion: 5,
-      image:
-        "https://a.ltrbxd.com/resized/film-poster/8/1/7/9/7/7/817977-f1-the-movie-0-1000-0-1500-crop.jpg?v=f5ae2b99b9",
-    },
-  ]);
-  */
 
   //LIKE
 
@@ -249,8 +238,6 @@ function PostMiActividad({ post }) {
 
     loadComments();
   }, [posts, fetchWithAuth]);
-
-  console.log("💬 Comentarios por post:", commentsByPost);
 
   const handleLike = async (post) => {
     try {
@@ -477,8 +464,7 @@ function PostMiActividad({ post }) {
           <img src={post.author.avatar} alt="avatar" className="avatar-post" />
           <div>
             <div className="post-user-info">
-              <h4 className="name">{user.user.full_name}</h4>
-              <span className="username-id">@{post.author.username}</span>{" "}
+              <h4 className="name">{post.author.username}</h4>
             </div>
             <span className="time">{dayjs(post.created_at).fromNow()}</span>
           </div>
@@ -486,7 +472,7 @@ function PostMiActividad({ post }) {
 
         {/* Texto */}
         <div className="titulo-pelicula">
-          <h3>{post.title}</h3>
+          <h3>{post.movie.movie.titulo}</h3>
           <StarRating puntuacion={post.rating} />{" "}
         </div>
         <div className="post-body">
@@ -495,8 +481,12 @@ function PostMiActividad({ post }) {
           </div>
           <div className="post-image-container">
             {/* Imagen (si existe) */}
-            {post.image && (
-              <img src={post.image} alt="post" className="post-image" />
+            {post.movie.movie.poster && (
+              <img
+                src={post.movie.movie.poster}
+                alt="post"
+                className="post-image"
+              />
             )}
           </div>
         </div>
@@ -688,13 +678,13 @@ function PostMiActividad({ post }) {
 
   return (
     <div style={{ display: "grid", gap: "20px" }}>
-      {posts.length === 0 ? (
+      {postsConPeli.length === 0 ? (
         <p style={{ color: "#ccc", textAlign: "center", marginTop: "20px" }}>
           Por el momento no has realizado ninguna reseña, anímate a escribir
           una!
         </p>
       ) : (
-        posts.map((post) => renderPostByType(post))
+        postsConPeli.map((post) => renderPostByType(post))
       )}
     </div>
   );

@@ -15,6 +15,7 @@ function Post({ post }) {
   const userId = user.user.user_id; // normalizamos ID
   const [perfil, setPerfil] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [postsConPeli, setPostsConPeli] = useState([]);
   const [comment, setComment] = useState("");
   const [commentsByPost, setCommentsByPost] = useState([]);
   const [showAllComments, setShowAllComments] = useState({});
@@ -46,8 +47,7 @@ function Post({ post }) {
    */
   useEffect(() => {
     const objectId = perfil?.id;
-
-    if (!objectId) return; // por las dudas
+    if (!objectId) return;
 
     (async () => {
       try {
@@ -55,15 +55,53 @@ function Post({ post }) {
         const res = await fetchWithAuth(
           `http://localhost:3000/api/feed?user_id=${objectId}`
         );
-
         if (!res.ok) throw new Error(`Error ${res.status}`);
 
         const data = await res.json();
-        console.log("Datos de publicaciones recibidos:", data);
-        setPosts(data.feed || []);
+        const feed = data.feed || [];
+        setPosts(feed);
+
+        // 1) juntar movie_ids únicos
+        const idsUnicos = [
+          ...new Set(
+            feed
+              .map((p) => p._doc?.movie_id)
+              .filter((id) => id !== null && id !== undefined) // <-- clave: no elimina 0
+          ),
+        ];
+
+        // 2) traer películas en paralelo (evita duplicados)
+        const peliculas = await Promise.all(
+          idsUnicos.map(async (id) => {
+            try {
+              const r = await fetchWithAuth(
+                `http://localhost:3000/api/movie/${id}`
+              );
+              if (!r.ok) throw new Error(`Movie ${id}: ${r.status}`);
+              const movieData = await r.json();
+              return { id, movie: movieData };
+            } catch (e) {
+              console.error("Error trayendo película", id, e);
+              return { id, movie: null }; // tolerante a errores
+            }
+          })
+        );
+
+        // 3) armar un map id -> movie
+        const movieMap = new Map(peliculas.map(({ id, movie }) => [id, movie]));
+
+        // 4) mergear cada post con su película
+
+        const enriquecidos = feed.map((post) => ({
+          ...post,
+          movie: movieMap.get(post._doc?.movie_id) ?? null, // <-- usar _doc.movie_id
+        }));
+
+        setPostsConPeli(enriquecidos);
+        console.log("Publicaciones enriquecidas:", enriquecidos);
       } catch (err) {
         if (err.name !== "AbortError") {
-          console.error("❌ Error al cargar posts de mis amigos:", err);
+          console.error("❌ Error al cargar posts o películas:", err);
         }
       }
     })();
@@ -469,7 +507,7 @@ function Post({ post }) {
 
           {/* Texto */}
           <div className="titulo-pelicula">
-            <h3>{post._doc.title}</h3>
+            <h3>{post.movie.movie.titulo}</h3>
             <StarRating puntuacion={post._doc.rating} />{" "}
           </div>
           <div className="post-body">
@@ -478,8 +516,12 @@ function Post({ post }) {
             </div>
             <div className="post-image-container">
               {/* Imagen (si existe) */}
-              {post.image && (
-                <img src={post.image} alt="post" className="post-image" />
+              {post.movie.movie.poster && (
+                <img
+                  src={post.movie.movie.poster}
+                  alt="post"
+                  className="post-image"
+                />
               )}
             </div>
           </div>
@@ -679,12 +721,12 @@ function Post({ post }) {
 
   return (
     <div style={{ display: "grid", gap: "20px" }}>
-      {posts.length === 0 ? (
+      {postsConPeli.length === 0 ? (
         <p style={{ color: "#ccc", textAlign: "center", marginTop: "20px" }}>
           No hay actividad para mostrar por el momento!
         </p>
       ) : (
-        posts.map((post) => renderPostByType(post))
+        postsConPeli.map((post) => renderPostByType(post))
       )}
     </div>
   );
