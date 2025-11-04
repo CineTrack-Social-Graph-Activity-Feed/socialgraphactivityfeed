@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   background-color: #0d1321;
-  padding: 20px;
+  padding: 5px 30px;
 }
 
 .logo {
@@ -16,6 +16,11 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
+}
+
+.logo p {
+  color: white;
+  margin: 0;
 }
 .icon {
   display: flex;
@@ -116,7 +121,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 8px 12px;
+  padding: 8px 5px;
   font-size: 0.9rem;
   color: #222; /* 👈 forzamos texto oscuro */
   background: #fff; /* 👈 fondo blanco por ítem */

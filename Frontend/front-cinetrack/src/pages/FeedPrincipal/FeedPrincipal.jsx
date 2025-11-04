@@ -4,18 +4,18 @@ import Post from "../../compenents/feedPrincipal/post/Post";
 import Navbar from "../../compenents/navbar/Navbar";
 import SideBar from "../../compenents/feedPrincipal/sidebar/SideBar";
 import Followed from "../../compenents/feedPrincipal/followed/Followed";
-import PostCreate from "../../compenents/feedPrincipal/post/PostCreate";
 import Footer from "../../compenents/footer/Footer";
 
 function FeedPrincipal() {
   const items = useMemo(() => Array.from({ length: 1 }, (_, i) => i), []);
 
   return (
-    <div className="layout">
+    <div className="layout-feed">
       <div className="navbar-container">
         <Navbar />
       </div>
-      <div className="content">
+
+      <div className="content-feed">
         <div className="sidebar-feed">
           <SideBar />
         </div>
@@ -35,6 +35,7 @@ function FeedPrincipal() {
           <Followed />
         </div>
       </div>
+
       <div className="footer-container">
         <Footer />
       </div>

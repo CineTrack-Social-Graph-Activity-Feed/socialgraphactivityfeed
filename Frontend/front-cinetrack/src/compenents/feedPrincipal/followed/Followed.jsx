@@ -1,51 +1,85 @@
 import { useEffect, useState } from "react";
 import { API_URL } from "../../../config/api";
 import "./Followed.css";
-import { useUser } from "../../../../UserContex";
+import { useAuth } from "../../../config/AuthContext";
 
 function Followed() {
-  const { userId } = useUser();
+  const { user, fetchWithAuth, signOut } = useAuth(); // <- user de /me
+  const userId = user.user.user_id; // normalizamos ID
+  const [perfil, setPerfil] = useState(null);
   const [openMenu, setOpenMenu] = useState(null); // guarda el usuario con menú abierto
   const [seguidores, setSeguidores] = useState([]);
 
   const toggleMenu = (idUser) => {
     setOpenMenu(openMenu === idUser ? null : idUser);
   };
-
-  const handleUnfollow = (idUser) => {
-    setOpenMenu(null);
-    // 👇 acá podrías llamar al backend para realmente dejar de seguir
-    fetch(`${API_URL}/api/unfollow`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        follower_user_id: userId,
-        followed_user_id: idUser,
-      }),
-    });
-    // Actualizar la lista de seguidores en el frontend
-    setSeguidores(seguidores.filter((user) => user._id !== idUser));
-  };
-
+  // 1) Traer perfil completo del usuario para la navbar (si hace falta más que /me)
   useEffect(() => {
-    const fetchData = () => {
-      fetch(`${API_URL}/api/followed?user_id=${userId}`)
-        .then((res) => res.json())
-        .then((data) => setSeguidores(data.followed));
+    if (!userId) return;
+    (async () => {
+      try {
+        const res = await fetchWithAuth(
+          `http://localhost:3000/api/user/${userId}`
+        );
+        if (!res.ok) throw new Error("Error al traer usuario");
+        const data = await res.json();
+        setPerfil(data.user || data); // depende de tu shape
+      } catch (err) {
+        console.error("Error al traer usuario:", err);
+      }
+    })();
+  }, [userId, fetchWithAuth]);
+
+  // 2) Traer a quiénes sigo (lista de IDs)
+  useEffect(() => {
+    const objectId = perfil?.id;
+
+    if (!objectId) return;
+    const fetchFollowed = async () => {
+      try {
+        const res = await fetchWithAuth(
+          `http://localhost:3000/api/followed?user_id=${objectId}`
+        );
+        if (!res.ok) throw new Error("Error al traer followed");
+        const data = await res.json();
+        setSeguidores(data.followed || []);
+      } catch (err) {
+        console.error("Error followed:", err);
+      }
     };
 
-    // Primera carga
-    fetchData();
-
-    // Escuchar cambios globales
-    window.addEventListener("followersUpdated", fetchData);
+    fetchFollowed();
+    window.addEventListener("followersUpdated", fetchFollowed);
 
     return () => {
-      window.removeEventListener("followersUpdated", fetchData);
+      window.removeEventListener("followersUpdated", fetchFollowed);
     };
-  }, [userId]);
+  }, [perfil?.id, fetchWithAuth]);
+
+  const handleUnfollow = async (idUser) => {
+    const targetId = String(idUser);
+    console.log("Dejar de seguir a ID:", targetId);
+    setOpenMenu(null);
+    try {
+      const res = await fetchWithAuth("http://localhost:3000/api/unfollow", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          follower_user_id: perfil.id,
+          followed_user_id: targetId,
+        }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(`Unfollow falló (${res.status}) ${text}`);
+      }
+
+      setSeguidores((prev) => prev.filter((u) => u._id !== targetId));
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <div className="followed-container">
@@ -58,7 +92,11 @@ function Followed() {
             <div className="followed-user-item">
               <a href="#" className="followed-user">
                 <img
-                  src={user.avatar_url}
+                  src={
+                    user.avatar_url
+                      ? user.avatar_url
+                      : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+                  }
                   alt="avatar user"
                   className="avatar-user-followed"
                 />
@@ -115,4 +153,3 @@ function Followed() {
   );
 }
 export default Followed;
-

@@ -18,7 +18,7 @@ function Footer() {
           <div className="triangle left"></div>
           <div className="triangle right"></div>
         </div>
-        cineTrack
+        <p>cineTrack</p>
       </button>
     </footer>
   );

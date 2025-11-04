@@ -10,11 +10,11 @@ function Follows() {
   const [currentTab, setCurrentTab] = useState("SEGUIDOS");
 
   return (
-    <div className="layout">
+    <div className="layout-follows">
       <div className="navbar-container">
         <Navbar />
       </div>
-      <div className="content">
+      <div className="content-feed">
         <div className="sidebar-feed">
           <SideBar />
         </div>
