@@ -77,20 +77,43 @@ body,
   color: #ffffff;
 }
 
+.input-with-icon {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .form-input {
+  width: 100%;
   padding: 10px;
+  padding-right: 44px;
   border: 1px solid #ccc;
   border-radius: 6px;
   background-color: lightgray;
   color: #000000;
   font-size: 14px;
-  font-style: italic;
+  box-sizing: border-box;
 }
 
 .form-input:focus {
   outline: none;
   border-color: #1d2d44; /* color del borde al enfocar */
   background-color: #ffffff;
+}
+
+.toggle-pass {
+  position: absolute;
+  right: 10px;
+  top: 70%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: black;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .btn-login {
