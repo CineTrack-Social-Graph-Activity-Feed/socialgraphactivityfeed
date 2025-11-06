@@ -1,5 +1,11 @@
-const { response } = require("express");
 const User = require('../models/User');
+
+// Config desde variables de entorno (evitar hardcodear secretos)
+const CORE_EVENTS_URL = process.env.CORE_EVENTS_URL || 'http://core-letterboxd.us-east-2.elasticbeanstalk.com';
+const CORE_EVENTS_API_KEY = process.env.CORE_EVENTS_API_KEY || 'sk_core_social_s2Qw8Vn5Jk1Mz7Lp4Rt9HbXe';
+// El CORE valida que la API key coincida con el "source" enviado
+// (p. ej., esperan /social/api). Permite sobreescribirlo por entorno.
+const CORE_EVENTS_SOURCE = process.env.CORE_EVENTS_SOURCE || '/social/api';
 
 const publishEvent = async (event) => {
   try {
@@ -40,23 +46,38 @@ const publishEvent = async (event) => {
     const payload = {
       type: event_type,
       specversion: '1.0',
-      source: '/socialgraph/activityfeed',
+      source: CORE_EVENTS_SOURCE,
       id: `${actor_id}-${Date.now()}`,
       time: timestamp.toISOString(),
       data: eventData,
       datacontenttype: 'application/json'
     };
 
-    const apiUrl = `http://core-letterboxd.us-east-2.elasticbeanstalk.com/events/receive?routingKey=${event_type}`;
+    const apiUrl = `${CORE_EVENTS_URL}/events/receive?routingKey=${encodeURIComponent(event_type)}`;
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Accept': '*/*',
+        'Content-Type': 'application/json',
+        'X-API-KEY': CORE_EVENTS_API_KEY
       },
       body: JSON.stringify(payload)
     });
     if (!response.ok) {
-      throw new Error(`Error publishing event: ${response.statusText}`);
+      let bodyText = '';
+      try {
+        // intenta parsear JSON de error; si falla, devuelve texto plano
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const json = await response.json();
+          bodyText = JSON.stringify(json);
+        } else {
+          bodyText = await response.text();
+        }
+      } catch (_) { /* noop */ }
+
+      const statusMsg = response.statusText || 'Unknown error';
+      throw new Error(`Error publishing event: ${response.status} ${statusMsg} - ${bodyText}`);
     }
   console.log('✅ Event published:', payload);
     return response.json();

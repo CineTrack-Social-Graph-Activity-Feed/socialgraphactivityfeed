@@ -106,9 +106,7 @@ const startServer = async () => {
       console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🔗 Health check: GET /health`);
       console.log(`📜 Swagger Documentation: GET /doc`);
-      console.log('📝 Endpoints disponibles:');
-      console.log('   - POST /api/user (crear usuario)');
-      console.log('   - GET /api/user/:user_id (obtener usuario)');
+      console.log('📝 Endpoints principales:');
       console.log('   - POST /api/follow (seguir usuario)');
       console.log('   - POST /api/unfollow (dejar de seguir)');
       console.log('   - GET /api/followed (obtener seguidos)');
@@ -117,6 +115,8 @@ const startServer = async () => {
       console.log('   - POST /api/publication (crear publicación)');
       console.log('   - POST /api/like (dar like)');
       console.log('   - POST /api/comment (comentar)');
+      console.log('   - GET /api/publication/:id (obtener publicación por ID)');
+      console.log('   - Entre otros...');
     });
   } catch (error) {
     console.error('💥 Error iniciando el servidor:', error);

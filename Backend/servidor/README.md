@@ -26,6 +26,21 @@ nano .env
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/socialgraphactivityfeed
 NODE_ENV=development
+
+# Publicación de eventos hacia el CORE
+# URL del endpoint de eventos (local o remoto)
+# Ejemplos:
+#  - Desarrollo local: http://localhost:8080
+#  - AWS (prod/stage): https://core-letterboxd.us-east-2.elasticbeanstalk.com
+CORE_EVENTS_URL=http://localhost:8080
+
+# API Key del módulo correspondiente al routingKey (p.ej. "social.*")
+# Pide la key correcta a CORE y NO la subas al repo.
+CORE_EVENTS_API_KEY=
+
+# Valor de CloudEvents "source" que valida el CORE junto con la API key
+# (según nos indicaron, debe ser /social/api)
+CORE_EVENTS_SOURCE=/social/api
 ```
 
 ### Ejecutar

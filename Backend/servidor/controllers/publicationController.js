@@ -72,8 +72,13 @@ const createPublication = async (req, res) => {
       { path: 'movie', select: 'movie_id poster titulo' }
     ]);
 
-    // Publicar evento
-    createNewPublicationEvent(author_id, publication._id, type);
+    // Publicar evento (esperar y capturar errores para evitar crash por unhandled rejection)
+    try {
+      await createNewPublicationEvent(author_id, publication._id, type);
+    } catch (e) {
+      console.warn('No se pudo publicar el evento de nueva publicación:', e.message);
+      // No abortamos la creación local; sólo registramos el fallo del evento
+    }
 
     res.status(201).json({
       message: 'Publicación creada exitosamente',
@@ -473,8 +478,12 @@ const deletePublication = async (req, res) => {
     // Eliminar la publicación
     await Publication.findByIdAndDelete(publication_id);
 
-    // Publicar evento
-    createDeletePublicationEvent(user_id, publication_id);
+    // Publicar evento (evitar unhandled rejection)
+    try {
+      await createDeletePublicationEvent(user_id, publication_id);
+    } catch (e) {
+      console.warn('No se pudo publicar el evento de eliminación de publicación:', e.message);
+    }
 
     res.status(200).json({
       message: 'Publicación eliminada exitosamente'
