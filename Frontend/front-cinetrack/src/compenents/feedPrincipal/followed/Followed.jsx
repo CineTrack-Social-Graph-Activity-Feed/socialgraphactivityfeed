@@ -74,8 +74,8 @@ function Followed() {
         const text = await res.text().catch(() => "");
         throw new Error(`Unfollow falló (${res.status}) ${text}`);
       }
-
       setSeguidores((prev) => prev.filter((u) => u._id !== targetId));
+      window.dispatchEvent(new Event("followersUpdated"));
     } catch (e) {
       console.error(e);
     }

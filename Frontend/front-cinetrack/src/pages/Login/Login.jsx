@@ -80,12 +80,13 @@ function Login() {
                 {loading ? "Ingresando..." : "Iniciar Sesión"}
               </button>
             </form>
-
+            {/*
             <div className="forgot-password">
               <button type="button" className="btn-forgot-password">
                 ¿Olvidaste tu contraseña?
               </button>
-            </div>
+            </div>        
+            */}
           </div>
         </div>
       </main>

@@ -14,8 +14,15 @@ function Navbar() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-
+  const [followVersion, setFollowVersion] = useState(0);
   const searchRef = useRef(null);
+
+  useEffect(() => {
+    const onFollowersUpdated = () => setFollowVersion((v) => v + 1);
+    window.addEventListener("followersUpdated", onFollowersUpdated);
+    return () =>
+      window.removeEventListener("followersUpdated", onFollowersUpdated);
+  }, []);
 
   // 1) Traer perfil completo del usuario para la navbar (si hace falta más que /me)
   useEffect(() => {
@@ -53,7 +60,7 @@ function Navbar() {
         console.error("Error followed:", err);
       }
     })();
-  }, [perfil?.id, fetchWithAuth]);
+  }, [perfil?.id, fetchWithAuth, followVersion]);
 
   // 3) Búsqueda con debounce
   useEffect(() => {

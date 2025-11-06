@@ -59,6 +59,7 @@ function ListaFollows() {
           `Error al dejar de seguir: ${errorData.message || res.status}`
         );
       }
+      window.dispatchEvent(new Event("followersUpdated"));
     } catch (err) {
       console.error("Error en unfollowUser:", err);
       setError(`Error de conexión: ${err.message}`);
