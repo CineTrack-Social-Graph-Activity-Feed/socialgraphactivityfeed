@@ -21,7 +21,7 @@ function FeedPrincipal() {
         </div>
         <main className="main bkg-especial">
           <div className="title-section">
-            <h2>Tu actividad</h2>
+            <h2>Aquí verás las reseñas que escribiste!</h2>
           </div>
           <div className="feed-stack">
             {items.map((i) => (

@@ -10,7 +10,7 @@ import { prerenderToNodeStream } from "react-dom/static";
 dayjs.extend(relativeTime);
 dayjs.locale("es");
 
-function Post({ post }) {
+function Post({}) {
   const { user, fetchWithAuth, signOut } = useAuth(); // <- user de /me
   const userId = user.user.user_id; // normalizamos ID
   const [perfil, setPerfil] = useState(null);
@@ -109,47 +109,42 @@ function Post({ post }) {
 
   /* Guarda el comentario de una publicacion a la BD o localmente */
   const handleSubmit = async (e, post) => {
-    console.log("🚀 Enviando comentario para post:", post);
     e.preventDefault();
 
-    if (!comment.trim()) return;
+    const publicationId = post?._doc?._id ?? post?.id;
+    const targetType = post?._doc?.type ?? post?.type;
 
-    // Intentar primero con el backend
+    const text = (commentByPost?.[publicationId] || "").trim(); // 👈 de commentByPost
+    if (!text) return;
+
     try {
       const res = await fetchWithAuth(`http://localhost:3000/api/comment`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user_id: perfil.id,
-          target_type: post._doc.type,
-          target_id: post._doc._id,
-          comment,
+          target_type: targetType,
+          target_id: publicationId,
+          comment: text,
         }),
       });
-
       if (!res.ok) throw new Error(`Error ${res.status}`);
 
-      //después del POST, vuelvo a pedir todos los comentarios del post asi cuando agrego uno nuevo se actualiza la lista
       const resComments = await fetchWithAuth(
-        `http://localhost:3000/api/comment/publication/${post.id}`
+        `http://localhost:3000/api/comment/publication/${String(publicationId)}`
       );
       const dataComments = await resComments.json();
 
       setCommentsByPost((prev) => {
         const unique = (dataComments.comments || []).filter(
-          (c, index, self) => index === self.findIndex((x) => x.id === c.id)
+          (c, i, arr) =>
+            i === arr.findIndex((x) => (x._id ?? x.id) === (c._id ?? c.id))
         );
-        return {
-          ...prev,
-          [post.id]: unique,
-        };
+        return { ...prev, [publicationId]: unique };
       });
-      setComment("");
 
-      // 🔹 LIMPIAR el textarea solo del post actual
-      setCommentByPost((prev) => ({ ...prev, [post.id]: "" }));
+      // limpiar SOLO este textarea (misma key)
+      setCommentByPost((prev) => ({ ...prev, [publicationId]: "" }));
     } catch (err) {
       console.error("❌ Error al guardar comentario:", err);
       alert(`Error al guardar comentario: ${err.message}`);
@@ -303,7 +298,7 @@ function Post({ post }) {
 
           if (res.ok) {
             // Éxito con el backend
-            refreshLikes(post.id);
+            refreshLikes(post._doc._id);
             return;
           }
         }
@@ -586,16 +581,22 @@ function Post({ post }) {
                   className="comment-post-input"
                   placeholder="Escribe un comentario..."
                   aria-label="Comentario"
-                  value={commentByPost[post.id]}
-                  onChange={(e) => setComment(e.target.value)}
+                  value={commentByPost?.[post._doc._id] ?? ""} // 👈 siempre string
+                  onChange={(e) =>
+                    setCommentByPost((prev) => ({
+                      ...prev,
+                      [post._doc._id]: e.target.value, // 👈 escribimos en la misma key
+                    }))
+                  }
                   rows={1}
                   onInput={(e) => {
-                    e.target.style.height = "auto"; // resetea
-                    e.target.style.height = `${e.target.scrollHeight}px`; // ajusta
+                    e.target.style.height = "auto";
+                    e.target.style.height = `${e.target.scrollHeight}px`;
                   }}
                 />
               </form>
               <button
+                type="submit"
                 className="comment-post-btn"
                 aria-label="Comment"
                 onClick={(e) => handleSubmit(e, post)}

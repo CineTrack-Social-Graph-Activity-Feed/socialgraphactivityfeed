@@ -25,4 +25,6 @@
 .footer-text {
   font-size: 13px;
   color: gray;
+  margin: 0;
+  margin-top: 5px;
 }

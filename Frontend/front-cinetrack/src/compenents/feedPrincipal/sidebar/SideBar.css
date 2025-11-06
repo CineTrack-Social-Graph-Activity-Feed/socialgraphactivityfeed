@@ -80,9 +80,33 @@
   cursor: pointer;
   transition: background 0.2s, transform 0.05s;
 }
+
+.menu-item.active {
+  background: linear-gradient(90deg, #1d2d44 0%, #0d1321 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(13, 19, 33, 0.25);
+}
+
+.menu-item.active:hover {
+  background: linear-gradient(90deg, #1a273b 0%, #0b101e 100%);
+}
+
+.menu-item svg {
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+}
+
+.menu-item:focus-visible {
+  outline: 2px solid #5b9cff;
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+
 .menu-item:hover {
   background: rgba(255, 255, 255, 0.06);
 }
+
 /*
 .menu-item:active {
   transform: translateY(1px);
