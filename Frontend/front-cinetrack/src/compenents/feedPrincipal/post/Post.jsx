@@ -22,8 +22,14 @@ function Post({}) {
   const [likesByPost, setLikesByPost] = useState({});
   const [commentByPost, setCommentByPost] = useState({});
   const [revealedPosts, setRevealedPosts] = useState({});
+  const [followVersion, setFollowVersion] = useState(0);
 
-  // Sin datos locales: todo viene del backend
+  useEffect(() => {
+    const onFollowersUpdated = () => setFollowVersion((v) => v + 1);
+    window.addEventListener("followersUpdated", onFollowersUpdated);
+    return () =>
+      window.removeEventListener("followersUpdated", onFollowersUpdated);
+  }, []);
 
   /* Obtengo los datos del usuario logueado */
   useEffect(() => {
@@ -105,7 +111,7 @@ function Post({}) {
         }
       }
     })();
-  }, [perfil?.id, fetchWithAuth]);
+  }, [perfil?.id, fetchWithAuth, followVersion]);
 
   /* Guarda el comentario de una publicacion a la BD o localmente */
   const handleSubmit = async (e, post) => {
