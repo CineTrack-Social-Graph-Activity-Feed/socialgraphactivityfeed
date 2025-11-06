@@ -28,9 +28,11 @@ consumer/
 ├── models/
 │   ├── User.js          # Modelo de Usuario
 │   └── Publication.js   # Modelo de Publicación
+│   └── Movie.js         # Modelo de Película
 ├── handlers/
 │   ├── userHandler.js   # Lógica para eventos de usuarios
 │   └── reviewHandler.js # Lógica para eventos de reseñas
+│   └── movieHandler.js  # Lógica para eventos de películas
 ├── utils/
 │   └── logger.js        # Sistema de logs
 ├── index.js             # Punto de entrada
@@ -72,6 +74,11 @@ npm start
 - `resenas.resena.creada` - Nueva reseña creada
 - `resenas.resena.actualizada` - Reseña modificada
 - `resenas.resena.eliminada` - Reseña eliminada
+
+### Eventos de Películas
+- `peliculas.pelicula.creada` - Nueva película creada
+- `peliculas.pelicula.actualizada` - Película modificada
+- `peliculas.pelicula.borrada` - Película eliminada
 
 ## 🔌 Requisitos
 
