@@ -268,4 +268,23 @@ publicationSchema.statics.deleteFromEvent = async function(reviewId) {
   return await this.findOneAndDelete({ review_id: reviewId });
 };
 
+/**
+ * Eliminar publicaciones por movie_id (soft delete)
+ */
+publicationSchema.statics.softDeleteByMovieId = async function(movieId) {
+  const mid = Number(movieId);
+  return await this.updateMany(
+    { movie_id: mid },
+    { isDeleted: true, deletedAt: new Date(), syncedAt: new Date() }
+  );
+};
+
+/**
+ * Eliminar publicaciones por movie_id (hard delete)
+ */
+publicationSchema.statics.hardDeleteByMovieId = async function(movieId) {
+  const mid = Number(movieId);
+  return await this.deleteMany({ movie_id: mid });
+};
+
 module.exports = mongoose.model('Publication', publicationSchema);

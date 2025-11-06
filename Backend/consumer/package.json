@@ -7,10 +7,9 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:publish": "node testPublisher.js",
-    "test:publish:all": "node testPublisher.js all",
-    "test:publish:user": "node testPublisher.js user",
-    "test:publish:review": "node testPublisher.js review",
+    "publish:movie:created": "node scripts/publishCoreEvent.js peliculas.pelicula.creada",
+    "publish:movie:updated": "node scripts/publishCoreEvent.js peliculas.pelicula.actualizada",
+    "publish:movie:deleted": "node scripts/publishCoreEvent.js peliculas.pelicula.borrada",
     "check": "node checkEnvironment.js"
   },
   "keywords": [

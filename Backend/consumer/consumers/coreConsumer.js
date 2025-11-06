@@ -2,6 +2,7 @@ const rabbitConnection = require('../config/rabbit');
 const userHandler = require('../handlers/userHandler');
 const reviewHandler = require('../handlers/reviewHandler');
 const logger = require('../utils/logger');
+const movieHandler = require('../handlers/movieHandler');
 
 /**
  * Consumer principal para eventos del Core
@@ -22,7 +23,18 @@ class CoreConsumer {
 
       const exchangeName = process.env.EXCHANGE_NAME || 'letterboxd_exchange';
       const queueName = process.env.QUEUE_NAME || 'core.social.queue';
-      const routingKeysStr = process.env.ROUTING_KEYS || 'usuarios.#,resenas.#';
+      // Por defecto, bindeamos a las keys explícitas para que se vean en el log como en Insomnia
+      const routingKeysStr = process.env.ROUTING_KEYS || [
+        'usuarios.usuario.creado',
+        'usuarios.sesion.iniciada',
+        'usuarios.sesion.finalizada',
+        'resenas.resena.creada',
+        'resenas.resena.actualizada',
+        'resenas.resena.eliminada',
+        'peliculas.pelicula.creada',
+        'peliculas.pelicula.actualizada',
+        'peliculas.pelicula.borrada'
+      ].join(', ');
       const routingKeys = routingKeysStr.split(',').map(k => k.trim());
 
       // Configurar exchange, queue y bindings
@@ -106,6 +118,11 @@ class CoreConsumer {
     // Eventos de reseñas
     if (routingKey.startsWith('resenas.')) {
       return await reviewHandler.processEvent(routingKey, eventData);
+    }
+
+    // Eventos de películas
+    if (routingKey.startsWith('peliculas.')) {
+      return await movieHandler.processEvent(routingKey, eventData);
     }
 
     logger.warn('CoreConsumer', `Routing key no soportada: ${routingKey}`);
