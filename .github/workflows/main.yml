@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, terraform-iac ]
   push:
-    branches: [ main ]
+    branches: [ main, terraform-iac ]
 
 env:
   NODE_VERSION: 22
@@ -52,8 +52,8 @@ jobs:
         env:
           TF_VAR_mongodb_uri: ${{ secrets.MONGODB_URI }}
         run: terraform plan
-      - name: Terraform Apply (main branch)
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+      - name: Terraform Apply (main or terraform-iac branch)
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/terraform-iac') && github.event_name != 'pull_request'
         env:
           TF_VAR_mongodb_uri: ${{ secrets.MONGODB_URI }}
         run: terraform apply -auto-approve

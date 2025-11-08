@@ -2,10 +2,10 @@ name: CI/CD Frontend
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ main, terraform-iac ]
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ main, terraform-iac ]
     paths:
       - 'Frontend/**'
 
@@ -48,8 +48,8 @@ jobs:
         env:
           TF_VAR_mongodb_uri: ${{ secrets.MONGODB_URI }}
         run: terraform plan
-      - name: Terraform Apply (main branch)
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+      - name: Terraform Apply (main or terraform-iac branch)
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/terraform-iac') && github.event_name != 'pull_request'
         env:
           TF_VAR_mongodb_uri: ${{ secrets.MONGODB_URI }}
         run: terraform apply -auto-approve
