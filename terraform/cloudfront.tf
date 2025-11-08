@@ -82,7 +82,14 @@ resource "aws_cloudfront_response_headers_policy" "backend_cors" {
     access_control_allow_credentials = true
 
     access_control_allow_headers {
-      items = ["*"]
+      # Debe ser explícito si allow_credentials = true; no se permite '*'
+      items = [
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With",
+        "Accept",
+        "Origin"
+      ]
     }
 
     access_control_allow_methods {
@@ -94,7 +101,11 @@ resource "aws_cloudfront_response_headers_policy" "backend_cors" {
     }
 
     access_control_expose_headers {
-      items = ["*"]
+      items = [
+        "Content-Type",
+        "Authorization",
+        "ETag"
+      ]
     }
 
     origin_override = true
