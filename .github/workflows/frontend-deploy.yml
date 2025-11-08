@@ -12,6 +12,7 @@ on:
 jobs:
   infra:
     runs-on: ubuntu-latest
+    environment: main-aws
     defaults:
       run:
         working-directory: ./terraform
