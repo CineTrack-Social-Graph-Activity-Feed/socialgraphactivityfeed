@@ -460,6 +460,12 @@ function Post({}) {
   }
 
   function renderPostByType(post) {
+    // Validar que el post tenga película
+    if (!post.movie || !post.movie.movie) {
+      console.warn(`Post ${post._doc._id} no tiene película asociada, se omite del feed`);
+      return null;
+    }
+
     const pid = post._doc._id;
     const isSpoiler = post._doc.has_spoilers && !revealedPosts[pid];
 

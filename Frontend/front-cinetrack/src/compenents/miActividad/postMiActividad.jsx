@@ -445,6 +445,12 @@ function PostMiActividad({ post }) {
   }
 
   function renderPostByType(post) {
+    // Validar que el post tenga película
+    if (!post.movie || !post.movie.movie) {
+      console.warn(`Post ${post.id} no tiene película asociada, se omite`);
+      return null;
+    }
+
     return (
       <div key={post.id} className="post">
         <div className="post-type">
