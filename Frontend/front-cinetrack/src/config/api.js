@@ -28,18 +28,23 @@ export const apiClient = {
     console.log(`Realizando GET a ${url}`);
 
     try {
+      // Obtener token de localStorage si existe
+      const token = localStorage.getItem("access_token");
+      const headers = {
+        "Content-Type": "application/json",
+        ...options.headers,
+      };
+      
+      // Agregar Authorization si hay token
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch(url, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          // No es necesario establecer manualmente el Origin para CORS
-          // El navegador lo gestiona automáticamente
-          ...options.headers,
-        },
-        // Para CORS cross-origin debemos especificar el modo
+        headers,
         mode: "cors",
-        // No incluir credenciales a menos que se necesiten específicamente
-        credentials: "same-origin",
+        credentials: "include", // Necesario para CORS con credenciales
         ...options,
       });
 
@@ -67,19 +72,24 @@ export const apiClient = {
     console.log(`Realizando POST a ${url}`, data);
 
     try {
+      // Obtener token de localStorage si existe
+      const token = localStorage.getItem("access_token");
+      const headers = {
+        "Content-Type": "application/json",
+        ...options.headers,
+      };
+      
+      // Agregar Authorization si hay token
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // No es necesario establecer manualmente el Origin para CORS
-          // El navegador lo gestiona automáticamente
-          ...options.headers,
-        },
+        headers,
         body: JSON.stringify(data),
-        // Para CORS cross-origin debemos especificar el modo
         mode: "cors",
-        // No incluir credenciales a menos que se necesiten específicamente
-        credentials: "same-origin",
+        credentials: "include", // Necesario para CORS con credenciales
         ...options,
       });
 
