@@ -108,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [infra, ci]
     environment: main-aws
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/terraform-iac') && github.event_name == 'push'
     steps:
       - name: Download production build
         uses: actions/download-artifact@v4
