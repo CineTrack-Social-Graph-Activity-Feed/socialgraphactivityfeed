@@ -7,30 +7,17 @@
 
 /* contenedor */
 .sidebar {
-  width: 240px; /* ajusta a tu layout */
-  height: 100vh; /* altura completa de la ventana */
+  width: 100%; /* ocupar todo el ancho del contenedor padre */
+  height: 100%; /* ocupar toda la altura del contenedor padre */
   background: #3e5c78;
   color: var(--text);
   display: flex;
   flex-direction: column;
   gap: 20px;
   padding: 20px;
-  overflow-y: auto; /* scroll vertical cuando sea necesario */
-  overflow-x: hidden; /* sin scroll horizontal */
-  position: sticky; /* mantenerlo fijo en la pantalla */
-  top: 0;
 }
 
-/* Ocultar scrollbar pero mantener funcionalidad */
-.sidebar::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
-}
-
-.sidebar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
-}
+/* El scroll ya está manejado por .sidebar-feed en FeedPrincipal.css */
 
 /* perfil */
 .profile {

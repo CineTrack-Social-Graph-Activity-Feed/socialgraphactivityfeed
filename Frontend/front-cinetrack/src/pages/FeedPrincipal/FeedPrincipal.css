@@ -31,8 +31,15 @@ body {
 
 .sidebar-feed {
   flex: 0 0 19%;
-  overflow: hidden;
+  overflow-y: auto; /* permitir scroll vertical */
+  overflow-x: hidden; /* ocultar scroll horizontal */
   background: #3e5c78;
+  scrollbar-width: none; /* ocultar scrollbar en Firefox */
+}
+
+/* Ocultar scrollbar en Chrome/Safari/Edge */
+.sidebar-feed::-webkit-scrollbar {
+  display: none;
 }
 
 .main {
