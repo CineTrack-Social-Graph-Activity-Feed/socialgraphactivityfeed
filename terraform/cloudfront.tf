@@ -75,6 +75,51 @@ resource "aws_cloudfront_distribution" "frontend" {
 }
  
 # Distribución CloudFront Backend (Disponibilizar backend en https)
+resource "aws_cloudfront_response_headers_policy" "backend_cors" {
+  name = "socialgraph-backend-cors-policy"
+
+  cors_config {
+    access_control_allow_credentials = true
+
+    access_control_allow_headers {
+      items = ["*"]
+    }
+
+    access_control_allow_methods {
+      items = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    }
+
+    access_control_allow_origins {
+      items = ["https://${aws_cloudfront_distribution.frontend.domain_name}"]
+    }
+
+    access_control_expose_headers {
+      items = ["*"]
+    }
+
+    origin_override = true
+  }
+
+  security_headers_config {
+    content_type_options {
+      override = true
+    }
+    frame_options {
+      frame_option = "SAMEORIGIN"
+      override     = true
+    }
+    referrer_policy {
+      referrer_policy = "no-referrer-when-downgrade"
+      override        = true
+    }
+    xss_protection {
+      protection = true
+      mode_block = true
+      override   = true
+    }
+  }
+}
+
 resource "aws_cloudfront_distribution" "backend" {
   enabled         = true
   is_ipv6_enabled = true
@@ -97,21 +142,9 @@ resource "aws_cloudfront_distribution" "backend" {
     target_origin_id         = "${aws_elastic_beanstalk_environment.app_env.cname}-origin"
     cache_policy_id          = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" # CachingDisabled
     origin_request_policy_id = "b689b0a8-53d0-40ab-baf2-68738e2966ac" # AllViewerExceptHostHeader
-    response_headers_policy_id = "5cc3b908-e619-4b99-88e5-2cf7f45965bd" # CORS-With-Preflight
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.backend_cors.id
     compress                 = true
     viewer_protocol_policy   = "redirect-to-https"
-  }
- 
-  ordered_cache_behavior {
-    path_pattern               = "*"
-    allowed_methods            = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-    cached_methods             = ["GET", "HEAD"]
-    target_origin_id           = "${aws_elastic_beanstalk_environment.app_env.cname}-origin"
-    cache_policy_id            = "83da9c7e-98b4-4e11-a168-04f0df8e2c65"
-    origin_request_policy_id   = "216adef6-5c7f-47e4-b989-5492eafa07d3"
-    response_headers_policy_id = "7cab3b5b-0e08-470c-bcc3-e081e8fc7857"
-    compress                   = true
-    viewer_protocol_policy     = "redirect-to-https"
   }
  
   restrictions {
