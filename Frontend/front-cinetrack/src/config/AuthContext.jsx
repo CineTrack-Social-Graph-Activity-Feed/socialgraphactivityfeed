@@ -1,6 +1,7 @@
 // AuthContext.jsx
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { login as apiLogin, refreshToken, getMe } from "./authApi";
+import { API_URL } from "./api";
 
 const AuthContext = createContext(null);
 export const useAuth = () => useContext(AuthContext);
@@ -67,13 +68,27 @@ export function AuthProvider({ children }) {
   // fetch con auto-refresh
   let refreshingPromise = null;
   const fetchWithAuth = async (input, init = {}) => {
+    const resolveUrl = (inValue) => {
+      if (typeof inValue !== "string") return inValue;
+      // Reescribir localhost -> API_URL
+      let value = inValue.replace(/^https?:\/\/localhost:3000/, API_URL);
+      // Prefijar con API_URL si es relativo
+      if (!value.startsWith("http")) {
+        if (value.startsWith("/")) return `${API_URL}${value}`;
+        return `${API_URL}/${value}`;
+      }
+      return value;
+    };
+
     const doFetch = async (token) =>
-      fetch(input, {
+      fetch(resolveUrl(input), {
         ...init,
         headers: {
           ...(init.headers || {}),
           Authorization: `Bearer ${token}`,
         },
+        mode: "cors",
+        credentials: "include",
       });
 
     // 1er intento
