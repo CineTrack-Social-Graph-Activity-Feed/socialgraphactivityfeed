@@ -80,7 +80,7 @@ function SideBar() {
       {/* Settings */}
       <div className="section">
         <nav className="menu">
-          <button className="menu-item danger" type="button">
+          <button className="menu-item danger" type="button" onClick={signOut}>
             <span className="icon-pill danger-pill">
               {/* icono logout */}
               <svg
