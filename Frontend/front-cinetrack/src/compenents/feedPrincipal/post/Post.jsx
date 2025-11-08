@@ -36,9 +36,7 @@ function Post({}) {
     if (!userId) return;
     (async () => {
       try {
-        const res = await fetchWithAuth(
-          `http://localhost:3000/api/user/${userId}`
-        );
+        const res = await fetchWithAuth(`/api/user/${userId}`);
         if (!res.ok) throw new Error("Error al traer usuario");
         const data = await res.json();
         setPerfil(data.user || data); // depende de tu shape
@@ -59,7 +57,7 @@ function Post({}) {
       try {
         console.log("Trayendo las reviews de mis amigos...");
         const res = await fetchWithAuth(
-          `http://localhost:3000/api/feed?user_id=${objectId}`
+          `/api/feed?user_id=${objectId}`
         );
         if (!res.ok) throw new Error(`Error ${res.status}`);
 
@@ -80,9 +78,7 @@ function Post({}) {
         const peliculas = await Promise.all(
           idsUnicos.map(async (id) => {
             try {
-              const r = await fetchWithAuth(
-                `http://localhost:3000/api/movie/${id}`
-              );
+              const r = await fetchWithAuth(`/api/movie/${id}`);
               if (!r.ok) throw new Error(`Movie ${id}: ${r.status}`);
               const movieData = await r.json();
               return { id, movie: movieData };
@@ -124,7 +120,7 @@ function Post({}) {
     if (!text) return;
 
     try {
-      const res = await fetchWithAuth(`http://localhost:3000/api/comment`, {
+      const res = await fetchWithAuth(`/api/comment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -137,7 +133,7 @@ function Post({}) {
       if (!res.ok) throw new Error(`Error ${res.status}`);
 
       const resComments = await fetchWithAuth(
-        `http://localhost:3000/api/comment/publication/${String(publicationId)}`
+        `/api/comment/publication/${String(publicationId)}`
       );
       const dataComments = await resComments.json();
 
@@ -166,7 +162,7 @@ function Post({}) {
           posts.map(async (p) => {
             try {
               const res = await fetchWithAuth(
-                `http://localhost:3000/api/like/publication/${p._doc._id}`
+                `/api/like/publication/${p._doc._id}`
               );
 
               if (!res.ok) throw new Error(`GET likes failed: ${res.status}`);
@@ -220,7 +216,7 @@ function Post({}) {
         const results = await Promise.all(
           posts.map((p) =>
             fetchWithAuth(
-              `http://localhost:3000/api/comment/publication/${String(
+              `/api/comment/publication/${String(
                 p._doc._id
               )}`
             )
@@ -263,7 +259,7 @@ function Post({}) {
             target_type: post._doc.type,
           });
 
-          const res = await fetchWithAuth(`http://localhost:3000/api/like`, {
+          const res = await fetchWithAuth(`/api/like`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -294,7 +290,7 @@ function Post({}) {
           });
 
           const res = await fetchWithAuth(
-            `http://localhost:3000/api/like/${state.like_id}`,
+            `/api/like/${state.like_id}`,
             {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
@@ -328,7 +324,7 @@ function Post({}) {
 
       try {
         const res = await fetchWithAuth(
-          `http://localhost:3000/api/like/publication/${postId}`
+          `/api/like/publication/${postId}`
         );
 
         if (!res.ok) return;
@@ -369,7 +365,7 @@ function Post({}) {
     // Si no es local, intentar con el backend
     try {
       const res = await fetchWithAuth(
-        `http://localhost:3000/api/comment/${commentId}`,
+        `/api/comment/${commentId}`,
         {
           method: "DELETE",
           headers: {
@@ -388,7 +384,7 @@ function Post({}) {
 
       // 👇 refrescar comentarios del post
       const resComments = await fetchWithAuth(
-        `http://localhost:3000/api/comment/publication/${postId}`
+        `/api/comment/publication/${postId}`
       );
       const dataComments = await resComments.json();
 

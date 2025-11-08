@@ -28,9 +28,7 @@ function PostMiActividad({ post }) {
     if (!userId) return;
     (async () => {
       try {
-        const res = await fetchWithAuth(
-          `http://localhost:3000/api/user/${userId}`
-        );
+        const res = await fetchWithAuth(`/api/user/${userId}`);
         if (!res.ok) throw new Error("Error al traer usuario");
         const data = await res.json();
         setPerfil(data.user || data); // depende de tu shape
@@ -52,7 +50,7 @@ function PostMiActividad({ post }) {
         console.log("Trayendo las reviews de mis amigos...");
         const idUser = String(userId);
         const res = await fetchWithAuth(
-          `http://localhost:3000/api/publication/user/${idUser}`
+          `/api/publication/user/${idUser}`
         );
         if (!res.ok) throw new Error(`Error ${res.status}`);
 
@@ -75,9 +73,7 @@ function PostMiActividad({ post }) {
         const peliculas = await Promise.all(
           idsUnicos.map(async (id) => {
             try {
-              const r = await fetchWithAuth(
-                `http://localhost:3000/api/movie/${id}`
-              );
+              const r = await fetchWithAuth(`/api/movie/${id}`);
               if (!r.ok) throw new Error(`Movie ${id}: ${r.status}`);
               const movieData = await r.json();
               return { id, movie: movieData };
@@ -119,7 +115,7 @@ function PostMiActividad({ post }) {
     if (!text) return;
 
     try {
-      const res = await fetchWithAuth(`http://localhost:3000/api/comment`, {
+      const res = await fetchWithAuth(`/api/comment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -132,7 +128,7 @@ function PostMiActividad({ post }) {
       if (!res.ok) throw new Error(`Error ${res.status}`);
 
       const resComments = await fetchWithAuth(
-        `http://localhost:3000/api/comment/publication/${String(publicationId)}`
+        `/api/comment/publication/${String(publicationId)}`
       );
       const dataComments = await resComments.json();
 
@@ -161,7 +157,7 @@ function PostMiActividad({ post }) {
           posts.map(async (p) => {
             try {
               const res = await fetchWithAuth(
-                `http://localhost:3000/api/like/publication/${p.id}`
+                `/api/like/publication/${p.id}`
               );
 
               if (!res.ok) throw new Error(`GET likes failed: ${res.status}`);
@@ -209,7 +205,7 @@ function PostMiActividad({ post }) {
         const results = await Promise.all(
           posts.map((p) =>
             fetchWithAuth(
-              `http://localhost:3000/api/comment/publication/${String(p.id)}`
+              `/api/comment/publication/${String(p.id)}`
             )
               .then((res) => res.json())
               .then((data) => {
@@ -248,7 +244,7 @@ function PostMiActividad({ post }) {
             target_type: post.type,
           });
 
-          const res = await fetchWithAuth(`http://localhost:3000/api/like`, {
+          const res = await fetchWithAuth(`/api/like`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -279,7 +275,7 @@ function PostMiActividad({ post }) {
           });
 
           const res = await fetchWithAuth(
-            `http://localhost:3000/api/like/${state.like_id}`,
+            `/api/like/${state.like_id}`,
             {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
@@ -313,7 +309,7 @@ function PostMiActividad({ post }) {
 
       try {
         const res = await fetchWithAuth(
-          `http://localhost:3000/api/like/publication/${postId}`
+          `/api/like/publication/${postId}`
         );
 
         if (!res.ok) return;
@@ -354,7 +350,7 @@ function PostMiActividad({ post }) {
     // Si no es local, intentar con el backend
     try {
       const res = await fetchWithAuth(
-        `http://localhost:3000/api/comment/${commentId}`,
+        `/api/comment/${commentId}`,
         {
           method: "DELETE",
           headers: {
@@ -373,7 +369,7 @@ function PostMiActividad({ post }) {
 
       // 👇 refrescar comentarios del post
       const resComments = await fetchWithAuth(
-        `http://localhost:3000/api/comment/publication/${postId}`
+        `/api/comment/publication/${postId}`
       );
       const dataComments = await resComments.json();
 

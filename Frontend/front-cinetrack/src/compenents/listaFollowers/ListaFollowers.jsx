@@ -18,9 +18,7 @@ const ListaFollowers = () => {
     if (!userId) return;
     (async () => {
       try {
-        const res = await fetchWithAuth(
-          `http://localhost:3000/api/user/${userId}`
-        );
+        const res = await fetchWithAuth(`/api/user/${userId}`);
         if (!res.ok) throw new Error("Error al traer usuario");
         const data = await res.json();
         setPerfil(data.user || data); // depende de tu shape
@@ -36,7 +34,7 @@ const ListaFollowers = () => {
     if (!objectId) return;
     const fetchData = () => {
       setLoading(true);
-      fetchWithAuth(`http://localhost:3000/api/followers?user_id=${objectId}`)
+      fetchWithAuth(`/api/followers?user_id=${objectId}`)
         .then((res) => res.json())
         .then((data) => setSeguidores(data.followers));
       setLoading(false);
@@ -57,7 +55,7 @@ const ListaFollowers = () => {
   useEffect(() => {
     if (!objectId) return;
 
-    fetchWithAuth(`http://localhost:3000/api/followed?user_id=${objectId}`)
+    fetchWithAuth(`/api/followed?user_id=${objectId}`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Followers data:", data);
@@ -71,9 +69,7 @@ const ListaFollowers = () => {
     const targetId = String(targetIdRaw);
     const isFollowing = seguidos.includes(targetId);
 
-    const url = isFollowing
-      ? "http://localhost:3000/api/unfollow"
-      : "http://localhost:3000/api/follow";
+    const url = isFollowing ? "/api/unfollow" : "/api/follow";
 
     try {
       const res = await fetchWithAuth(url, {

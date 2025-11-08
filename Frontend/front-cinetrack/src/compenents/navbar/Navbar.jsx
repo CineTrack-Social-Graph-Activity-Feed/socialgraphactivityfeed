@@ -29,9 +29,7 @@ function Navbar() {
     if (!userId) return;
     (async () => {
       try {
-        const res = await fetchWithAuth(
-          `http://localhost:3000/api/user/${userId}`
-        );
+        const res = await fetchWithAuth(`/api/user/${userId}`);
         if (!res.ok) throw new Error("Error al traer usuario");
         const data = await res.json();
         setPerfil(data.user || data); // depende de tu shape
@@ -49,7 +47,7 @@ function Navbar() {
     (async () => {
       try {
         const res = await fetchWithAuth(
-          `http://localhost:3000/api/followed?user_id=${objectId}`
+          `/api/followed?user_id=${objectId}`
         );
         if (!res.ok) throw new Error("Error al traer followed");
         const data = await res.json();
@@ -73,7 +71,7 @@ function Navbar() {
       try {
         setLoading(true);
         const res = await fetchWithAuth(
-          `http://localhost:3000/api/user/search?q=${encodeURIComponent(
+          `/api/user/search?q=${encodeURIComponent(
             query
           )}&limit=5`
         );
@@ -115,9 +113,7 @@ function Navbar() {
     const targetId = String(targetIdRaw);
     const isFollowing = seguidores.includes(targetId);
 
-    const url = isFollowing
-      ? "http://localhost:3000/api/unfollow"
-      : "http://localhost:3000/api/follow";
+    const url = isFollowing ? "/api/unfollow" : "/api/follow";
 
     try {
       const res = await fetchWithAuth(url, {

@@ -20,9 +20,7 @@ function ListaFollows() {
     if (!userId) return;
     (async () => {
       try {
-        const res = await fetchWithAuth(
-          `http://localhost:3000/api/user/${userId}`
-        );
+        const res = await fetchWithAuth(`/api/user/${userId}`);
         if (!res.ok) throw new Error("Error al traer usuario");
         const data = await res.json();
         setPerfil(data.user || data); // depende de tu shape
@@ -35,7 +33,7 @@ function ListaFollows() {
   const unfollowUser = async (targetId) => {
     try {
       console.log(`Enviando solicitud unfollow a ${API_URL}/api/unfollow`);
-      const res = await fetchWithAuth("http://localhost:3000/api/unfollow", {
+      const res = await fetchWithAuth("/api/unfollow", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +74,7 @@ function ListaFollows() {
           `Fetching from: ${API_URL}/api/followed?user_id=${objectId}`
         );
         const res = await fetchWithAuth(
-          `http://localhost:3000/api/followed?user_id=${objectId}`
+          `/api/followed?user_id=${objectId}`
         );
 
         console.log("Status de respuesta:", res.status);
