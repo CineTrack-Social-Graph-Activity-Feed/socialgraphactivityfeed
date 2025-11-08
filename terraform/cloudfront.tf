@@ -93,10 +93,11 @@ resource "aws_cloudfront_distribution" "backend" {
  
   default_cache_behavior {
     allowed_methods          = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-    cached_methods           = ["GET", "HEAD"]
+    cached_methods           = ["GET", "HEAD", "OPTIONS"]
     target_origin_id         = "${aws_elastic_beanstalk_environment.app_env.cname}-origin"
-    cache_policy_id          = "83da9c7e-98b4-4e11-a168-04f0df8e2c65"
-    origin_request_policy_id = "216adef6-5c7f-47e4-b989-5492eafa07d3"
+    cache_policy_id          = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" # CachingDisabled
+    origin_request_policy_id = "b689b0a8-53d0-40ab-baf2-68738e2966ac" # AllViewerExceptHostHeader
+    response_headers_policy_id = "5cc3b908-e619-4b99-88e5-2cf7f45965bd" # CORS-With-Preflight
     compress                 = true
     viewer_protocol_policy   = "redirect-to-https"
   }
