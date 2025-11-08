@@ -1,5 +1,5 @@
 // authApi.js
-const API = "http://localhost:3000";
+const API = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || "https://d1sz43olrv5nbe.cloudfront.net";
 
 export async function login({ username, password }) {
   const body = new URLSearchParams();
