@@ -680,14 +680,24 @@ function PostMiActividad({ post }) {
 
   return (
     <div style={{ display: "grid", gap: "20px" }}>
-      {postsConPeli.length === 0 ? (
-        <p style={{ color: "#ccc", textAlign: "center", marginTop: "20px" }}>
-          Por el momento no has realizado ninguna reseña, anímate a escribir
-          una!
-        </p>
-      ) : (
-        postsConPeli.map((post) => renderPostByType(post))
-      )}
+      {(() => {
+        // Filtrar posts que tienen película válida
+        const postsValidos = postsConPeli.filter(post => post.movie && post.movie.movie);
+        
+        console.log(`📊 Posts totales: ${postsConPeli.length}, Posts válidos: ${postsValidos.length}`);
+        
+        if (postsValidos.length === 0) {
+          return (
+            <p style={{ color: "#ccc", textAlign: "center", marginTop: "20px" }}>
+              {postsConPeli.length === 0 
+                ? "Por el momento no has realizado ninguna reseña, anímate a escribir una!"
+                : "Tus reseñas no pueden mostrarse porque faltan datos de películas. Por favor, contacta al administrador."}
+            </p>
+          );
+        }
+        
+        return postsValidos.map((post) => renderPostByType(post));
+      })()}
     </div>
   );
 }
