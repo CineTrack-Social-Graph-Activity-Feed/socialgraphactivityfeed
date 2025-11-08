@@ -75,7 +75,7 @@ jobs:
           - 27017:27017
     defaults:
       run:
-        working-directory: ./servidor
+        working-directory: ./Backend/servidor
     steps:
       - uses: actions/checkout@v4
         with:
@@ -85,7 +85,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          cache-dependency-path: servidor/package-lock.json
+          cache-dependency-path: Backend/servidor/package-lock.json
           
       - name: Install backend dependencies
         run: npm ci
@@ -103,7 +103,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-code
-          path: servidor
+          path: Backend/servidor
           retention-days: 1
 
   # Code Quality Analysis
@@ -140,7 +140,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: backend-code
-          path: ./servidor
+          path: ./Backend/servidor
           
       - name: Setup deployment structure
         run: |
@@ -148,7 +148,7 @@ jobs:
           mkdir -p deployment
           
           # Copy backend files
-          cp -r servidor/* deployment/
+          cp -r Backend/servidor/* deployment/
           
           # Create or update package.json for production
           cat > deployment/package.json << EOF
