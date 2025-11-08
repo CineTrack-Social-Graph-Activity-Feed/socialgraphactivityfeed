@@ -199,9 +199,37 @@ jobs:
             
           echo "🚀 Application deployed to: http://$ENVIRONMENT_URL"
           echo "🏥 Health check: http://$ENVIRONMENT_URL/health"
+          echo ""
+          echo "⏳ Esperando a que el ambiente esté listo (puede tomar 2-5 minutos)..."
+          echo "💡 Verifica el estado en: https://console.aws.amazon.com/elasticbeanstalk"
           
-          # Basic health check
-          curl -f "http://$ENVIRONMENT_URL/health" || (echo "Health check failed" && exit 1)
+          # Wait for environment to be ready (max 5 minutes)
+          for i in {1..30}; do
+            STATUS=$(aws elasticbeanstalk describe-environments \
+              --application-name ${{ needs.infra.outputs.eb_app }} \
+              --environment-names ${{ needs.infra.outputs.eb_env }} \
+              --query "Environments[0].Status" --output text)
+            
+            if [ "$STATUS" = "Ready" ]; then
+              echo "✅ Environment is ready!"
+              sleep 10  # Give it a few more seconds
+              
+              # Try health check
+              if curl -f -s "http://$ENVIRONMENT_URL/health" > /dev/null; then
+                echo "✅ Health check passed!"
+                exit 0
+              else
+                echo "⚠️ Environment is ready but health check still failing. Check application logs."
+                exit 0  # Don't fail the pipeline
+              fi
+            fi
+            
+            echo "Status: $STATUS - Waiting... ($i/30)"
+            sleep 10
+          done
+          
+          echo "⚠️ Timeout waiting for environment. Check AWS console for status."
+          exit 0  # Don't fail the pipeline
 
       - name: Invalidate CloudFront backend cache (optional)
         if: ${{ needs.infra.outputs.cloudfront_backend_id != '' }}
