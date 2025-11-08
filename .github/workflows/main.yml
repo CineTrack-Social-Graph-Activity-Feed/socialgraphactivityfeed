@@ -131,7 +131,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: [infra, backend, sonar]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/terraform-iac') && github.event_name == 'push'
     environment: main-aws
     steps:
       - uses: actions/checkout@v4
