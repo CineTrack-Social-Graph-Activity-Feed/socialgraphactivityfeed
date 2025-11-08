@@ -6,6 +6,11 @@ on:
   push:
     branches: [ main, terraform-iac ]
 
+# Ensure only one terraform apply runs at a time per branch
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   NODE_VERSION: 22
   EB_APPLICATION_NAME: social-graph-app

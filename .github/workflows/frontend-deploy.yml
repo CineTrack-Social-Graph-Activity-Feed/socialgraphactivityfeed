@@ -9,6 +9,11 @@ on:
     paths:
       - 'Frontend/**'
 
+# Ensure only one terraform apply runs at a time per branch
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   infra:
     runs-on: ubuntu-latest
