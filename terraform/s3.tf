@@ -1,6 +1,7 @@
 # Bucket S3 Frontend (Público para CloudFront)
 resource "aws_s3_bucket" "frontend_bucket" {
   bucket = local.frontend_bucket_final
+  force_destroy = true
  
   tags = {
     Name        = "Frontend assets"
@@ -68,6 +69,7 @@ resource "aws_s3_bucket_policy" "frontend_bucket_policy" {
 # Bucket S3 para Elastic Beanstalk (Privado)
 resource "aws_s3_bucket" "eb_bucket" {
   bucket = local.eb_bucket_final
+  force_destroy = true
  
   tags = {
     Name      = "Elastic Beanstalk Versions"

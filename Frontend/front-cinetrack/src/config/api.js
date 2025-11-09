@@ -3,15 +3,7 @@
  */
 
 // Usar la URL de la API definida en las variables de entorno (inyectada por Vite durante la compilación)
-// Si no está disponible, usar la nueva URL de CloudFront para la API (HTTPS)
-export const API_URL =
-  import.meta.env.VITE_API_URL || "https://dgwmrgtjt0otk.cloudfront.net";
-
-// ✅ Ahora usando CloudFront con HTTPS para evitar problemas de mixed content
-//console.log('✅ API URL configurada con CloudFront (HTTPS):', API_URL);
-
-// Registro de la URL utilizada
-//console.log('API URL configurada:', API_URL);
+export const API_URL = import.meta.env.VITE_API_URL;
 
 /**
  * Cliente API para realizar peticiones al backend
