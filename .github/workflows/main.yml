@@ -3,8 +3,17 @@ name: CI/CD Pipeline
 on:
   pull_request:
     branches: [ main, terraform-iac ]
+    paths:
+      - 'Backend/**'
+      - 'terraform/**'
+      - '.github/workflows/main.yml'
   push:
     branches: [ main, terraform-iac ]
+    paths:
+      - 'Backend/**'
+      - 'terraform/**'
+      - '.github/workflows/main.yml'
+  workflow_dispatch:
 
 # Ensure only one terraform apply runs at a time per branch
 concurrency:
