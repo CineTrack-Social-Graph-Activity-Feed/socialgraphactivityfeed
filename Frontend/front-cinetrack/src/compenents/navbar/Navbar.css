@@ -1,50 +1,10 @@
-/* ====== ANIMATIONS ====== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* ====== NAVBAR ====== */
 .navbar {
   display: flex;
   align-items: center;
   background-color: #0d1321;
   padding: 5px 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }
 
-/* ====== LOGO ====== */
 .logo {
   margin-left: 35px;
   display: flex;
@@ -56,54 +16,30 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.logo:hover {
-  transform: scale(1.05);
 }
 
 .logo p {
   color: white;
   margin: 0;
-  transition: color 0.3s ease;
 }
-
-.logo:hover p {
-  color: #16e0d3;
-}
-
 .icon {
   display: flex;
   width: 40px;
   height: 30px;
 }
-
 .triangle {
   flex: 1;
   clip-path: polygon(0 50%, 100% 0, 100% 100%);
-  transition: all 0.3s ease;
 }
-
 .triangle.left {
   background: #ef0b37;
   margin-right: 5px;
 }
-
 .triangle.right {
   background: #00d4d4;
   transform: rotate(180deg);
 }
 
-.logo:hover .triangle.left {
-  background: #ff1744;
-}
-
-.logo:hover .triangle.right {
-  background: #16e0d3;
-}
-
-/* ====== USER SECTION ====== */
 .user-section {
   display: flex;
   align-items: center;
@@ -116,14 +52,6 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #16e0d3;
-  transition: all 0.3s ease;
-  object-fit: cover;
-}
-
-.user-logo:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(22, 224, 211, 0.5);
 }
 
 .username {
@@ -132,14 +60,8 @@
   font-size: 1.2rem;
   color: white;
   margin-right: 30px;
-  transition: color 0.3s ease;
 }
 
-.username:hover {
-  color: #16e0d3;
-}
-
-/* ====== SEARCH ====== */
 .search-wrap {
   position: relative;
   width: 260px;
@@ -154,15 +76,9 @@
   font-size: 14px;
   border: none;
   color: black;
-  transition: all 0.3s ease;
 }
-
 .search-input::placeholder {
   color: gray;
-}
-
-.search-input:focus {
-  box-shadow: 0 0 0 3px rgba(22, 224, 211, 0.3);
 }
 
 .search-btn {
@@ -179,16 +95,9 @@
   cursor: pointer;
   border-radius: 50%;
   color: gray;
-  transition: all 0.3s ease;
 }
 
-.search-btn:hover {
-  background: rgba(22, 224, 211, 0.1);
-  color: #16e0d3;
-  transform: translateY(-50%) scale(1.1);
-}
-
-/* ====== DROPDOWN ====== */
+/* Dropdown flotante */
 .search-dropdown {
   position: absolute;
   top: 110%;
@@ -196,7 +105,7 @@
   width: 100%;
   max-height: 260px;
   overflow-y: auto;
-  background: #fff;
+  background: #fff; /* 👈 fondo blanco */
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
@@ -204,9 +113,9 @@
   padding: 4px 0;
   list-style: none;
   z-index: 999;
-  animation: slideDown 0.3s ease;
 }
 
+/* Cada resultado */
 .search-item {
   display: flex;
   align-items: center;
@@ -214,63 +123,65 @@
   gap: 10px;
   padding: 8px 5px;
   font-size: 0.9rem;
-  color: #222;
-  background: #fff;
+  color: #222; /* 👈 forzamos texto oscuro */
+  background: #fff; /* 👈 fondo blanco por ítem */
   cursor: default;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .search-item:hover {
   background: #f5f5f5;
-  transform: translateX(5px);
 }
 
 .username-dropdown {
   margin: 0 10px;
   font-size: 0.9rem;
-  color: #222;
-  flex: 1;
-  font-weight: 500;
+  color: #222; /* 👈 forzamos texto oscuro */
+  flex: 1; /* ocupa espacio entre avatar y botón */
 }
-
+/* Avatar */
 .search-item img.avatar {
   width: 28px;
   height: 28px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  border: 2px solid #16e0d3;
 }
 
-/* ====== FOLLOW BUTTON ====== */
+/* Animación suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Botón Seguir */
 .follow-btn {
-  background: #1a2a41;
+  background: #1a2a41; /* color principal */
   color: #fff;
   border: none;
   border-radius: 20px;
   padding: 4px 10px;
   font-size: 0.75rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 600;
+  transition: background 0.2s ease;
 }
 
 .follow-btn:hover {
-  background: #0d1321;
-  transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background: #0d1321; /* tono más oscuro */
 }
 
+/* Estilo para botón cuando ya está siguiendo */
 .follow-btn.following {
-  background: rgb(215, 212, 212);
-  color: #333;
+  background: rgb(215, 212, 212); /* gris claro */
+  color: #333; /* texto oscuro */
 }
 
-.follow-btn.following:hover {
-  background: rgb(190, 190, 190);
-}
-
-/* ====== LOGOUT BUTTON ====== */
 .logout-btn {
   background-color: #ef0b37;
   border: none;
@@ -282,27 +193,19 @@
   justify-content: center;
   width: 43px;
   height: 36px;
-  transition: all 0.3s ease;
 }
 
 .logout-btn:hover {
   background-color: #c1072a;
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(239, 11, 55, 0.4);
 }
 
 .logout-btn svg {
   width: 23px;
   height: 23px;
   fill: white;
-  transition: transform 0.3s ease;
 }
 
-.logout-btn:hover svg {
-  transform: rotate(10deg);
-}
-
-/* ====== MODAL ====== */
+/* Fondo oscuro detrás del modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -314,9 +217,9 @@
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  animation: fadeIn 0.3s ease;
 }
 
+/* Caja blanca en el centro */
 .modal-content {
   background: #fff;
   padding: 20px 30px;
@@ -325,13 +228,13 @@
   width: 90%;
   text-align: center;
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
-  animation: scaleIn 0.3s ease;
+  animation: fadeIn 0.3s ease;
 }
 
+/* Título y texto */
 .modal-content h3 {
   margin-bottom: 10px;
   font-size: 1.2rem;
-  color: #333;
 }
 
 .modal-content p {
@@ -339,6 +242,7 @@
   color: #555;
 }
 
+/* Botones */
 .modal-actions {
   display: flex;
   justify-content: space-around;
@@ -350,15 +254,10 @@
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  color: white;
-  font-weight: 600;
 }
 
 .cancel-btn:hover {
   background: #d5d5d5;
-  color: #333;
-  transform: scale(1.05);
 }
 
 .confirm-btn {
@@ -368,17 +267,25 @@
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 600;
 }
 
 .confirm-btn:hover {
   background: #a93226;
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(192, 57, 43, 0.4);
 }
 
-/* ====== RESPONSIVE ====== */
+/* Animación suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ====== RESPONSIVE NAVBAR ====== */
 
 /* Tablets */
 @media (max-width: 1024px) {
@@ -413,7 +320,7 @@
   }
   
   .logo p {
-    display: none;
+    display: none; /* Ocultar texto del logo en móvil */
   }
   
   .search-wrap {
@@ -421,7 +328,7 @@
   }
   
   .username {
-    display: none;
+    display: none; /* Ocultar nombre de usuario en móvil */
   }
   
   .user-logo {
