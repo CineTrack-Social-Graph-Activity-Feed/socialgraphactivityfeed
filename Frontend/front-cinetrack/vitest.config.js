@@ -15,13 +15,14 @@ export default defineConfig({
         'src/test/',
         '**/*.config.js',
         '**/.*rc.js',
+        '**/*.test.{js,jsx}',
       ],
       thresholds: {
-        lines: 10,
-        functions: 10,
-        branches: 10,
-        statements: 10
-      }
+        lines: 85,
+        functions: 76,
+        branches: 78,
+        statements: 85
+      },
     }
   }
 });

@@ -1,7 +1,9 @@
-const fetch = global.fetch || require('node-fetch');
 const jwt = require('jsonwebtoken');
 const { getPublicKey } = require('../middlewares/auth');
 const User = require('../models/User');
+
+// Helper to get fetch function (for easier mocking in tests)
+const getFetch = () => global.fetch || require('node-fetch');
 
 const USERS_BASE_URL = process.env.USERS_BASE_URL || 'http://users-prod-alb-1703954385.us-east-1.elb.amazonaws.com/api/v1';
 
@@ -17,6 +19,7 @@ async function login(req, res) {
         const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
         const body = new URLSearchParams({ grant_type, username, password }).toString();
 
+        const fetch = getFetch();
         const resp = await fetch(url, { method: 'POST', headers, body });
         const data = await resp.json().catch(() => ({}));
 
@@ -75,6 +78,7 @@ async function refresh(req, res) {
         const headers = { 'Content-Type': 'application/json' };
         const body = JSON.stringify({ refresh_token });
 
+        const fetch = getFetch();
         const resp = await fetch(url, { method: 'POST', headers, body });
         const data = await resp.json().catch(() => ({}));
 

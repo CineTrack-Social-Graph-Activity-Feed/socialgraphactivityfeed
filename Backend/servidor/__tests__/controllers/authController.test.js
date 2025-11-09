@@ -7,11 +7,8 @@ jest.mock('../../models/User');
 jest.mock('jsonwebtoken');
 jest.mock('../../middlewares/auth');
 
-// Mock node-fetch
+// Mock global fetch
 const mockFetch = jest.fn();
-jest.mock('node-fetch', () => mockFetch);
-
-// Also mock global.fetch
 global.fetch = mockFetch;
 
 const request = require('supertest');

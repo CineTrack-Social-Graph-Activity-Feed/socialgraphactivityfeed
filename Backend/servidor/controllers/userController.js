@@ -185,18 +185,22 @@ const updateUser = async (req, res) => {
     }
     if (avatar_url !== undefined) updateData.avatar_url = avatar_url;
 
-    // Actualizar usuario
-    const user = await User.findByIdAndUpdate(
-      user_id,
-      updateData,
-      { new: true, runValidators: true }
-    );
+    // Buscar usuario
+    const user = await User.findOne({ _id: user_id });
 
     if (!user) {
       return res.status(404).json({
         error: 'Usuario no encontrado'
       });
     }
+
+    // Actualizar campos
+    if (username) user.username = username.trim();
+    if (email) user.email = email.toLowerCase().trim();
+    if (avatar_url !== undefined) user.avatar_url = avatar_url;
+
+    // Guardar cambios
+    await user.save();
 
     res.status(200).json({
       message: 'Usuario actualizado exitosamente',
@@ -226,9 +230,117 @@ const updateUser = async (req, res) => {
   }
 };
 
+/**
+ * Eliminar un usuario
+ */
+const deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.user_id || req.params.userId;
+
+    const user = await User.findOneAndDelete({ _id: userId });
+    
+    if (!user) {
+      return res.status(404).json({
+        error: 'Usuario no encontrado'
+      });
+    }
+
+    res.status(200).json({
+      message: 'Usuario eliminado exitosamente'
+    });
+
+  } catch (error) {
+    console.error('Error en deleteUser:', error);
+    res.status(500).json({
+      error: 'Error interno del servidor'
+    });
+  }
+};
+
+/**
+ * Verificar si un usuario existe
+ */
+const checkUserExists = async (req, res) => {
+  try {
+    const userId = req.params.user_id || req.params.userId;
+
+    const user = await User.findOne({ _id: userId });
+    
+    res.status(200).json({
+      exists: !!user
+    });
+
+  } catch (error) {
+    console.error('Error en checkUserExists:', error);
+    res.status(500).json({
+      error: 'Error interno del servidor'
+    });
+  }
+};
+
+/**
+ * Obtener usuario por username
+ */
+const getUserByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    const user = await User.findOne({ username });
+    
+    if (!user) {
+      return res.status(404).json({
+        error: 'Usuario no encontrado'
+      });
+    }
+
+    res.status(200).json({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      avatar_url: user.avatar_url,
+      created_at: user.created_at
+    });
+
+  } catch (error) {
+    console.error('Error en getUserByUsername:', error);
+    res.status(500).json({
+      error: 'Error interno del servidor'
+    });
+  }
+};
+
+/**
+ * Obtener todos los usuarios
+ */
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}).select('-__v');
+    
+    res.status(200).json({
+      users: users.map(user => ({
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        avatar_url: user.avatar_url,
+        created_at: user.created_at
+      }))
+    });
+
+  } catch (error) {
+    console.error('Error en getAllUsers:', error);
+    res.status(500).json({
+      error: 'Error interno del servidor'
+    });
+  }
+};
+
 module.exports = {
   createUser,
   getUser,
   searchUsers,
-  updateUser
+  updateUser,
+  deleteUser,
+  checkUserExists,
+  getUserByUsername,
+  getAllUsers
 };
