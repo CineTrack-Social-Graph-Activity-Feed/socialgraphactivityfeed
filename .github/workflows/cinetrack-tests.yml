@@ -40,6 +40,9 @@ jobs:
           pip install -r tests/requirements.txt
           echo "✅ Test dependencies installed from tests/requirements.txt"
       
+      - name: 📁 Create reports directory
+        run: mkdir -p tests/reports reports
+      
       - name: 🧪 Run Unit Tests
         run: |
           python -m pytest tests/unit -v --tb=short --junitxml=reports/junit-unit.xml
