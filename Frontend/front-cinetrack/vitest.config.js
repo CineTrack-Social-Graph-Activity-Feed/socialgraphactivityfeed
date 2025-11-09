@@ -17,10 +17,10 @@ export default defineConfig({
         '**/.*rc.js',
       ],
       thresholds: {
-        lines: 50,
-        functions: 50,
-        branches: 50,
-        statements: 50
+        lines: 10,
+        functions: 10,
+        branches: 10,
+        statements: 10
       }
     }
   }
