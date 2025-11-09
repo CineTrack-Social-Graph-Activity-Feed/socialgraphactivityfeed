@@ -23,6 +23,7 @@ function Post({}) {
   const [commentByPost, setCommentByPost] = useState({});
   const [revealedPosts, setRevealedPosts] = useState({});
   const [followVersion, setFollowVersion] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const onFollowersUpdated = () => setFollowVersion((v) => v + 1);
@@ -53,6 +54,7 @@ function Post({}) {
     const objectId = perfil?.id;
     if (!objectId) return;
 
+    setLoading(true);
     (async () => {
       try {
         console.log("Trayendo las reviews de mis amigos...");
@@ -105,6 +107,8 @@ function Post({}) {
         if (err.name !== "AbortError") {
           console.error("❌ Error al cargar posts o películas:", err);
         }
+      } finally {
+        setLoading(false);
       }
     })();
   }, [perfil?.id, fetchWithAuth, followVersion]);
@@ -730,7 +734,20 @@ function Post({}) {
 
   return (
     <div style={{ display: "grid", gap: "20px" }}>
-      {(() => {
+      {loading ? (
+        <div style={{ textAlign: "center", padding: "40px", color: "#ccc" }}>
+          <div className="spinner" style={{
+            border: "4px solid rgba(255,255,255,0.1)",
+            borderTop: "4px solid #fff",
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            animation: "spin 1s linear infinite",
+            margin: "0 auto 20px"
+          }}></div>
+          <p>Cargando actividad...</p>
+        </div>
+      ) : (() => {
         // Filtrar posts que tienen película válida
         const postsValidos = postsConPeli.filter(post => post.movie && post.movie.movie);
         

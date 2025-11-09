@@ -449,3 +449,76 @@
   color: lightgray;
   font-size: 13px;
 }
+
+/* ====== RESPONSIVE POSTS ====== */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .post {
+    width: 90%;
+    max-width: 600px;
+  }
+  
+  .post-img {
+    width: 150px;
+    height: 225px;
+  }
+}
+
+/* Móviles */
+@media (max-width: 768px) {
+  .post {
+    width: 95%;
+    padding: 12px;
+  }
+  
+  .post-content {
+    flex-direction: column;
+  }
+  
+  .post-img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    margin: 0 auto 10px;
+  }
+  
+  .post-text {
+    margin-left: 0;
+  }
+  
+  .user-logo {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .user-logo-create-post {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .post {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  .post-img {
+    max-width: 150px;
+  }
+  
+  .post-text {
+    font-size: 14px;
+  }
+  
+  .comment-box {
+    padding: 8px;
+  }
+  
+  .comment-input {
+    font-size: 13px;
+  }
+}

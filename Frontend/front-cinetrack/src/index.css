@@ -18,3 +18,9 @@
   margin: 0;
   padding: 0;
 }
+
+/* Animación para el spinner de carga */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

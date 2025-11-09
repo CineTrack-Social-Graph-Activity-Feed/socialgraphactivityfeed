@@ -28,3 +28,71 @@
   margin: 0;
   margin-top: 5px;
 }
+
+/* ====== RESPONSIVE FOOTER ====== */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .footer {
+    padding: 10px 40px;
+  }
+  
+  .footer-links {
+    gap: 15px;
+  }
+  
+  .footer-links a {
+    font-size: 15px;
+  }
+}
+
+/* Móviles */
+@media (max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    padding: 15px 20px;
+    gap: 10px;
+  }
+  
+  .footer-links {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .footer-links a {
+    font-size: 14px;
+  }
+  
+  .logo {
+    margin-left: 0;
+  }
+  
+  .footer-text {
+    text-align: center;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .footer {
+    padding: 10px;
+  }
+  
+  .footer-links a {
+    font-size: 12px;
+  }
+  
+  .footer-text {
+    font-size: 11px;
+  }
+  
+  .logo {
+    font-size: 1rem;
+  }
+  
+  .icon {
+    width: 30px;
+    height: 22px;
+  }
+}
