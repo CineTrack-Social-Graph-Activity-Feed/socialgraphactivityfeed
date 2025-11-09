@@ -5,7 +5,7 @@ const User = require('../models/User');
 // Helper to get fetch function (for easier mocking in tests)
 const getFetch = () => global.fetch || require('node-fetch');
 
-const USERS_BASE_URL = process.env.USERS_BASE_URL || 'http://users-prod-alb-1703954385.us-east-1.elb.amazonaws.com/api/v1';
+const USERS_BASE_URL = process.env.USERS_BASE_URL || 'https://usuariosbe.cine-track.com.ar/api/v1';
 
 // POST /api/auth/login
 async function login(req, res) {
