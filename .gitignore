@@ -19,3 +19,8 @@
 **/pytest.log
 tests/reports/
 *.log
+
+# JavaScript testing
+**/coverage/
+**/.vitest/
+**/jest-junit.xml
