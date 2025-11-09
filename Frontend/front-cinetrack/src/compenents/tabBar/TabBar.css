@@ -1,7 +1,9 @@
+/* ====== TAB BAR ====== */
 .tabs {
   display: flex;
   border-bottom: 2px solid #1f242c;
   margin-bottom: 16px;
+  gap: 8px;
 }
 
 .tab-button {
@@ -13,15 +15,55 @@
   text-transform: uppercase;
   padding: 10px 20px;
   cursor: pointer;
-  transition: color 0.2s, border-bottom 0.2s;
+  transition: all 0.3s ease;
   border-bottom: 2px solid transparent;
+  position: relative;
+}
+
+.tab-button::before {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #1db954;
+  transition: width 0.3s ease;
 }
 
 .tab-button:hover {
   color: #e6eef8;
+  transform: translateY(-2px);
+}
+
+.tab-button:hover::before {
+  width: 100%;
 }
 
 .tab-button.active {
-  color: #1db954; /* verde activo */
+  color: #1db954;
   border-bottom: 2px solid #1db954;
+}
+
+.tab-button.active::before {
+  width: 100%;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  .tabs {
+    gap: 4px;
+  }
+
+  .tab-button {
+    font-size: 16px;
+    padding: 8px 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tab-button {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
 }

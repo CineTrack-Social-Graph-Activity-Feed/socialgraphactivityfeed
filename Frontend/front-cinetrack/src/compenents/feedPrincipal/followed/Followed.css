@@ -1,39 +1,84 @@
+/* ====== ANIMATIONS ====== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ====== CONTAINER ====== */
 .followed-container {
   display: flex;
   flex-direction: column;
+  animation: fadeIn 0.4s ease;
 }
 
 .followed-title {
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: 700;
   margin-top: 25px;
+  color: #e6eef8;
+  letter-spacing: 0.5px;
 }
 
 .no-followed {
-  color: lightgray;
+  color: #8b959e;
   margin-top: 15px;
+  font-size: 15px;
+  font-style: italic;
 }
+
+/* ====== USER ITEM ====== */
 .followed-user {
   display: flex;
   align-items: center;
   margin: 10px 0;
   text-decoration: none;
   gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .followed-user:hover {
-  scale: 1.02;
-  transition: all 0.3s ease;
+  transform: translateX(5px) scale(1.02);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .followed-user-name {
   margin-left: 10px;
-  font-size: 20px;
-  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  transition: color 0.2s ease;
+}
+
+.followed-user:hover .followed-user-name {
+  color: #16e0d3;
 }
 
 .followed-user-followers {
   margin-left: 10px;
   color: #16e0d3;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .followed-users {
@@ -44,50 +89,126 @@
   margin-top: 25px;
 }
 
+/* ====== AVATAR ====== */
 .avatar-user-followed {
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
+  border: 2px solid #16e0d3;
+  object-fit: cover;
+  transition: all 0.3s ease;
 }
 
+.followed-user:hover .avatar-user-followed {
+  transform: rotate(5deg) scale(1.1);
+  box-shadow: 0 0 15px rgba(22, 224, 211, 0.5);
+}
+
+/* ====== UNFOLLOW BUTTON ====== */
 .unfollow-button {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 20px;
-  color: white;
+  color: #ffffff;
   position: relative;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.unfollow-button:hover {
+  background: rgba(239, 11, 55, 0.1);
+  color: #ef0b37;
+  transform: scale(1.15);
 }
 
 .unfollow-button svg {
   width: 25px;
   height: 25px;
+  transition: transform 0.2s ease;
 }
 
+.unfollow-button:hover svg {
+  transform: rotate(20deg);
+}
+
+/* ====== ACTIONS CONTAINER ====== */
 .followed-actions {
-  position: relative; /* importante para que el menú se posicione relativo al botón */
+  position: relative;
+  margin-left: auto;
 }
 
+/* ====== UNFOLLOW MENU ====== */
 .unfollow-menu {
   position: absolute;
-  margin-top: 5px; /* espacio entre botón y menú */
-  background: white;
-  border-radius: 6px;
-  padding: 6px 10px;
+  margin-top: 8px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 8px 12px;
   z-index: 10;
   left: -40px;
-  width: 120px;
+  width: 130px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  animation: scaleIn 0.2s ease;
 }
 
 .unfollow-menu button {
   background: none;
   border: none;
   cursor: pointer;
-  color: red;
+  color: #ef0b37;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 6px 0;
+  width: 100%;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+}
+
+.unfollow-menu button:hover {
+  background: rgba(239, 11, 55, 0.1);
+  transform: scale(1.05);
 }
 
 .unfollow-svg {
   width: 20px;
   height: 20px;
   margin-top: 5px;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  .followed-title {
+    font-size: 18px;
+  }
+
+  .followed-user {
+    padding: 10px;
+  }
+
+  .followed-user-name {
+    font-size: 16px;
+  }
+
+  .avatar-user-followed {
+    width: 40px;
+    height: 40px;
+  }
+
+  .unfollow-menu {
+    width: 110px;
+    left: -30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .followed-users {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .followed-user {
+    width: 100%;
+  }
 }
