@@ -9,12 +9,13 @@
 .sidebar {
   width: 100%; /* ocupar todo el ancho del contenedor padre */
   height: 100%; /* ocupar toda la altura del contenedor padre */
-  background: #3e5c78;
+  background: linear-gradient(180deg, var(--color-bg-light) 0%, #36546d 100%);
   color: var(--text);
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 20px;
+  gap: var(--space-xl);
+  padding: var(--space-xl);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* El scroll ya está manejado por .sidebar-feed en FeedPrincipal.css */
@@ -31,10 +32,15 @@
 .avatar {
   width: 96px;
   height: 96px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  border: 3px solid var(--color-primary);
+  box-shadow: var(--shadow-lg);
+  transition: transform var(--transition-normal);
+}
+
+.avatar:hover {
+  transform: scale(1.05);
 }
 .username-sidebar {
   font-weight: 600;
@@ -71,55 +77,51 @@
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 12px;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-md);
+  border-radius: var(--radius-md);
   text-decoration: none;
   color: var(--text);
   background: transparent;
   border: none;
   text-align: left;
   cursor: pointer;
-  transition: background 0.2s, transform 0.05s;
-  font-size: 16px; /* tamaño de fuente consistente */
-  font-weight: 400; /* peso normal */
+  transition: all var(--transition-normal);
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  background: var(--color-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  transition: height var(--transition-normal);
+}
+
+.menu-item:hover::before {
+  height: 70%;
 }
 
 .menu-item.active {
-  background: linear-gradient(90deg, #1d2d44 0%, #0d1321 100%);
+  background: linear-gradient(90deg, rgba(0, 212, 212, 0.15) 0%, transparent 100%);
   color: #fff;
-  box-shadow: 0 4px 16px rgba(13, 19, 33, 0.25);
 }
 
-.menu-item.active:hover {
-  background: linear-gradient(90deg, #1a273b 0%, #0b101e 100%);
-}
-
-.menu-item svg {
-  width: 18px;
-  height: 18px;
-  color: currentColor;
-}
-
-.menu-item:focus-visible {
-  outline: 2px solid #5b9cff;
-  outline-offset: 2px;
-  border-radius: 12px;
+.menu-item.active::before {
+  height: 70%;
 }
 
 .menu-item:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(4px);
 }
-
-/*
-.menu-item:active {
-  transform: translateY(1px);
-}
-
-.menu-item.active {
-  background: rgba(255, 255, 255, 0.1);
-}
-*/
 
 /* icono en pastilla */
 .icon-pill {
@@ -148,7 +150,7 @@
 /* responsive opcional: colapsar ancho */
 @media (max-width: 1024px) {
   .sidebar {
-    padding: 15px;
+    padding: var(--space-lg);
   }
   
   .avatar {
@@ -164,90 +166,113 @@
 @media (max-width: 768px) {
   .sidebar {
     flex-direction: row;
-    gap: 15px;
-    padding: 15px;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
     overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
   }
   
   .profile {
     flex-direction: row;
     align-items: center;
     padding: 0;
-    gap: 10px;
+    gap: var(--space-md);
     min-width: 200px;
+    flex-shrink: 0;
   }
   
   .avatar {
-    width: 50px;
-    height: 50px;
+    width: 56px;
+    height: 56px;
   }
   
   .username-sidebar {
-    font-size: 14px;
+    font-size: 15px;
     margin-top: 0;
+    white-space: nowrap;
   }
   
   .user-sub-sidebar {
-    font-size: 12px;
+    font-size: 13px;
+    white-space: nowrap;
   }
   
   .section {
     min-width: fit-content;
+    flex-shrink: 0;
   }
   
   .section-title {
-    font-size: 14px;
+    font-size: 13px;
+    margin-bottom: var(--space-sm);
   }
   
   .menu {
     flex-direction: row;
-    gap: 8px;
+    gap: var(--space-sm);
   }
   
   .menu-item {
-    padding: 8px 12px;
+    padding: var(--space-sm) var(--space-md);
     white-space: nowrap;
-  }
-  
-  .menu-item span:last-child {
     font-size: 14px;
   }
-}
-
-@media (max-width: 480px) {
-  .sidebar {
-    gap: 10px;
-    padding: 10px;
-  }
   
-  .profile {
-    min-width: 150px;
-  }
-  
-  .avatar {
-    width: 40px;
-    height: 40px;
-  }
-  
-  .username-sidebar {
-    font-size: 12px;
-  }
-  
-  .user-sub-sidebar {
+  .menu-item::before {
     display: none;
-  }
-  
-  .section-title {
-    display: none;
-  }
-  
-  .menu-item {
-    padding: 6px 10px;
-    font-size: 12px;
   }
   
   .icon-pill {
     width: 28px;
     height: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    gap: var(--space-md);
+    padding: var(--space-md);
+  }
+  
+  .profile {
+    min-width: 170px;
+  }
+  
+  .avatar {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .username-sidebar {
+    font-size: 13px;
+  }
+  
+  .user-sub-sidebar {
+    font-size: 11px;
+  }
+  
+  .section-title {
+    font-size: 12px;
+  }
+  
+  .menu-item {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 13px;
+    gap: var(--space-sm);
+  }
+  
+  .menu-item span:last-child {
+    display: inline-block;
+  }
+  
+  .icon-pill {
+    width: 26px;
+    height: 26px;
+  }
+  
+  .icon-pill svg {
+    width: 14px;
+    height: 14px;
   }
 }

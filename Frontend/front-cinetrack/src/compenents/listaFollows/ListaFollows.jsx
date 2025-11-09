@@ -1,21 +1,20 @@
 import "./ListaFollows.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { useUser } from "../../../UserContex";
+import { API_URL } from "../../config/api";
 import { useAuth } from "../../config/AuthContext";
 
+// Asegurar que estamos usando la API_URL centralizada
+//console.log("ListaFollows usando API URL:", API_URL);
+
 function ListaFollows() {
-  const { user, fetchWithAuth } = useAuth();
-  const userId = user.user.user_id;
+  const { user, fetchWithAuth, signOut } = useAuth(); // <- user de /me
+  const userId = user.user.user_id; // normalizamos ID
   const [perfil, setPerfil] = useState(null);
-  const [seguidos, setSeguidos] = useState([]);
+  const [seguidores, setSeguidores] = useState([]);
   const [confirmUnfollow, setConfirmUnfollow] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [pendingId, setPendingId] = useState(null);
-
-  const skeletons = useMemo(
-    () => Array.from({ length: 4 }, (_, idx) => idx),
-    []
-  );
 
   useEffect(() => {
     if (!userId) return;
@@ -27,51 +26,13 @@ function ListaFollows() {
         setPerfil(data.user || data); // depende de tu shape
       } catch (err) {
         console.error("Error al traer usuario:", err);
-        setError("No pudimos cargar tu perfil. Intenta nuevamente.");
       }
     })();
   }, [userId, fetchWithAuth]);
-  const objectId = perfil?.id;
-
-  useEffect(() => {
-    if (!objectId) return;
-    let isMounted = true;
-
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetchWithAuth(`/api/followed?user_id=${objectId}`);
-        if (!res.ok) throw new Error(`Error ${res.status}`);
-        const data = await res.json();
-        if (!isMounted) return;
-        const normalizados = Array.isArray(data.followed)
-          ? data.followed.map((u) => ({ ...u, _id: String(u._id) }))
-          : [];
-        setSeguidos(normalizados);
-      } catch (err) {
-        console.error("Error al obtener seguidos:", err);
-        if (!isMounted) return;
-        setSeguidos([]);
-        setError("No pudimos cargar a quién sigues ahora mismo.");
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    fetchData();
-    window.addEventListener("followersUpdated", fetchData);
-
-    return () => {
-      window.removeEventListener("followersUpdated", fetchData);
-      isMounted = false;
-    };
-  }, [objectId, fetchWithAuth]);
 
   const unfollowUser = async (targetId) => {
-    if (!perfil?.id) return;
     try {
-      setPendingId(String(targetId));
+      console.log(`Enviando solicitud unfollow a ${API_URL}/api/unfollow`);
       const res = await fetchWithAuth("/api/unfollow", {
         method: "POST",
         headers: {
@@ -83,87 +44,139 @@ function ListaFollows() {
         }),
       });
 
-      if (!res.ok) {
+      console.log("Respuesta del servidor:", res.status);
+
+      if (res.ok) {
+        setSeguidores((prev) => prev.filter((u) => u._id !== targetId));
+      } else {
         const errorData = await res
           .json()
           .catch(() => ({ message: "Error desconocido" }));
-        throw new Error(errorData.message || res.status);
+        console.error("Error al dejar de seguir:", errorData);
+        setError(
+          `Error al dejar de seguir: ${errorData.message || res.status}`
+        );
       }
-      setSeguidos((prev) => prev.filter((u) => u._id !== String(targetId)));
       window.dispatchEvent(new Event("followersUpdated"));
     } catch (err) {
       console.error("Error en unfollowUser:", err);
-      setError(`No pudimos actualizar tu lista: ${err.message}`);
-    } finally {
-      setPendingId(null);
+      setError(`Error de conexión: ${err.message}`);
     }
   };
 
+  useEffect(() => {
+    const objectId = perfil?.id;
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        console.log(
+          `Fetching from: ${API_URL}/api/followed?user_id=${objectId}`
+        );
+        const res = await fetchWithAuth(
+          `/api/followed?user_id=${objectId}`
+        );
+
+        console.log("Status de respuesta:", res.status);
+
+        if (!res.ok) {
+          throw new Error(`Error ${res.status}: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+        console.log("Datos recibidos:", data);
+        setSeguidores(data.followed || []);
+      } catch (err) {
+        console.error("Error al obtener seguidores:", err);
+        setError(`Error al cargar seguidores: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (objectId) {
+      fetchData();
+    }
+
+    window.addEventListener("followersUpdated", fetchData);
+    return () => {
+      window.removeEventListener("followersUpdated", fetchData);
+    };
+  }, [perfil?.id, fetchWithAuth]);
+
+  if (loading) {
+    return <div className="loading">Cargando seguidos...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="error-message">
+        <h3>Error de conexión</h3>
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Reintentar</button>
+      </div>
+    );
+  }
+
   return (
-    <section className="followed-card glass-card">
-      <header className="followed-header">
-        <h2 className="section-title">Siguiendo</h2>
-        <p className="section-subtitle">
-          Revisa las cuentas que sigues y organiza tu feed.
-        </p>
-      </header>
-
-      {error && !loading ? (
-        <div className="followed-error solid-card">
-          <p>{error}</p>
-        </div>
-      ) : null}
-
-      <div className="followed-list">
-        {loading
-          ? skeletons.map((item) => (
-              <div
-                className="followed-row skeleton-block"
-                key={`skeleton-follow-${item}`}
-              />
-            ))
-          : seguidos.length === 0
-          ? (
-              <div className="followed-empty">
-                <p>No sigues a nadie todavía. Descubre nuevos perfiles.</p>
-              </div>
-            )
-          : seguidos.map((current) => (
-              <article className="followed-row solid-card" key={current._id}>
-                <div className="followed-user">
-                  <img
-                    src={
-                      current.avatar_url ||
-                      "https://ui-avatars.com/api/?background=1c2740&color=fff&name=" +
-                        encodeURIComponent(current.username || "U")
-                    }
-                    alt={`Avatar de ${current.username}`}
-                    className="followed-avatar"
-                  />
-                  <div className="followed-meta">
-                    <h3>{current.username}</h3>
-                    {current.bio ? <p>{current.bio}</p> : null}
-                  </div>
+    <div className="container">
+      <div className="list-table">
+        <div className="user-list">
+          {seguidores.length === 0 ? (
+            <p className="no-following">
+              Usted no sigue a nadie. Busque a tus amigos y comience a
+              seguirlos!
+            </p>
+          ) : (
+            seguidores.map((user) => (
+              <div key={user._id} className="user-row">
+                <div>
+                  <a className="followed-user">
+                    <img
+                      src={
+                        user.avatar_url
+                          ? user.avatar_url
+                          : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+                      }
+                      alt="avatar user"
+                      className="avatar-post"
+                      style={{ width: "50px", height: "50px" }}
+                    />
+                    <div className="user-info">
+                      <h2 className="username">{user.username}</h2>
+                    </div>
+                  </a>
                 </div>
-                <div className="followed-actions">
+
+                <div className="col watched numeric">
+                  <div className="stat"></div>
+                </div>
+
+                <div className="col lists numeric">
+                  <div className="stat"></div>
+                </div>
+
+                <div className="col likes numeric">
                   <button
-                    className="followed-btn"
-                    onClick={() => setConfirmUnfollow(current)}
-                    disabled={pendingId === current._id}
+                    className="follow-btn"
+                    onClick={() => setConfirmUnfollow(user)}
+                    style={{ backgroundColor: "#d6d5d4", color: "#000" }}
                   >
-                    {pendingId === current._id ? "Guardando..." : "Siguiendo"}
+                    Siguiendo
                   </button>
                 </div>
-              </article>
-            ))}
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       {confirmUnfollow && (
         <div className="modal-overlay">
-          <div className="modal-content solid-card">
+          <div className="modal-content">
             <h3>¿Dejar de seguir?</h3>
             <p>
-              ¿Estás seguro de que quieres dejar de seguir a{' '}
+              ¿Estás seguro de que quieres dejar de seguir a{" "}
               <strong>{confirmUnfollow.username}</strong>?
             </p>
             <div className="modal-actions">
@@ -186,7 +199,7 @@ function ListaFollows() {
           </div>
         </div>
       )}
-    </section>
+    </div>
   );
 }
 

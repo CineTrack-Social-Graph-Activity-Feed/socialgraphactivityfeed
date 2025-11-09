@@ -2,24 +2,43 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 90px;
+  padding: var(--space-lg) var(--space-2xl);
+  background: linear-gradient(135deg, var(--color-bg-dark) 0%, #111827 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .footer-links {
   display: flex;
-  gap: 20px;
+  gap: var(--space-xl);
 }
 
 .footer-links a {
-  color: white;
+  color: var(--color-text-secondary);
   text-decoration: none;
-  font-size: 17px;
+  font-size: 15px;
+  transition: all var(--transition-fast);
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.footer-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width var(--transition-normal);
 }
 
 .footer-links a:hover {
-  color: lightgray;
-  transform: scale(1.05);
-  transition: 0.5s;
+  color: var(--color-primary);
+}
+
+.footer-links a:hover::after {
+  width: 100%;
 }
 
 .footer-text {
@@ -34,15 +53,19 @@
 /* Tablets */
 @media (max-width: 1024px) {
   .footer {
-    padding: 10px 40px;
+    padding: var(--space-md) var(--space-2xl);
   }
   
   .footer-links {
-    gap: 15px;
+    gap: var(--space-lg);
   }
   
   .footer-links a {
-    font-size: 15px;
+    font-size: 14px;
+  }
+  
+  .footer-text {
+    font-size: 12px;
   }
 }
 
@@ -50,18 +73,18 @@
 @media (max-width: 768px) {
   .footer {
     flex-direction: column;
-    padding: 15px 20px;
-    gap: 10px;
+    padding: var(--space-lg) var(--space-lg);
+    gap: var(--space-md);
   }
   
   .footer-links {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-md);
   }
   
   .footer-links a {
-    font-size: 14px;
+    font-size: 13px;
   }
   
   .logo {
@@ -70,13 +93,20 @@
   
   .footer-text {
     text-align: center;
+    font-size: 11px;
   }
 }
 
 /* Móviles pequeños */
 @media (max-width: 480px) {
   .footer {
-    padding: 10px;
+    padding: var(--space-md) var(--space-sm);
+    gap: var(--space-sm);
+  }
+  
+  .footer-links {
+    gap: var(--space-sm);
+    flex-direction: column;
   }
   
   .footer-links a {
@@ -84,15 +114,15 @@
   }
   
   .footer-text {
-    font-size: 11px;
+    font-size: 10px;
   }
   
   .logo {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
   
   .icon {
-    width: 30px;
-    height: 22px;
+    width: 28px;
+    height: 20px;
   }
 }
