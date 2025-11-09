@@ -1,9 +1,12 @@
 name: CI/CD Frontend
 
 on:
-  pull_request:
-    branches: [ main, terraform-iac ]
   workflow_dispatch:
+  workflow_run:
+    workflows: ["CI/CD Pipeline"]
+    types:
+      - completed
+    branches: [ main, terraform-iac ]
   push:
     branches: [ main, terraform-iac ]
     paths:
@@ -44,6 +47,12 @@ jobs:
       - name: Read Terraform Outputs
         id: tf-out
         run: |
+          # Validate that outputs exist before proceeding
+          if ! terraform output frontend_s3_bucket_name &> /dev/null; then
+            echo "❌ No Terraform outputs found. Infrastructure may not be deployed yet."
+            echo "   Wait for main.yml workflow to complete terraform apply first."
+            exit 1
+          fi
           echo "s3_bucket=$(terraform output -raw frontend_s3_bucket_name)" >> $GITHUB_OUTPUT
           echo "cloudfront_frontend_id=$(terraform output -raw cloudfront_frontend_id)" >> $GITHUB_OUTPUT
           echo "cloudfront_backend_url=$(terraform output -raw cloudfront_backend_url)" >> $GITHUB_OUTPUT
