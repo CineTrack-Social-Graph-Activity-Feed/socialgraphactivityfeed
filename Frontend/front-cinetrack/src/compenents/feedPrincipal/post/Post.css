@@ -8,7 +8,8 @@
   padding: 16px;
   margin-top: 10px;
   margin-bottom: 10px;
-  width: 700px;
+  width: 100%;
+  max-width: 700px;
   margin-inline: auto;
 }
 
@@ -455,36 +456,39 @@
 /* Tablets */
 @media (max-width: 1024px) {
   .post {
-    width: 90%;
     max-width: 600px;
   }
   
   .post-img {
-    width: 150px;
-    height: 225px;
+    width: 140px;
+    height: 210px;
   }
 }
 
 /* Móviles */
 @media (max-width: 768px) {
   .post {
-    width: 95%;
+    max-width: 100%;
     padding: 12px;
+    margin: 8px 5px;
   }
   
   .post-content {
     flex-direction: column;
+    align-items: center;
   }
   
   .post-img {
     width: 100%;
-    max-width: 200px;
+    max-width: 180px;
     height: auto;
-    margin: 0 auto 10px;
+    aspect-ratio: 2/3;
+    margin: 0 0 10px 0;
   }
   
   .post-text {
     margin-left: 0;
+    width: 100%;
   }
   
   .user-logo {
@@ -496,22 +500,44 @@
     width: 40px;
     height: 40px;
   }
+  
+  .comment-box {
+    margin-left: 0;
+  }
+  
+  .write-comment {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .comment-input {
+    width: 100%;
+  }
 }
 
 /* Móviles pequeños */
 @media (max-width: 480px) {
   .post {
-    width: 100%;
     padding: 10px;
-    margin: 10px 0;
+    margin: 5px 2px;
+    border-radius: 8px;
   }
   
   .post-img {
-    max-width: 150px;
+    max-width: 140px;
   }
   
   .post-text {
     font-size: 14px;
+  }
+  
+  .post-header {
+    gap: 8px;
+  }
+  
+  .user-logo {
+    width: 30px;
+    height: 30px;
   }
   
   .comment-box {
@@ -520,5 +546,16 @@
   
   .comment-input {
     font-size: 13px;
+    padding: 8px;
+  }
+  
+  .btn-comment {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .config-header-btns {
+    width: 32px;
+    height: 32px;
   }
 }
