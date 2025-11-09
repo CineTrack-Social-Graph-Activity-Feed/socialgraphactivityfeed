@@ -735,13 +735,17 @@ function Post({}) {
   return (
     <div style={{ display: "grid", gap: "20px" }}>
       {loading ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: "20px", maxWidth: "700px", margin: "0 auto", width: "100%" }}>
-          {[1, 2, 3].map(i => (
-            <div key={i} className="skeleton" style={{
-              height: "300px",
-              borderRadius: "var(--radius-lg)"
-            }}></div>
-          ))}
+        <div style={{ textAlign: "center", padding: "40px", color: "#ccc" }}>
+          <div className="spinner" style={{
+            border: "4px solid rgba(255,255,255,0.1)",
+            borderTop: "4px solid #fff",
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            animation: "spin 1s linear infinite",
+            margin: "0 auto 20px"
+          }}></div>
+          <p>Cargando actividad...</p>
         </div>
       ) : (() => {
         // Filtrar posts que tienen película válida
@@ -751,7 +755,7 @@ function Post({}) {
         
         if (postsValidos.length === 0) {
           return (
-            <p style={{ color: "var(--color-text-muted)", textAlign: "center", marginTop: "40px", fontSize: "16px" }}>
+            <p style={{ color: "#ccc", textAlign: "center", marginTop: "20px" }}>
               {postsConPeli.length === 0 
                 ? "No hay actividad para mostrar por el momento!"
                 : "Las publicaciones no pueden mostrarse porque faltan datos de películas."}
