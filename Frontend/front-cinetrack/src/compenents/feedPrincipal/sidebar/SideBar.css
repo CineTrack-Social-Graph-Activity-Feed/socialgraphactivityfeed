@@ -81,6 +81,8 @@
   text-align: left;
   cursor: pointer;
   transition: background 0.2s, transform 0.05s;
+  font-size: 16px; /* tamaño de fuente consistente */
+  font-weight: 400; /* peso normal */
 }
 
 .menu-item.active {
