@@ -7,3 +7,15 @@
 **/terraform.tfstate.backup
 **/*.tfvars
 !terraform.tfvars
+
+# Python testing
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/.pytest_cache/
+**/.coverage
+**/coverage.xml
+**/htmlcov/
+**/pytest.log
+tests/reports/
+*.log
