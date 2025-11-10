@@ -32,7 +32,10 @@ function PostMiActividad({ post }) {
         const res = await fetchWithAuth(`/api/user/${userId}`);
         if (!res.ok) throw new Error("Error al traer usuario");
         const data = await res.json();
-        setPerfil(data.user || data); // depende de tu shape
+        const userData = data.user || data;
+        console.log("📸 Datos del perfil cargados:", userData);
+        console.log("📸 avatar_url:", userData?.avatar_url);
+        setPerfil(userData);
       } catch (err) {
         console.error("Error al traer usuario:", err);
       }
@@ -463,9 +466,17 @@ function PostMiActividad({ post }) {
         {/* Header */}
         <div className="post-header">
           <img 
-            src={perfil?.image_url || "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"} 
+            src={
+              perfil?.avatar_url || 
+              user?.user?.avatar_url || 
+              "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+            } 
             alt="avatar" 
             className="avatar-post" 
+            onError={(e) => {
+              console.error("❌ Error cargando imagen:", e.target.src);
+              e.target.src = "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+            }}
           />
           <div>
             <div className="post-user-info">
