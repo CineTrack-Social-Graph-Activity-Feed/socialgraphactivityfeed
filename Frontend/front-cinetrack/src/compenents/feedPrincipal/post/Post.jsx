@@ -497,9 +497,12 @@ function Post({}) {
           {/* Header */}
           <div className="post-header">
             <img
-              src={post.author.avatar_url}
+              src={post.author.avatar_url || "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"}
               alt="avatar"
               className="avatar-post"
+              onError={(e) => {
+                e.target.src = "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+              }}
             />
             <div>
               <div className="post-user-info">
@@ -578,12 +581,13 @@ function Post({}) {
             <div className="comment-post">
               <img
                 src={
-                  user.user.image_url
-                    ? user.user.image_url
-                    : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+                  user.user.avatar_url || user.user.image_url || "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
                 }
                 alt="avatar"
                 className="user-logo-post"
+                onError={(e) => {
+                  e.target.src = "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+                }}
               />
               <form
                 className="comment-post-wrap"
@@ -649,9 +653,12 @@ function Post({}) {
                 .map((c) => (
                   <div key={c.id} className="comment">
                     <img
-                      src={c.user?.avatar_url}
+                      src={c.user?.avatar_url || "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"}
                       alt="user"
                       className="avatar-comment"
+                      onError={(e) => {
+                        e.target.src = "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+                      }}
                     />
                     <div className="comment-body">
                       <div>
