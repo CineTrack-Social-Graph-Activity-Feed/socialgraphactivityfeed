@@ -139,7 +139,7 @@ describe('Followed', () => {
     });
   });
 
-  it('should not fetch followed users if profile is not loaded', () => {
+  it('should not fetch followed users if profile is not loaded', async () => {
     mockFetchWithAuth.mockImplementation((url) => {
       if (url.includes('/api/user/user123')) {
         return Promise.resolve({
@@ -153,12 +153,12 @@ describe('Followed', () => {
     render(<Followed />);
     
     // Should only call user profile fetch, not followed
-    setTimeout(() => {
+    await waitFor(() => {
       const followedCalls = mockFetchWithAuth.mock.calls.filter(
         call => call[0].includes('/api/followed')
       );
       expect(followedCalls.length).toBe(0);
-    }, 100);
+    });
   });
 
   it('should handle unfollow action successfully', async () => {
@@ -174,8 +174,8 @@ describe('Followed', () => {
           ok: true,
           json: () => Promise.resolve({ 
             followed: [
-              { _id: 'followed1', full_name: 'User 1', avatar_url: null },
-              { _id: 'followed2', full_name: 'User 2', avatar_url: null }
+              { _id: 'followed1', username: 'User 1', avatar_url: null },
+              { _id: 'followed2', username: 'User 2', avatar_url: null }
             ]
           })
         });
