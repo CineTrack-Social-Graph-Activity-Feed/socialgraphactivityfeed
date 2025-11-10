@@ -50,11 +50,18 @@ const publishEvent = async (event) => {
     let eventData;
     switch (event_type) {
       case EVENT_TYPES.FOLLOW:
-      case EVENT_TYPES.UNFOLLOW:
         eventData = {
           event_type,
           follower_id: actorId,
           followed_id: stripUserPrefix(tgt),
+          timestamp,
+        };
+        break;
+      case EVENT_TYPES.UNFOLLOW:
+        eventData = {
+          event_type,
+          follower_id: actorId,
+          unfollowed_id: stripUserPrefix(tgt),
           timestamp,
         };
         break;
