@@ -102,7 +102,16 @@ const addLike = async (req, res) => {
       };
       list.push(demoLike);
 
-      createLikeEvent(user_id, target_id, target_type);
+      // Intentar mapear a ID externo (review_id) si existe la publicación en DB
+      let externalTargetId = String(target_id);
+      try {
+        const pubDoc = await Publication.findById(target_id).select('review_id');
+        if (pubDoc && pubDoc.review_id !== undefined && pubDoc.review_id !== null) {
+          externalTargetId = String(pubDoc.review_id);
+        }
+      } catch (_) { /* noop */ }
+
+      createLikeEvent(user_id, externalTargetId, target_type);
 
       const responseData = {
         message: "Like agregado exitosamente (demo)",
@@ -152,8 +161,16 @@ const addLike = async (req, res) => {
         throw saveError;
       }
 
-      // Publicar evento
-      createLikeEvent(user_id, target_id, target_type);
+      // Publicar evento usando ID externo si disponible
+      const externalTargetId = (publication && publication.review_id !== undefined && publication.review_id !== null)
+        ? String(publication.review_id)
+        : String(target_id);
+      if (externalTargetId !== String(target_id)) {
+        console.log(`🔄 addLike - Usando review_id externo ${externalTargetId} en lugar de _id ${target_id}`);
+      } else {
+        console.log(`ℹ️ addLike - No hay review_id externo, usando _id local ${target_id}`);
+      }
+      createLikeEvent(user_id, externalTargetId, target_type);
       console.log(`✉️ addLike - Evento de like publicado`);
 
       const responseData = {
@@ -222,7 +239,15 @@ const removeLike = async (req, res) => {
             return res.status(403).json({ error: "No tienes permisos para eliminar este like" });
           }
           demoLikes[pubId].splice(idx, 1);
-          createUnlikeEvent(like.user_id, like.target_id, like.target_type);
+          // Intentar mapear a ID externo
+          let externalTargetId = String(like.target_id);
+          try {
+            const pubDoc = await Publication.findById(like.target_id).select('review_id');
+            if (pubDoc && pubDoc.review_id !== undefined && pubDoc.review_id !== null) {
+              externalTargetId = String(pubDoc.review_id);
+            }
+          } catch (_) { /* noop */ }
+          createUnlikeEvent(like.user_id, externalTargetId, like.target_type);
           removed = true;
           break;
         }
@@ -248,7 +273,20 @@ const removeLike = async (req, res) => {
     }
 
     await Like.findByIdAndDelete(like_id);
-    createUnlikeEvent(like.user_id, like.target_id, like.target_type);
+    // Mapear a ID externo si disponible
+    let externalTargetId = String(like.target_id);
+    try {
+      const pubDoc = await Publication.findById(like.target_id).select('review_id');
+      if (pubDoc && pubDoc.review_id !== undefined && pubDoc.review_id !== null) {
+        externalTargetId = String(pubDoc.review_id);
+      }
+    } catch (_) { /* noop */ }
+    if (externalTargetId !== String(like.target_id)) {
+      console.log(`🔄 removeLike - Usando review_id externo ${externalTargetId} en lugar de _id ${like.target_id}`);
+    } else {
+      console.log(`ℹ️ removeLike - No hay review_id externo, usando _id local ${like.target_id}`);
+    }
+    createUnlikeEvent(like.user_id, externalTargetId, like.target_type);
     res.status(200).json({ message: "Like eliminado exitosamente" });
   } catch (error) {
     console.error("Error en removeLike:", error);

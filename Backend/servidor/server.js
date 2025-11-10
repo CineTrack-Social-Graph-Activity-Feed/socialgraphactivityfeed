@@ -15,9 +15,30 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
-// CORS debe estar ANTES de todas las rutas
+// CORS debe estar ANTES de todas las rutas. No se puede usar '*' con credentials=true.
+const rawOrigins = process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || '';
+const configuredOrigins = rawOrigins
+  .split(',')
+  .map(o => o.trim())
+  .filter(o => o.length > 0);
+
+// Origins de desarrollo por defecto si no se configuró nada
+const defaultDevOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000',
+];
+
+const allowedOrigins = configuredOrigins.length > 0 ? configuredOrigins : defaultDevOrigins;
+
 const corsOptions = {
-  origin: process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || '*',
+  origin: function(origin, callback) {
+    // Requests sin origin (por ejemplo curl / healthchecks) permitir
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    console.warn(`⚠️  CORS origen no permitido: ${origin}`);
+    return callback(new Error('Origen no permitido por CORS')); // Respuesta preflight fallará controladamente
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -25,8 +46,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-// Handle preflight requests
+// Preflight global
 app.options('*', cors(corsOptions));
 
 app.use(express.json({ limit: '10mb' }));
