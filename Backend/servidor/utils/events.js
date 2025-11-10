@@ -42,43 +42,86 @@ const publishEvent = async (event) => {
       } catch (_) { /* ignorar cast errors */ }
     }
 
-    const isUserTarget = [
-      EVENT_TYPES.FOLLOW,
-      EVENT_TYPES.UNFOLLOW,
-    ].includes(event_type);
+    const actorId = stripUserPrefix(actorExternalId !== undefined ? actorExternalId : actorLocalId);
+    const tgt = normalizeId(target_id || null);
+    const meta = event.metadata || {};
 
-    const eventData = {
-      event_type,
-  // Enviar SIEMPRE el id externo como actor_id si está disponible (como String) sin prefijo 'u'
-  actor_id: stripUserPrefix(actorExternalId !== undefined ? actorExternalId : actorLocalId),
-  // target_id sin prefijo 'u'; sólo normalizar user ids si aplica (follow/unfollow)
-  target_id: isUserTarget ? stripUserPrefix(target_id || null) : normalizeId(target_id || null),
-      timestamp,
-      metadata: {
-        // Convierte posibles IDs en metadata manteniendo otros valores intactos
-        ...Object.fromEntries(
-          Object.entries(event.metadata || {}).map(([k, v]) => {
-            // Normalizar si es un ID de usuario conocido, quitando prefijo 'u'
-            const userIdKeys = new Set(['user_id', 'follower_id', 'followed_id', 'actor_id', 'author_id']);
-            if (userIdKeys.has(k) || k.endsWith('_user_id')) {
-              return [k, stripUserPrefix(v)];
-            }
-            // Otros IDs comunes (no de usuario) sólo normalizar
-            if (k.endsWith('_id') || k === 'comment_id' || k === 'publication_id') {
-              return [k, normalizeId(v)];
-            }
-            return [k, v];
-          })
-        )
-      }
-    };
+    // Construir data específico por tipo
+    let eventData;
+    switch (event_type) {
+      case EVENT_TYPES.FOLLOW:
+      case EVENT_TYPES.UNFOLLOW:
+        eventData = {
+          event_type,
+          follower_id: actorId,
+          followed_id: stripUserPrefix(tgt),
+          timestamp,
+        };
+        break;
+      case EVENT_TYPES.LIKE:
+      case EVENT_TYPES.UNLIKE:
+        eventData = {
+          event_type,
+          user_id: actorId,
+          review_id: tgt,
+          target_type: meta.target_type,
+          timestamp,
+        };
+        break;
+      case EVENT_TYPES.COMMENT:
+        eventData = {
+          event_type,
+          user_id: actorId,
+          review_id: tgt,
+          comment_id: normalizeId(meta.comment_id),
+          target_type: meta.target_type,
+          timestamp,
+        };
+        break;
+      case EVENT_TYPES.DELETE_COMMENT:
+        eventData = {
+          event_type,
+          user_id: actorId,
+          review_id: tgt,
+          comment_id: normalizeId(meta.comment_id),
+          timestamp,
+        };
+        break;
+      case EVENT_TYPES.NEW_PUBLICATION:
+        eventData = {
+          event_type,
+          author_id: actorId,
+          review_id: tgt,
+          publication_type: meta.publication_type,
+          timestamp,
+        };
+        break;
+      case EVENT_TYPES.DELETE_PUBLICATION:
+        eventData = {
+          event_type,
+          author_id: actorId,
+          review_id: tgt,
+          timestamp,
+        };
+        break;
+      default:
+        // Fallback razonable para tipos desconocidos
+        eventData = {
+          event_type,
+          actor_id: actorId,
+          target_id: tgt,
+          timestamp,
+          metadata: meta,
+        };
+    }
 
     const payload = {
       type: event_type,
       specversion: '1.0',
       source: CORE_EVENTS_SOURCE,
       // Usa el actor_local o externo (ya normalizado) para el id del evento, evita 'null'
-      id: `${eventData.actor_id !== null ? eventData.actor_id : 'anon'}-${Date.now()}`,
+      // Usa actorId para la trazabilidad del id del evento
+      id: `${actorId !== null ? actorId : 'anon'}-${Date.now()}`,
       time: timestamp.toISOString(),
       data: eventData,
       datacontenttype: 'application/json'
