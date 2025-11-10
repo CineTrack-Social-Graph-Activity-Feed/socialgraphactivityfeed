@@ -112,7 +112,15 @@ const addComment = async (req, res) => {
       };
       list.push(demoComment);
 
-      createCommentEvent(user_id, target_id, demoComment.id, target_type);
+      // Intentar usar ID externo (review_id) si existe publicación en DB
+      let externalTargetId = String(target_id);
+      try {
+        const pubDoc = await Publication.findById(target_id).select('review_id');
+        if (pubDoc && pubDoc.review_id !== undefined && pubDoc.review_id !== null) {
+          externalTargetId = String(pubDoc.review_id);
+        }
+      } catch (_) { /* noop */ }
+      createCommentEvent(user_id, externalTargetId, demoComment.id, target_type);
 
       const responseData = {
         message: "Comentario agregado exitosamente (demo)",
@@ -157,7 +165,16 @@ const addComment = async (req, res) => {
         console.log(`❌ addComment - Error al poblar comentario:`, populateError);
       }
 
-      createCommentEvent(user_id, target_id, newComment._id, target_type);
+      // Usar ID externo si está disponible en la publicación
+      const externalTargetId = (publication && publication.review_id !== undefined && publication.review_id !== null)
+        ? String(publication.review_id)
+        : String(target_id);
+      if (externalTargetId !== String(target_id)) {
+        console.log(`🔄 addComment - Usando review_id externo ${externalTargetId} en lugar de _id ${target_id}`);
+      } else {
+        console.log(`ℹ️ addComment - No hay review_id externo, usando _id local ${target_id}`);
+      }
+      createCommentEvent(user_id, externalTargetId, newComment._id, target_type);
 
       const responseData = {
         message: "Comentario agregado exitosamente",
@@ -229,7 +246,15 @@ const deleteComment = async (req, res) => {
             return res.status(403).json({ error: "No tienes permisos para eliminar este comentario" });
           }
           demoComments[pubId].splice(idx, 1);
-          createDeleteCommentEvent(c.user_id, c.target_id, comment_id);
+          // Intentar mapear a ID externo
+          let externalTargetId = String(c.target_id);
+          try {
+            const pubDoc = await Publication.findById(c.target_id).select('review_id');
+            if (pubDoc && pubDoc.review_id !== undefined && pubDoc.review_id !== null) {
+              externalTargetId = String(pubDoc.review_id);
+            }
+          } catch (_) { /* noop */ }
+          createDeleteCommentEvent(c.user_id, externalTargetId, comment_id);
           removed = true;
           break;
         }
@@ -253,7 +278,20 @@ const deleteComment = async (req, res) => {
       });
     }
     await Comment.findByIdAndDelete(comment_id);
-    createDeleteCommentEvent(comment.user_id, comment.target_id, comment_id);
+    // Mapear a ID externo si disponible
+    let externalTargetId = String(comment.target_id);
+    try {
+      const pubDoc = await Publication.findById(comment.target_id).select('review_id');
+      if (pubDoc && pubDoc.review_id !== undefined && pubDoc.review_id !== null) {
+        externalTargetId = String(pubDoc.review_id);
+      }
+    } catch (_) { /* noop */ }
+    if (externalTargetId !== String(comment.target_id)) {
+      console.log(`🔄 deleteComment - Usando review_id externo ${externalTargetId} en lugar de _id ${comment.target_id}`);
+    } else {
+      console.log(`ℹ️ deleteComment - No hay review_id externo, usando _id local ${comment.target_id}`);
+    }
+    createDeleteCommentEvent(comment.user_id, externalTargetId, comment_id);
     res.status(200).json({ message: "Comentario eliminado exitosamente" });
   } catch (error) {
     console.error("Error en deleteComment:", error);
