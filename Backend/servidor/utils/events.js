@@ -10,6 +10,13 @@ const CORE_EVENTS_SOURCE = process.env.CORE_EVENTS_SOURCE || '/social/api';
 // Normaliza IDs: mantiene null/undefined y fuerza strings en valores válidos
 const normalizeId = (val) => (val === null || val === undefined ? null : String(val));
 
+// Prefija IDs de usuario con 'u' (evita doble prefijo)
+const prefixUserId = (val) => {
+  const s = normalizeId(val);
+  if (s === null) return null;
+  return s.startsWith('u') ? s : `u${s}`;
+};
+
 const publishEvent = async (event) => {
   try {
     // Validar que el evento tenga la estructura correcta
@@ -35,16 +42,28 @@ const publishEvent = async (event) => {
       } catch (_) { /* ignorar cast errors */ }
     }
 
+    const isUserTarget = [
+      EVENT_TYPES.FOLLOW,
+      EVENT_TYPES.UNFOLLOW,
+    ].includes(event_type);
+
     const eventData = {
       event_type,
-      // Enviar SIEMPRE el id externo como actor_id si está disponible (como String)
-      actor_id: normalizeId(actorExternalId !== undefined ? actorExternalId : actorLocalId),
-      target_id: normalizeId(target_id || null),
+      // Enviar SIEMPRE el id externo como actor_id si está disponible (como String) y con prefijo 'u'
+      actor_id: prefixUserId(actorExternalId !== undefined ? actorExternalId : actorLocalId),
+      // target_id sólo lleva prefijo 'u' cuando es un usuario (follow/unfollow)
+      target_id: isUserTarget ? prefixUserId(target_id || null) : normalizeId(target_id || null),
       timestamp,
       metadata: {
         // Convierte posibles IDs en metadata manteniendo otros valores intactos
         ...Object.fromEntries(
           Object.entries(event.metadata || {}).map(([k, v]) => {
+            // Prefijar si es un ID de usuario conocido
+            const userIdKeys = new Set(['user_id', 'follower_id', 'followed_id', 'actor_id', 'author_id']);
+            if (userIdKeys.has(k) || k.endsWith('_user_id')) {
+              return [k, prefixUserId(v)];
+            }
+            // Otros IDs comunes (no de usuario) sólo normalizar
             if (k.endsWith('_id') || k === 'comment_id' || k === 'publication_id') {
               return [k, normalizeId(v)];
             }
