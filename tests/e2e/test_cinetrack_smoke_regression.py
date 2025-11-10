@@ -1,8 +1,8 @@
 """
-Smoke Tests Suite for CineTrack Application.
+Smoke Tests Suite for CineTrack Social Module.
 
-This module contains critical smoke tests that verify basic functionality
-and should be run frequently in CI/CD pipelines for quick feedback.
+This module contains critical smoke tests that verify the Social Graph Activity Feed
+is accessible and functional. Focuses only on social features (feed, network, follows).
 """
 
 import pytest
@@ -11,7 +11,7 @@ from tests.pages.cinetrack_home_page import CineTrackHomePage
 from tests.pages.cinetrack_network_page import CineTrackNetworkPage
 
 
-class TestCineTrackSmokeTests:
+class TestSocialModuleSmokeTests:
     """Critical smoke tests for CineTrack application."""
     
     @pytest.mark.smoke

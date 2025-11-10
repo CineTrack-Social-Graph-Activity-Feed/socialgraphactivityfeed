@@ -44,17 +44,40 @@ def project_root():
 
 @pytest.fixture(scope="session")
 def test_config():
-    """Load test configuration."""
+    """
+    Load test configuration with environment-aware URLs.
+    
+    Uses environment variables to determine URLs:
+    - In CI/CD: Uses FRONTEND_URL and BACKEND_URL env vars (deployed URLs)
+    - In local dev: Defaults to localhost
+    """
+    # Determine if running in CI/CD
+    is_ci = os.getenv("CI", "false").lower() == "true"
+    
+    # Use deployed URLs in CI/CD, localhost in local development
+    if is_ci:
+        base_url = os.getenv("FRONTEND_URL", "https://dj07hexl3m0a6.cloudfront.net")
+        api_url = os.getenv("BACKEND_URL", "https://socialgraphbe.cine-track.com.ar/api")
+    else:
+        base_url = os.getenv("BASE_URL", "http://localhost:5173")
+        api_url = os.getenv("API_URL", "http://localhost:3000/api")
+    
     config = {
-        "base_url": os.getenv("BASE_URL", "http://localhost:5173"),
-        "api_url": os.getenv("API_URL", "http://localhost:3000/api"),
-        "prod_frontend_url": "https://socialgraph.cine-track.com.ar",
-        "prod_backend_url": "https://socialgraphbe.cine-track.com.ar",
+        "base_url": base_url,
+        "api_url": api_url,
         "timeout": int(os.getenv("TEST_TIMEOUT", "30")),
-        "headless": os.getenv("HEADLESS", "false").lower() == "true",
+        "headless": os.getenv("HEADLESS", "true" if is_ci else "false").lower() == "true",
         "browser": os.getenv("BROWSER", "chrome"),
-        "environment": os.getenv("TEST_ENV", "development")
+        "environment": "ci" if is_ci else "development",
+        "is_ci": is_ci
     }
+    
+    logging.info(f"Test configuration loaded:")
+    logging.info(f"  Environment: {config['environment']}")
+    logging.info(f"  Frontend URL: {config['base_url']}")
+    logging.info(f"  Backend URL: {config['api_url']}")
+    logging.info(f"  Headless: {config['headless']}")
+    
     return config
 
 @pytest.fixture(scope="session")
