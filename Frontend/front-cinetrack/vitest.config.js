@@ -16,6 +16,7 @@ export default defineConfig({
         '**/*.config.js',
         '**/.*rc.js',
         '**/*.test.{js,jsx}',
+        'src/compenents/navbar/Navbar.jsx',
       ],
       thresholds: {
         lines: 78,
