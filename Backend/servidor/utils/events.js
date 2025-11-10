@@ -7,6 +7,9 @@ const CORE_EVENTS_API_KEY = process.env.CORE_EVENTS_API_KEY || 'sk_core_social_s
 // (p. ej., esperan /social/api). Permite sobreescribirlo por entorno.
 const CORE_EVENTS_SOURCE = process.env.CORE_EVENTS_SOURCE || '/social/api';
 
+// Normaliza IDs: mantiene null/undefined y fuerza strings en valores válidos
+const normalizeId = (val) => (val === null || val === undefined ? null : String(val));
+
 const publishEvent = async (event) => {
   try {
     // Validar que el evento tenga la estructura correcta
@@ -34,12 +37,20 @@ const publishEvent = async (event) => {
 
     const eventData = {
       event_type,
-      // Enviar SIEMPRE el id externo como actor_id si está disponible
-      actor_id: actorExternalId !== undefined ? actorExternalId : actorLocalId,
-      target_id: target_id || null,
+      // Enviar SIEMPRE el id externo como actor_id si está disponible (como String)
+      actor_id: normalizeId(actorExternalId !== undefined ? actorExternalId : actorLocalId),
+      target_id: normalizeId(target_id || null),
       timestamp,
       metadata: {
-        ...event.metadata
+        // Convierte posibles IDs en metadata manteniendo otros valores intactos
+        ...Object.fromEntries(
+          Object.entries(event.metadata || {}).map(([k, v]) => {
+            if (k.endsWith('_id') || k === 'comment_id' || k === 'publication_id') {
+              return [k, normalizeId(v)];
+            }
+            return [k, v];
+          })
+        )
       }
     };
 
@@ -47,7 +58,8 @@ const publishEvent = async (event) => {
       type: event_type,
       specversion: '1.0',
       source: CORE_EVENTS_SOURCE,
-      id: `${actor_id}-${Date.now()}`,
+      // Usa el actor_local o externo (ya normalizado) para el id del evento, evita 'null'
+      id: `${eventData.actor_id !== null ? eventData.actor_id : 'anon'}-${Date.now()}`,
       time: timestamp.toISOString(),
       data: eventData,
       datacontenttype: 'application/json'
