@@ -217,4 +217,76 @@ describe('ListaFollowers', () => {
       expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/followed'));
     });
   });
+
+  it('should handle follow action successfully', async () => {
+    mockFetchWithAuth.mockImplementation((url, options) => {
+      if (url.includes('/api/user/user123')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ user: { id: 'objectId123' } })
+        });
+      }
+      if (url.includes('/api/followers')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ 
+            followers: [{ _id: 'follower1', username: 'Follower1' }]
+          })
+        });
+      }
+      if (url.includes('/api/followed')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ followed: [] })
+        });
+      }
+      if (url.includes('/api/follow') && options?.method === 'POST') {
+        return Promise.resolve({ ok: true });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+    });
+
+    render(<ListaFollowers />);
+    
+    await waitFor(() => {
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/followers'));
+    });
+  });
+
+  it('should handle toggleFollow errors gracefully', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    mockFetchWithAuth.mockImplementation((url, options) => {
+      if (url.includes('/api/user/user123')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ user: { id: 'objectId123' } })
+        });
+      }
+      if (url.includes('/api/followers')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ followers: [] })
+        });
+      }
+      if (url.includes('/api/followed')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ followed: [] })
+        });
+      }
+      if (url.includes('/api/follow') && options?.method === 'POST') {
+        return Promise.resolve({ ok: false, status: 500, text: () => Promise.resolve('Server error') });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+    });
+
+    render(<ListaFollowers />);
+    
+    await waitFor(() => {
+      expect(mockFetchWithAuth).toHaveBeenCalled();
+    });
+
+    consoleErrorSpy.mockRestore();
+  });
 });

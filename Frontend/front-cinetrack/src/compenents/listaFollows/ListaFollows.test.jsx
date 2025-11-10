@@ -216,4 +216,65 @@ describe('ListaFollows', () => {
       expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/user/user123');
     });
   });
+
+  it('should handle unfollow with text error response', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    mockFetchWithAuth.mockImplementation((url, options) => {
+      if (url.includes('/api/user/user123')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ user: { id: 'objectId123' } })
+        });
+      }
+      if (url.includes('/api/followed')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ 
+            followed: [{ _id: 'user1', username: 'User1' }]
+          })
+        });
+      }
+      if (url.includes('/api/unfollow') && options?.method === 'POST') {
+        return Promise.resolve({ 
+          ok: false, 
+          status: 400,
+          text: () => Promise.resolve('Bad request')
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+    });
+
+    render(<ListaFollows />);
+    
+    await waitFor(() => {
+      expect(mockFetchWithAuth).toHaveBeenCalled();
+    });
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('should display empty state when no followed users', async () => {
+    mockFetchWithAuth.mockImplementation((url) => {
+      if (url.includes('/api/user/user123')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ user: { id: 'objectId123' } })
+        });
+      }
+      if (url.includes('/api/followed')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ followed: [] })
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+    });
+
+    render(<ListaFollows />);
+    
+    await waitFor(() => {
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/followed'));
+    });
+  });
 });

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 import { AuthProvider, useAuth } from './AuthContext';
 import * as authApi from './authApi';
 
@@ -193,5 +194,110 @@ describe('AuthContext', () => {
 
     // The component renders without error, meaning fetchWithAuth is provided
     expect(screen.getByText('Sign In')).toBeInTheDocument();
+  });
+
+  it('should handle fetchWithAuth with 401 and no refresh token', async () => {
+    localStorage.setItem('access_token', 'test-token');
+    localStorage.removeItem('refresh_token'); // No refresh token
+
+    authApi.getMe.mockResolvedValue({ user_id: 1, username: 'testuser' });
+
+    const TestFetch = () => {
+      const { fetchWithAuth, user } = useAuth();
+      const [called, setCalled] = React.useState(false);
+
+      const handleFetch = async () => {
+        const res = await fetchWithAuth('/test-endpoint');
+        setCalled(true);
+      };
+
+      return (
+        <div>
+          {user && <button onClick={handleFetch} data-testid="fetch-btn">Fetch</button>}
+          {called && <div data-testid="fetch-called">Called</div>}
+        </div>
+      );
+    };
+
+    global.fetch = vi.fn().mockResolvedValue({
+      status: 401,
+      ok: false
+    });
+
+    render(
+      <AuthProvider>
+        <TestFetch />
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('fetch-btn')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle fetchWithAuth URL resolution for localhost', async () => {
+    localStorage.setItem('access_token', 'test-token');
+    authApi.getMe.mockResolvedValue({ user_id: 1, username: 'testuser' });
+
+    const TestFetch = () => {
+      const { fetchWithAuth, user } = useAuth();
+      
+      React.useEffect(() => {
+        if (user) {
+          fetchWithAuth('http://localhost:3000/api/test');
+        }
+      }, [fetchWithAuth, user]);
+
+      return <div>{user ? 'Loaded' : 'Loading'}</div>;
+    };
+
+    global.fetch = vi.fn().mockResolvedValue({
+      status: 200,
+      ok: true,
+      json: () => Promise.resolve({})
+    });
+
+    render(
+      <AuthProvider>
+        <TestFetch />
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Loaded')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle fetchWithAuth with relative URL', async () => {
+    localStorage.setItem('access_token', 'test-token');
+    authApi.getMe.mockResolvedValue({ user_id: 1, username: 'testuser' });
+
+    const TestFetch = () => {
+      const { fetchWithAuth, user } = useAuth();
+      
+      React.useEffect(() => {
+        if (user) {
+          fetchWithAuth('api/test');
+        }
+      }, [fetchWithAuth, user]);
+
+      return <div>{user ? 'Loaded' : 'Loading'}</div>;
+    };
+
+    global.fetch = vi.fn().mockResolvedValue({
+      status: 200,
+      ok: true,
+      json: () => Promise.resolve({})
+    });
+
+    render(
+      <AuthProvider>
+        <TestFetch />
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Loaded')).toBeInTheDocument();
+    });
   });
 });

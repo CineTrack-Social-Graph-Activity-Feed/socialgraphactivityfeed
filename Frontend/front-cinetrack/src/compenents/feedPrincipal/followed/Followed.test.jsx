@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Followed from './Followed';
 
@@ -206,7 +206,11 @@ describe('Followed', () => {
       if (url.includes('/api/followed')) {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ followed: [] })
+          json: () => Promise.resolve({ 
+            followed: [
+              { _id: 'user1', username: 'TestUser', avatar_url: null }
+            ]
+          })
         });
       }
       if (url.includes('/api/unfollow')) {
@@ -218,9 +222,92 @@ describe('Followed', () => {
     render(<Followed />);
     
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalled();
+      expect(screen.getByText('TestUser')).toBeInTheDocument();
+    });
+
+    // Find the unfollow button (SVG button)
+    const unfollowButtons = screen.getAllByRole('button');
+    fireEvent.click(unfollowButtons[0]);
+
+    // Open the menu
+    await waitFor(() => {
+      expect(screen.getByText(/dejar de seguir/i)).toBeInTheDocument();
+    });
+
+    // Click the actual unfollow action
+    const unfollowAction = screen.getByText(/dejar de seguir/i);
+    fireEvent.click(unfollowAction);
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalled();
     });
     
     consoleErrorSpy.mockRestore();
+  });
+
+  it('should toggle menu on button click', async () => {
+    mockFetchWithAuth.mockImplementation((url, options) => {
+      if (url.includes('/api/user/user123')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ user: { id: 'objectId123' } })
+        });
+      }
+      if (url.includes('/api/followed')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ 
+            followed: [
+              { _id: 'user1', username: 'MenuUser', avatar_url: null }
+            ]
+          })
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+    });
+
+    render(<Followed />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('MenuUser')).toBeInTheDocument();
+    });
+
+    const unfollowButton = screen.getByRole('button');
+    
+    // Open menu
+    fireEvent.click(unfollowButton);
+    await waitFor(() => {
+      expect(screen.getByText(/dejar de seguir/i)).toBeInTheDocument();
+    });
+
+    // Close menu
+    fireEvent.click(unfollowButton);
+    await waitFor(() => {
+      expect(screen.queryByText(/dejar de seguir/i)).not.toBeInTheDocument();
+    });
+  });
+
+  it('should display "no followed" message when list is empty', async () => {
+    mockFetchWithAuth.mockImplementation((url, options) => {
+      if (url.includes('/api/user/user123')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ user: { id: 'objectId123' } })
+        });
+      }
+      if (url.includes('/api/followed')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ followed: [] })
+        });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+    });
+
+    render(<Followed />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Usted no sigue a nadie')).toBeInTheDocument();
+    });
   });
 });
