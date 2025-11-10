@@ -13,6 +13,7 @@ const app = express();
 
 // Configuración del puerto
 const PORT = process.env.PORT || 3000;
+console.log('🚀 Starting Social Graph Activity Feed Server...');
 
 // Middlewares
 // CORS debe estar ANTES de todas las rutas

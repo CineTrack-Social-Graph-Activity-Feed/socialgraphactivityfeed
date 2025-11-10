@@ -7,6 +7,7 @@ import MiActividad from "./pages/MiActividad/MiActividad";
 
 import { UserContext } from "../UserContex";
 
+// Social Graph Activity Feed - CineTrack
 function App() {
   return (
     <Routes>

@@ -1,5 +1,5 @@
 """
-Selenium WebDriver utilities and helpers.
+Selenium WebDriver utilities and helpers for CineTrack Social Graph.
 
 This module provides common utilities, wait conditions, and helper methods
 for Selenium-based E2E tests.
