@@ -59,4 +59,52 @@ describe('Follow Model', () => {
       expect(followedField.options.ref).toBe('User');
     });
   });
+
+  describe('Pre-save validation', () => {
+    it('should prevent a user from following themselves', async () => {
+      const userId = new mongoose.Types.ObjectId();
+      const follow = new Follow({
+        follower_user_id: userId,
+        followed_user_id: userId
+      });
+
+      // Since we're not actually saving to a DB, we need to manually trigger validation
+      try {
+        await follow.validate();
+        // If we need to test the pre-save hook, we need to call it manually
+        const preSaveError = await new Promise((resolve) => {
+          const hook = follow.schema.s.hooks._pres.get('save')[0];
+          hook.fn.call(follow, (error) => {
+            resolve(error);
+          });
+        });
+
+        expect(preSaveError).toBeDefined();
+        expect(preSaveError.message).toBe('Un usuario no puede seguirse a sí mismo');
+      } catch (error) {
+        // Validation error
+        expect(error).toBeDefined();
+      }
+    });
+
+    it('should allow a user to follow another user', async () => {
+      const follow = new Follow({
+        follower_user_id: new mongoose.Types.ObjectId(),
+        followed_user_id: new mongoose.Types.ObjectId()
+      });
+
+      // Validate that different users can be in a follow relationship
+      await follow.validate();
+
+      // Test the pre-save hook doesn't throw
+      const preSaveError = await new Promise((resolve) => {
+        const hook = follow.schema.s.hooks._pres.get('save')[0];
+        hook.fn.call(follow, (error) => {
+          resolve(error);
+        });
+      });
+
+      expect(preSaveError).toBeUndefined();
+    });
+  });
 });

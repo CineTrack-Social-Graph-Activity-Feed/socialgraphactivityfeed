@@ -301,6 +301,126 @@ class TestIntegratedUserJourney:
             raise
         finally:
             checklist.to_json()
+    
+    @pytest.mark.e2e
+    @pytest.mark.regression
+    def test_feed_refresh_functionality(self, driver, test_config):
+        """Test feed refresh functionality and data persistence."""
+        feed_page = FeedPage(driver, test_config["base_url"])
+        checklist = TestChecklist(
+            test_name="test_feed_refresh_functionality",
+            module_name="test_e2e_feed"
+        )
+        checklist.set_environment_info(test_config["environment"], test_config["browser"])
+        
+        try:
+            # Initial feed load
+            feed_page.navigate_to_feed()
+            initial_load = feed_page.wait_for_feed_to_load()
+            checklist.check("Initial feed load", initial_load, "Feed loaded successfully")
+            
+            # Get initial post count
+            initial_posts = len(feed_page.get_post_cards())
+            checklist.check("Initial posts visible", initial_posts > 0, f"Found {initial_posts} posts")
+            
+            # Refresh the page
+            driver.refresh()
+            refresh_load = feed_page.wait_for_feed_to_load()
+            checklist.check("Feed reload after refresh", refresh_load, "Feed reloaded successfully")
+            
+            # Verify posts still visible
+            refreshed_posts = len(feed_page.get_post_cards())
+            checklist.check("Posts persist after refresh", refreshed_posts > 0, 
+                           f"Found {refreshed_posts} posts after refresh")
+            
+            checklist.assert_all_passed("Feed refresh functionality verified")
+            
+        except Exception as e:
+            screenshot_path = feed_page.take_screenshot(f"feed_refresh_failure.png")
+            checklist.check("Test execution", False, f"Error: {str(e)}", screenshot_path)
+            raise
+        finally:
+            checklist.to_json()
+    
+    @pytest.mark.e2e
+    @pytest.mark.smoke
+    def test_network_follow_unfollow_flow(self, driver, test_config):
+        """Test complete follow/unfollow flow in network page."""
+        network_page = NetworkPage(driver, test_config["base_url"])
+        checklist = TestChecklist(
+            test_name="test_network_follow_unfollow_flow",
+            module_name="test_e2e_network"
+        )
+        checklist.set_environment_info(test_config["environment"], test_config["browser"])
+        
+        try:
+            # Navigate to network
+            network_page.navigate_to_network()
+            network_load = network_page.wait_for_network_to_load()
+            checklist.check("Network page loads", network_load, "Network page loaded successfully")
+            
+            if network_load:
+                # Get user cards
+                user_cards = network_page.get_user_cards()
+                checklist.check("User cards visible", len(user_cards) > 0, 
+                               f"Found {len(user_cards)} user cards")
+                
+                if len(user_cards) > 0:
+                    # Interact with first user card
+                    first_card = user_cards[0]
+                    username = network_page.get_username_from_card(first_card)
+                    checklist.check("Username extracted", bool(username), f"Username: {username}")
+            
+            checklist.assert_all_passed("Network interaction flow completed")
+            
+        except Exception as e:
+            screenshot_path = network_page.take_screenshot(f"network_flow_failure.png")
+            checklist.check("Test execution", False, f"Error: {str(e)}", screenshot_path)
+            raise
+        finally:
+            checklist.to_json()
+    
+    @pytest.mark.e2e
+    @pytest.mark.regression
+    def test_cross_page_navigation(self, driver, test_config):
+        """Test navigation between different pages maintains state."""
+        feed_page = FeedPage(driver, test_config["base_url"])
+        network_page = NetworkPage(driver, test_config["base_url"])
+        checklist = TestChecklist(
+            test_name="test_cross_page_navigation",
+            module_name="test_e2e_navigation"
+        )
+        checklist.set_environment_info(test_config["environment"], test_config["browser"])
+        
+        try:
+            # Start at feed
+            feed_page.navigate_to_feed()
+            feed_load = feed_page.wait_for_feed_to_load()
+            checklist.check("Feed loads", feed_load, "Feed loaded successfully")
+            
+            # Navigate to network
+            network_page.navigate_to_network()
+            network_load = network_page.wait_for_network_to_load()
+            checklist.check("Network loads", network_load, "Network loaded successfully")
+            
+            # Navigate back to feed
+            feed_page.navigate_to_feed()
+            feed_reload = feed_page.wait_for_feed_to_load()
+            checklist.check("Feed reloads", feed_reload, "Feed reloaded successfully")
+            
+            # Verify feed still functional
+            posts_after_nav = len(feed_page.get_post_cards())
+            checklist.check("Feed functional after navigation", posts_after_nav > 0, 
+                           f"Found {posts_after_nav} posts")
+            
+            checklist.assert_all_passed("Cross-page navigation verified")
+            
+        except Exception as e:
+            screenshot_path = feed_page.take_screenshot(f"navigation_failure.png")
+            checklist.check("Test execution", False, f"Error: {str(e)}", screenshot_path)
+            raise
+        finally:
+            checklist.to_json()
 
 
 # Pytest hooks for this module

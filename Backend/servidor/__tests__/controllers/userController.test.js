@@ -305,5 +305,193 @@ describe('UserController', () => {
 
       expect(res.status).toHaveBeenCalledWith(400);
     });
+
+    it('should handle database errors in searchUsers', async () => {
+      User.find = jest.fn().mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          sort: jest.fn().mockReturnValue({
+            skip: jest.fn().mockReturnValue({
+              limit: jest.fn().mockRejectedValue(new Error('Database error'))
+            })
+          })
+        })
+      });
+
+      const req = mockRequest({}, {}, { q: 'test' });
+      const res = mockResponse();
+
+      await userController.searchUsers(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({ error: 'Error interno del servidor' })
+      );
+    });
+  });
+
+  describe('updateUser - additional tests', () => {
+    it('should return 400 for invalid email format in update', async () => {
+      const req = mockRequest(
+        { email: 'invalid-email' },
+        { user_id: '507f1f77bcf86cd799439011' }
+      );
+      const res = mockResponse();
+
+      await userController.updateUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({ error: 'Formato de email inválido' })
+      );
+    });
+
+    it('should return 404 if user to update is not found', async () => {
+      User.findOne = jest.fn().mockResolvedValue(null);
+
+      const req = mockRequest(
+        { username: 'newname' },
+        { user_id: '507f1f77bcf86cd799439011' }
+      );
+      const res = mockResponse();
+
+      await userController.updateUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({ error: 'Usuario no encontrado' })
+      );
+    });
+
+    it('should handle duplicate email error in update', async () => {
+      const mockUser = {
+        _id: '507f1f77bcf86cd799439011',
+        username: 'testuser',
+        email: 'old@example.com',
+        save: jest.fn().mockRejectedValue({
+          code: 11000,
+          keyPattern: { email: 1 }
+        })
+      };
+
+      User.findOne = jest.fn().mockResolvedValue(mockUser);
+
+      const req = mockRequest(
+        { email: 'existing@example.com' },
+        { user_id: '507f1f77bcf86cd799439011' }
+      );
+      const res = mockResponse();
+
+      await userController.updateUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(409);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({ error: 'El email ya está en uso' })
+      );
+    });
+
+    it('should update user with avatar_url set to null', async () => {
+      const mockUser = {
+        _id: '507f1f77bcf86cd799439011',
+        username: 'testuser',
+        email: 'test@example.com',
+        avatar_url: 'http://old-avatar.com',
+        created_at: new Date(),
+        save: jest.fn().mockResolvedValue(true)
+      };
+
+      User.findOne = jest.fn().mockResolvedValue(mockUser);
+
+      const req = mockRequest(
+        { avatar_url: null },
+        { user_id: '507f1f77bcf86cd799439011' }
+      );
+      const res = mockResponse();
+
+      await userController.updateUser(req, res);
+
+      expect(mockUser.avatar_url).toBeNull();
+      expect(res.status).toHaveBeenCalledWith(200);
+    });
+
+    it('should return 400 if user_id is missing in update', async () => {
+      const req = mockRequest({ username: 'newname' }, {});
+      const res = mockResponse();
+
+      await userController.updateUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({ error: 'user_id es requerido' })
+      );
+    });
+  });
+
+  describe('getUser - additional tests', () => {
+    it('should return 400 if user_id is missing', async () => {
+      const req = mockRequest({}, {});
+      const res = mockResponse();
+
+      await userController.getUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({ error: 'user_id es requerido' })
+      );
+    });
+
+    it('should handle database errors in getUser', async () => {
+      User.findOne = jest.fn().mockRejectedValue(new Error('Database error'));
+
+      const req = mockRequest({}, { user_id: '507f1f77bcf86cd799439011' });
+      const res = mockResponse();
+
+      await userController.getUser(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({ error: 'Error interno del servidor' })
+      );
+    });
+  });
+
+  describe('getAllUsers', () => {
+    it('should get all users with pagination', async () => {
+      const mockUsers = [
+        { _id: '1', username: 'user1', email: 'user1@example.com' },
+        { _id: '2', username: 'user2', email: 'user2@example.com' }
+      ];
+
+      User.find = jest.fn().mockReturnValue({
+        select: jest.fn().mockResolvedValue(mockUsers)
+      });
+
+      const req = mockRequest({}, {}, { page: '1', limit: '2' });
+      const res = mockResponse();
+
+      await userController.getAllUsers(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          users: expect.any(Array)
+        })
+      );
+    });
+
+    it('should handle database errors in getAllUsers', async () => {
+      User.find = jest.fn().mockReturnValue({
+        select: jest.fn().mockRejectedValue(new Error('Database error'))
+      });
+
+      const req = mockRequest({}, {}, {});
+      const res = mockResponse();
+
+      await userController.getAllUsers(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({ error: 'Error interno del servidor' })
+      );
+    });
   });
 });

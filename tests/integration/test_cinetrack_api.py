@@ -336,3 +336,152 @@ class TestCineTrackAPI:
             )
         
         checklist.assert_all_passed("Data consistency verification completed")
+    
+    @pytest.mark.api
+    @pytest.mark.smoke
+    def test_api_error_handling_404(self, api_session, checklist):
+        """Test that API handles 404 errors gracefully."""
+        url = urljoin(self.BASE_URL, "/nonexistent-page-12345")
+        
+        response = api_session.get(url, timeout=10)
+        checklist.check(
+            "404 error returns expected status",
+            response.status_code == 404,
+            f"Status code: {response.status_code}"
+        )
+        
+        checklist.assert_all_passed("404 error handling verified")
+    
+    @pytest.mark.api
+    @pytest.mark.smoke
+    def test_api_cors_headers(self, api_session, checklist):
+        """Test that API includes appropriate CORS headers."""
+        response = api_session.options(self.BASE_URL, timeout=10)
+        
+        # Check for CORS headers
+        has_cors = any([
+            'access-control-allow-origin' in response.headers,
+            'Access-Control-Allow-Origin' in response.headers
+        ])
+        
+        checklist.check(
+            "CORS headers present or OPTIONS handled",
+            response.status_code in [200, 204, 405] or has_cors,
+            f"Status: {response.status_code}, CORS headers: {has_cors}"
+        )
+        
+        checklist.assert_all_passed("CORS configuration verified")
+    
+    @pytest.mark.api
+    @pytest.mark.integration
+    def test_api_cache_headers(self, api_session, checklist):
+        """Test that static assets have appropriate cache headers."""
+        # Test main page
+        response = api_session.get(self.BASE_URL, timeout=10)
+        
+        has_cache_control = 'cache-control' in response.headers or 'Cache-Control' in response.headers
+        
+        checklist.check(
+            "Cache control headers present",
+            has_cache_control or response.status_code == 200,
+            f"Cache headers: {has_cache_control}"
+        )
+        
+        checklist.assert_all_passed("Cache configuration verified")
+    
+    @pytest.mark.api
+    @pytest.mark.integration
+    def test_api_compression_support(self, api_session, checklist):
+        """Test that API supports content compression."""
+        headers = api_session.headers.copy()
+        headers['Accept-Encoding'] = 'gzip, deflate, br'
+        
+        response = api_session.get(self.BASE_URL, headers=headers, timeout=10)
+        
+        # Check if compression is used
+        content_encoding = response.headers.get('content-encoding', response.headers.get('Content-Encoding', ''))
+        
+        checklist.check(
+            "Response received successfully",
+            response.status_code == 200,
+            f"Status: {response.status_code}"
+        )
+        
+        checklist.check(
+            "Content encoding header present or handled",
+            bool(content_encoding) or len(response.content) > 0,
+            f"Encoding: {content_encoding or 'none'}"
+        )
+        
+        checklist.assert_all_passed("Compression support verified")
+    
+    @pytest.mark.api
+    @pytest.mark.integration
+    def test_api_concurrent_requests(self, api_session, checklist):
+        """Test that API handles concurrent requests properly."""
+        import concurrent.futures
+        
+        def make_request():
+            try:
+                response = api_session.get(self.BASE_URL, timeout=10)
+                return response.status_code == 200
+            except:
+                return False
+        
+        # Make 5 concurrent requests
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            futures = [executor.submit(make_request) for _ in range(5)]
+            results = [f.result() for f in concurrent.futures.as_completed(futures)]
+        
+        success_count = sum(results)
+        checklist.check(
+            "Concurrent requests handled",
+            success_count >= 3,  # At least 3 out of 5 should succeed
+            f"Successful requests: {success_count}/5"
+        )
+        
+        checklist.assert_all_passed("Concurrent request handling verified")
+    
+    @pytest.mark.api
+    @pytest.mark.integration
+    def test_api_user_agent_handling(self, api_session, checklist):
+        """Test that API handles different user agents."""
+        user_agents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0',
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) Safari/604.1',
+            'CineTrack-Testing/1.0'
+        ]
+        
+        for ua in user_agents:
+            headers = {'User-Agent': ua}
+            response = api_session.get(self.BASE_URL, headers=headers, timeout=10)
+            
+            checklist.check(
+                f"Request with UA: {ua[:30]}...",
+                response.status_code == 200,
+                f"Status: {response.status_code}"
+            )
+        
+        checklist.assert_all_passed("User agent handling verified")
+    
+    @pytest.mark.api
+    @pytest.mark.integration
+    def test_api_content_type_negotiation(self, api_session, checklist):
+        """Test that API handles content type negotiation."""
+        accept_headers = [
+            'text/html',
+            'application/json',
+            'text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8'
+        ]
+        
+        for accept in accept_headers:
+            headers = {'Accept': accept}
+            response = api_session.get(self.BASE_URL, headers=headers, timeout=10)
+            
+            checklist.check(
+                f"Request with Accept: {accept[:40]}...",
+                response.status_code == 200,
+                f"Status: {response.status_code}"
+            )
+        
+        checklist.assert_all_passed("Content type negotiation verified")

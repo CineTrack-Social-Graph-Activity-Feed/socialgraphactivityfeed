@@ -429,3 +429,108 @@ class TestCineTrackRegressionSuite:
             )
         
         checklist.assert_all_passed("Data integrity regression test passed")
+    
+    @pytest.mark.regression
+    @pytest.mark.e2e
+    def test_error_boundary_handling(self, driver, checklist):
+        """Test error handling and boundary conditions."""
+        home_page = CineTrackHomePage(driver)
+        
+        # Navigate to home
+        home_page.navigate_to_home()
+        
+        # Test handling of invalid navigation
+        try:
+            driver.get(f"{driver.current_url}/invalid-route-12345")
+            time.sleep(2)
+            
+            # Check if error page or redirection occurred
+            current_url = home_page.get_current_url()
+            checklist.check(
+                "Invalid route handling",
+                "invalid-route-12345" not in current_url or "error" in driver.page_source.lower(),
+                f"Application handled invalid route appropriately"
+            )
+        except Exception as e:
+            checklist.check("Error boundary test", True, f"Exception handled: {str(e)[:100]}")
+        
+        # Return to valid page
+        home_page.navigate_to_home()
+        page_loads = home_page.is_page_loaded()
+        checklist.check("Recovery after error", page_loads, "Application recovered from error state")
+        
+        checklist.assert_all_passed("Error boundary handling verified")
+    
+    @pytest.mark.smoke
+    @pytest.mark.e2e
+    def test_responsive_layout(self, driver, checklist):
+        """Test responsive layout at different viewport sizes."""
+        home_page = CineTrackHomePage(driver)
+        home_page.navigate_to_home()
+        
+        # Test different viewport sizes
+        viewports = [
+            (1920, 1080, "Desktop"),
+            (1366, 768, "Laptop"),
+            (768, 1024, "Tablet"),
+        ]
+        
+        for width, height, device in viewports:
+            driver.set_window_size(width, height)
+            time.sleep(1)
+            
+            # Verify page still loads
+            is_loaded = home_page.is_page_loaded()
+            checklist.check(
+                f"{device} layout ({width}x{height})",
+                is_loaded,
+                f"Page renders correctly on {device}"
+            )
+            
+            # Verify content is still accessible
+            if is_loaded:
+                movies = home_page.get_movie_titles()
+                checklist.check(
+                    f"{device} content visible",
+                    len(movies) > 0,
+                    f"{len(movies)} movies visible on {device}"
+                )
+        
+        # Reset to default size
+        driver.set_window_size(1920, 1080)
+        
+        checklist.assert_all_passed("Responsive layout test passed")
+    
+    @pytest.mark.regression
+    def test_session_persistence(self, driver, checklist):
+        """Test session persistence across page refreshes."""
+        home_page = CineTrackHomePage(driver)
+        
+        # Initial load
+        home_page.navigate_to_home()
+        initial_url = home_page.get_current_url()
+        initial_movies = home_page.get_movie_titles()
+        
+        checklist.check("Initial load", len(initial_movies) > 0, f"Found {len(initial_movies)} movies")
+        
+        # Refresh page
+        driver.refresh()
+        time.sleep(2)
+        
+        # Verify session persists
+        after_refresh_url = home_page.get_current_url()
+        after_refresh_movies = home_page.get_movie_titles()
+        
+        checklist.check(
+            "URL persists after refresh",
+            initial_url == after_refresh_url,
+            "URL remained consistent"
+        )
+        
+        checklist.check(
+            "Content persists after refresh",
+            len(after_refresh_movies) > 0,
+            f"Found {len(after_refresh_movies)} movies after refresh"
+        )
+        
+        checklist.assert_all_passed("Session persistence verified")

@@ -46,12 +46,14 @@ def project_root():
 def test_config():
     """Load test configuration."""
     config = {
-        "base_url": os.getenv("BASE_URL", "https://dj07hexl3m0a6.cloudfront.net"),
+        "base_url": os.getenv("BASE_URL", "http://localhost:5173"),
         "api_url": os.getenv("API_URL", "http://localhost:3000/api"),
+        "prod_frontend_url": "https://socialgraph.cine-track.com.ar",
+        "prod_backend_url": "https://socialgraphbe.cine-track.com.ar",
         "timeout": int(os.getenv("TEST_TIMEOUT", "30")),
         "headless": os.getenv("HEADLESS", "false").lower() == "true",
         "browser": os.getenv("BROWSER", "chrome"),
-        "environment": os.getenv("TEST_ENV", "staging")
+        "environment": os.getenv("TEST_ENV", "development")
     }
     return config
 

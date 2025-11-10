@@ -55,4 +55,67 @@ describe('Publication Model', () => {
       expect(publication.movie_id).toBe(456);
     });
   });
+
+  describe('Virtual properties', () => {
+    it('should return userId from user_id field', () => {
+      const publication = new Publication({
+        type: 'review',
+        user_id: 'user123',
+        movie_id: 456
+      });
+
+      expect(publication.userId).toBe('user123');
+    });
+
+    it('should return userId from author_id field when user_id is not set', () => {
+      const objectId = new mongoose.Types.ObjectId();
+      const publication = new Publication({
+        type: 'review',
+        author_id: objectId,
+        movie_id: 456
+      });
+
+      expect(publication.userId).toEqual(objectId);
+    });
+
+    it('should return movieId from movie_id field', () => {
+      const publication = new Publication({
+        type: 'review',
+        user_id: 'user123',
+        movie_id: 789
+      });
+
+      expect(publication.movieId).toBe(789);
+    });
+
+    it('should return movieId from target_id field when movie_id is not set', () => {
+      const publication = new Publication({
+        type: 'review',
+        user_id: 'user123',
+        target_id: '999'
+      });
+
+      expect(publication.movieId).toBe('999');
+    });
+
+    it('should return text from body field', () => {
+      const publication = new Publication({
+        type: 'review',
+        user_id: 'user123',
+        body: 'This is the body text'
+      });
+
+      expect(publication.text).toBe('This is the body text');
+    });
+
+    it('should return text from content field when body is not set', () => {
+      const publication = new Publication({
+        type: 'review',
+        user_id: 'user123',
+        content: 'This is the content text'
+      });
+
+      expect(publication.text).toBe('This is the content text');
+    });
+  });
 });
