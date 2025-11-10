@@ -3,7 +3,7 @@ name: CI/CD Frontend
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["CI/CD Pipeline"]
+    workflows: ["CI/CD Backend"]
     types:
       - completed
     branches: [ main, terraform-iac ]

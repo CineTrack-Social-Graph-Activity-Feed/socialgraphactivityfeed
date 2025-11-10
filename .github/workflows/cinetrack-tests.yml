@@ -1,4 +1,4 @@
-name: CineTrack Testing Suite
+name: Tests E2E y Integración
 
 on:
   push:

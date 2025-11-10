@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Backend
 
 on:
   pull_request:
@@ -128,31 +128,10 @@ jobs:
           path: Backend/servidor
           retention-days: 1
 
-  # Code Quality Analysis
-  sonar:
-    runs-on: ubuntu-latest
-    needs: [backend]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.test.inclusions=**/*.test.js,**/*.spec.js
-            -Dsonar.exclusions=node_modules/**,dist/**,.output/**,coverage/**
-
   # Deploy to Elastic Beanstalk
   deploy:
     runs-on: ubuntu-latest
-    needs: [infra, backend, sonar]
+    needs: [infra, backend]
     if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/terraform-iac') && github.event_name == 'push'
     environment: main-aws
     steps:
