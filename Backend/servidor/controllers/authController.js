@@ -99,7 +99,7 @@ async function refresh(req, res) {
 // GET /api/auth/me - validate current token and return claims
 async function me(req, res) {
     try {
-        // It will be populated by authenticateJWT middleware
+        // Will be populated by authenticateJWT middleware
         return res.status(200).json({ user: req.user });
     } catch (err) {
         return res.status(500).json({ error: 'Error interno' });
