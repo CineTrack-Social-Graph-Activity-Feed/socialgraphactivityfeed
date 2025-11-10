@@ -1,24 +1,20 @@
-name: Tests E2E y Integración
+name: Tests Unitarios
 
 on:
   push:
     branches: [ main, terraform-iac ]
     paths:
       - 'tests/**'
-      - 'Backend/**'
-      - 'Frontend/**'
       - '.github/workflows/cinetrack-tests.yml'
   pull_request:
     branches: [ main, terraform-iac ]
     paths:
       - 'tests/**'
-      - 'Backend/**'
-      - 'Frontend/**'
       - '.github/workflows/cinetrack-tests.yml'
   workflow_dispatch:
 
 jobs:
-  test:
+  unit-tests:
     runs-on: ubuntu-latest
     
     steps:
@@ -35,7 +31,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r tests/requirements.txt
-          echo "✅ Test dependencies installed from tests/requirements.txt"
+          echo "✅ Test dependencies installed"
       
       - name: 📁 Create reports directory
         run: mkdir -p tests/reports reports
@@ -47,7 +43,7 @@ jobs:
       
       - name: 📊 Run Unit Tests with Coverage
         run: |
-          python -m pytest tests/unit --cov=tests --cov-report=xml:reports/coverage-unit.xml --cov-report=html:reports/coverage-unit --cov-report=term
+          python -m pytest tests/unit --cov=tests/unit --cov=tests/utils --cov-report=xml:reports/coverage-unit.xml --cov-report=html:reports/coverage-unit --cov-report=term
         continue-on-error: true
       
       - name: 📤 Upload Coverage to Codecov
@@ -55,14 +51,14 @@ jobs:
         with:
           files: ./reports/coverage-unit.xml
           flags: unittests
-          name: codecov-cinetrack-python-3.11
+          name: codecov-unit-tests-python-3.11
           fail_ci_if_error: false
       
       - name: 📋 Upload Test Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports-python-3.11
+          name: unit-test-reports-python-3.11
           path: |
             reports/
           retention-days: 30
@@ -70,7 +66,7 @@ jobs:
       - name: 💬 Test Summary
         if: always()
         run: |
-          echo "## 🧪 CineTrack Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "## 🧪 Unit Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Python Version:** 3.11" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
