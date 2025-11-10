@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const { getPublicKey } = require('../middlewares/auth');
 const User = require('../models/User');
 
-const USERS_BASE_URL = process.env.USERS_BASE_URL || 'http://users-prod-alb-1703954385.us-east-1.elb.amazonaws.com/api/v1';
+const USERS_BASE_URL = process.env.USERS_BASE_URL || 'https://usuariosbe.cine-track.com.ar/api/v1';
 
 // POST /api/auth/login
 async function login(req, res) {

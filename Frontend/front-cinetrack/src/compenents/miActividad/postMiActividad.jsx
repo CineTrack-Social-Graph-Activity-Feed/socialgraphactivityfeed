@@ -20,6 +20,7 @@ function PostMiActividad({ post }) {
   const [showAllComments, setShowAllComments] = useState({});
   const [likesByPost, setLikesByPost] = useState({});
   const [commentByPost, setCommentByPost] = useState({});
+  const [expandedPoster, setExpandedPoster] = useState(null); // postId ampliado
 
   // Sin datos locales: todo viene del backend
 
@@ -449,7 +450,9 @@ function PostMiActividad({ post }) {
   }
 
   function renderPostByType(post) {
+    const hasPoster = !!post?.movie?.movie?.poster;
     return (
+      <div>
       <div key={post.id} className="post">
         <div className="post-type">
           <p>Escribio una reseña</p>
@@ -476,11 +479,12 @@ function PostMiActividad({ post }) {
           </div>
           <div className="post-image-container">
             {/* Imagen (si existe) */}
-            {post.movie.movie.poster && (
+            {hasPoster && (
               <img
                 src={post.movie.movie.poster}
                 alt="post"
                 className="post-image"
+                onClick={() => setExpandedPoster(post.id)}
               />
             )}
           </div>
@@ -670,6 +674,23 @@ function PostMiActividad({ post }) {
             {console.log(
               `❌ No hay comentarios para mostrar en post ${post.id}`
             )}
+          </div>
+        )}
+        </div>
+        {/* Lightbox simple para poster ampliado */}
+        {expandedPoster === post.id && hasPoster && (
+          <div
+            className="poster-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Vista ampliada del poster de ${post.movie.movie.titulo}`}
+            onClick={() => setExpandedPoster(null)}
+          >
+            <img
+              src={post.movie.movie.poster}
+              alt={`Poster de ${post.movie.movie.titulo}`}
+              className="poster-lightbox-image"
+            />
           </div>
         )}
       </div>
