@@ -10,11 +10,11 @@ const CORE_EVENTS_SOURCE = process.env.CORE_EVENTS_SOURCE || '/social/api';
 // Normaliza IDs: mantiene null/undefined y fuerza strings en valores válidos
 const normalizeId = (val) => (val === null || val === undefined ? null : String(val));
 
-// Prefija IDs de usuario con 'u' (evita doble prefijo)
-const prefixUserId = (val) => {
+// Quita prefijo 'u' si viene como 'u123' y deja sólo el número como string
+const stripUserPrefix = (val) => {
   const s = normalizeId(val);
   if (s === null) return null;
-  return s.startsWith('u') ? s : `u${s}`;
+  return s.replace(/^u/i, '');
 };
 
 const publishEvent = async (event) => {
@@ -49,19 +49,19 @@ const publishEvent = async (event) => {
 
     const eventData = {
       event_type,
-      // Enviar SIEMPRE el id externo como actor_id si está disponible (como String) y con prefijo 'u'
-      actor_id: prefixUserId(actorExternalId !== undefined ? actorExternalId : actorLocalId),
-      // target_id sólo lleva prefijo 'u' cuando es un usuario (follow/unfollow)
-      target_id: isUserTarget ? prefixUserId(target_id || null) : normalizeId(target_id || null),
+  // Enviar SIEMPRE el id externo como actor_id si está disponible (como String) sin prefijo 'u'
+  actor_id: stripUserPrefix(actorExternalId !== undefined ? actorExternalId : actorLocalId),
+  // target_id sin prefijo 'u'; sólo normalizar user ids si aplica (follow/unfollow)
+  target_id: isUserTarget ? stripUserPrefix(target_id || null) : normalizeId(target_id || null),
       timestamp,
       metadata: {
         // Convierte posibles IDs en metadata manteniendo otros valores intactos
         ...Object.fromEntries(
           Object.entries(event.metadata || {}).map(([k, v]) => {
-            // Prefijar si es un ID de usuario conocido
+            // Normalizar si es un ID de usuario conocido, quitando prefijo 'u'
             const userIdKeys = new Set(['user_id', 'follower_id', 'followed_id', 'actor_id', 'author_id']);
             if (userIdKeys.has(k) || k.endsWith('_user_id')) {
-              return [k, prefixUserId(v)];
+              return [k, stripUserPrefix(v)];
             }
             // Otros IDs comunes (no de usuario) sólo normalizar
             if (k.endsWith('_id') || k === 'comment_id' || k === 'publication_id') {
