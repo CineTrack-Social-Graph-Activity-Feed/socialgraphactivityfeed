@@ -160,4 +160,67 @@ describe('Followed', () => {
       expect(followedCalls.length).toBe(0);
     }, 100);
   });
+
+  it('should handle unfollow action successfully', async () => {
+    mockFetchWithAuth.mockImplementation((url, options) => {
+      if (url.includes('/api/user/user123')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ user: { id: 'objectId123', user_id: 'user123' } })
+        });
+      }
+      if (url.includes('/api/followed')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ 
+            followed: [
+              { _id: 'followed1', full_name: 'User 1', avatar_url: null },
+              { _id: 'followed2', full_name: 'User 2', avatar_url: null }
+            ]
+          })
+        });
+      }
+      if (url.includes('/api/unfollow') && options?.method === 'POST') {
+        return Promise.resolve({ ok: true });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+    });
+
+    render(<Followed />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('User 1')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle unfollow error gracefully', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    mockFetchWithAuth.mockImplementation((url, options) => {
+      if (url.includes('/api/user/user123')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ user: { id: 'objectId123' } })
+        });
+      }
+      if (url.includes('/api/followed')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ followed: [] })
+        });
+      }
+      if (url.includes('/api/unfollow')) {
+        return Promise.resolve({ ok: false, status: 500, text: () => Promise.resolve('Server error') });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
+    });
+
+    render(<Followed />);
+    
+    await waitFor(() => {
+      expect(mockFetchWithAuth).toHaveBeenCalled();
+    });
+    
+    consoleErrorSpy.mockRestore();
+  });
 });

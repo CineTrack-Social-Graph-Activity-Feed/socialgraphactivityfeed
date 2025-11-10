@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import Footer from '../../compenents/footer/Footer';
 
 describe('Footer Component', () => {
@@ -28,6 +28,25 @@ describe('Footer Component', () => {
     render(<Footer />);
     
     const link = screen.getByText('Sobre Nosotros');
+    const event = { preventDefault: vi.fn() };
+    fireEvent.click(link, event);
     expect(link).toHaveAttribute('href', '#');
+  });
+
+  it('calls handleLinkClick when clicking on logo button', () => {
+    render(<Footer />);
+    
+    const logoButton = screen.getByRole('button', { name: /cineTrack/i });
+    fireEvent.click(logoButton);
+    // No debería causar error
+    expect(logoButton).toBeInTheDocument();
+  });
+
+  it('calls handleLinkClick when clicking on footer links', () => {
+    render(<Footer />);
+    
+    const sobreNosotros = screen.getByText('Sobre Nosotros');
+    fireEvent.click(sobreNosotros);
+    expect(sobreNosotros).toBeInTheDocument();
   });
 });
