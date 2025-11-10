@@ -11,6 +11,7 @@ resource "aws_cloudfront_distribution" "frontend" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
+  aliases             = ["socialgraph.cine-track.com.ar"]
  
   origin {
     domain_name              = aws_s3_bucket.frontend_bucket.bucket_regional_domain_name
@@ -60,7 +61,9 @@ resource "aws_cloudfront_distribution" "frontend" {
   }
  
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = "arn:aws:acm:us-east-1:857679140175:certificate/865e45ac-9979-4192-ad3d-2ee70d5ed3c5"
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
  
   tags = {
@@ -97,7 +100,10 @@ resource "aws_cloudfront_response_headers_policy" "backend_cors" {
     }
 
     access_control_allow_origins {
-      items = ["https://${aws_cloudfront_distribution.frontend.domain_name}"]
+      items = [
+        "https://socialgraph.cine-track.com.ar",
+        "https://${aws_cloudfront_distribution.frontend.domain_name}"
+      ]
     }
 
     access_control_expose_headers {
@@ -134,6 +140,7 @@ resource "aws_cloudfront_response_headers_policy" "backend_cors" {
 resource "aws_cloudfront_distribution" "backend" {
   enabled         = true
   is_ipv6_enabled = true
+  aliases         = ["socialgraphbe.cine-track.com.ar"]
  
   origin {
     domain_name = aws_elastic_beanstalk_environment.app_env.cname
@@ -165,7 +172,9 @@ resource "aws_cloudfront_distribution" "backend" {
   }
  
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = "arn:aws:acm:us-east-1:857679140175:certificate/92dc88af-7caf-4947-a2e7-a7af8a500cb8"
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
  
   tags = {
