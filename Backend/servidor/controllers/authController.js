@@ -38,7 +38,7 @@ async function login(req, res) {
             try { profile = jwt.decode(data.access_token) || null; } catch (_) {}
         }
 
-        // Sincronizar el usuario en MongoDB (idempotente)
+        // Sincronizar el usuario en MongoDB
         let dbUser;
         try {
             if (profile && (profile.user_id != null || profile.sub)) {
