@@ -160,10 +160,15 @@ publicationSchema.statics.createFromEvent = async function(eventData) {
     created_at
   } = reviewData;
 
+  // Normalizar user_id del Core: quitar prefijo 'u' si viene como 'u123'
+  const normalizedUserId = (user_id === undefined || user_id === null)
+    ? null
+    : String(user_id).replace(/^u/i, '');
+
   const publicationData = {
     review_id: id,
     movie_id,
-    user_id: String(user_id),
+  user_id: normalizedUserId !== null ? String(normalizedUserId) : null,
     type: 'review', // Por defecto es review desde el Core
     title,
     body, // Se guarda en body para las reseñas del Core
@@ -178,10 +183,14 @@ publicationSchema.statics.createFromEvent = async function(eventData) {
 
   // Si el usuario ya existe localmente, asociar referencia ObjectId
   try {
-    if (user_id !== undefined && user_id !== null) {
-      const userDoc = await User.findOne({ user_id: String(user_id) }).select('_id');
-      if (userDoc) {
-        publicationData.author_id = userDoc._id;
+    if (normalizedUserId !== null && normalizedUserId !== '') {
+      const asNumber = Number(normalizedUserId);
+      const query = Number.isNaN(asNumber) ? null : { user_id: asNumber };
+      if (query) {
+        const userDoc = await User.findOne(query).select('_id');
+        if (userDoc) {
+          publicationData.author_id = userDoc._id;
+        }
       }
     }
   } catch (e) {
@@ -233,7 +242,12 @@ publicationSchema.statics.updateFromEvent = async function(eventData) {
   // Si la publicación existe pero aún no tiene author_id, intentar asociarlo
   if (publication && !publication.author_id && publication.user_id) {
     try {
-      const userDoc = await User.findOne({ user_id: String(publication.user_id) }).select('_id');
+      const asNumber = Number(String(publication.user_id).replace(/^u/i, ''));
+      const query = Number.isNaN(asNumber) ? null : { user_id: asNumber };
+      let userDoc = null;
+      if (query) {
+        userDoc = await User.findOne(query).select('_id');
+      }
       if (userDoc) {
         publication.author_id = userDoc._id;
         await publication.save();
