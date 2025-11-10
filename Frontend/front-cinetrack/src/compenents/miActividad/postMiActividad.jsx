@@ -462,10 +462,14 @@ function PostMiActividad({ post }) {
         </div>
         {/* Header */}
         <div className="post-header">
-          <img src={post.author.avatar} alt="avatar" className="avatar-post" />
+          <img 
+            src={perfil?.image_url || "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"} 
+            alt="avatar" 
+            className="avatar-post" 
+          />
           <div>
             <div className="post-user-info">
-              <h4 className="name">{post.author.username}</h4>
+              <h4 className="name">{perfil?.username || user?.user?.username || "Usuario"}</h4>
             </div>
             <span className="time">{dayjs(post.created_at).fromNow()}</span>
           </div>
