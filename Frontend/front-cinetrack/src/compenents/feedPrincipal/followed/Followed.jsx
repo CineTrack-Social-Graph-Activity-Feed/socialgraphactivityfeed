@@ -99,6 +99,10 @@ function Followed() {
                   }
                   alt="avatar user"
                   className="avatar-user-followed"
+                  onError={(e) => {
+                    e.target.src =
+                      "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+                  }}
                 />
                 <div>
                   <p className="followed-user-name">{user.username}</p>

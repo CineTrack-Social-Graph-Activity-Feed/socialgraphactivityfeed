@@ -162,6 +162,10 @@ function Navbar() {
               ? user.user.image_url
               : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
           }
+          onError={(e) => {
+            e.target.src =
+              "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+          }}
           alt="Logo Usuario"
           className="user-logo"
         />

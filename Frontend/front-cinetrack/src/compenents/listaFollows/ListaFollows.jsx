@@ -143,6 +143,10 @@ function ListaFollows() {
                       alt="avatar user"
                       className="avatar-post"
                       style={{ width: "50px", height: "50px" }}
+                      onError={(e) => {
+                        e.target.src =
+                          "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+                      }}
                     />
                     <div className="user-info">
                       <h2 className="username">{user.username}</h2>
