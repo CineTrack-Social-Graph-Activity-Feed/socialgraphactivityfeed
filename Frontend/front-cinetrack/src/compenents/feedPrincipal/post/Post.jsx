@@ -23,6 +23,7 @@ function Post({}) {
   const [commentByPost, setCommentByPost] = useState({});
   const [revealedPosts, setRevealedPosts] = useState({});
   const [followVersion, setFollowVersion] = useState(0);
+  const [expandedPoster, setExpandedPoster] = useState(null); // postId del poster ampliado
 
   useEffect(() => {
     const onFollowersUpdated = () => setFollowVersion((v) => v + 1);
@@ -466,6 +467,7 @@ function Post({}) {
   function renderPostByType(post) {
     const pid = post._doc._id;
     const isSpoiler = post._doc.has_spoilers && !revealedPosts[pid];
+    const hasPoster = !!post?.movie?.movie?.poster;
 
     return (
       <div className="post-spoiler" key={pid}>
@@ -521,11 +523,12 @@ function Post({}) {
             </div>
             <div className="post-image-container">
               {/* Imagen (si existe) */}
-              {post.movie.movie.poster && (
+              {hasPoster && (
                 <img
                   src={post.movie.movie.poster}
                   alt="post"
                   className="post-image"
+                  onClick={() => setExpandedPoster(pid)}
                 />
               )}
             </div>
@@ -733,6 +736,22 @@ function Post({}) {
             </div>
           )}
         </div>
+        {/* Lightbox simple para poster ampliado */}
+        {expandedPoster === pid && hasPoster && (
+          <div
+            className="poster-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Vista ampliada del poster de ${post.movie.movie.titulo}`}
+            onClick={() => setExpandedPoster(null)}
+          >
+            <img
+              src={post.movie.movie.poster}
+              alt={`Poster de ${post.movie.movie.titulo}`}
+              className="poster-lightbox-image"
+            />
+          </div>
+        )}
       </div>
     );
   }
