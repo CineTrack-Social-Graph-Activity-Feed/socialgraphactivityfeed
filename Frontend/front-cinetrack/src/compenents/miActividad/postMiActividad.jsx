@@ -453,96 +453,12 @@ function PostMiActividad({ post }) {
     const hasPoster = !!post?.movie?.movie?.poster;
     return (
       <div>
-      <div key={post.id} className="post">
-        <div className="post-type">
-          <p>Escribio una reseña</p>
-        </div>
-        {/* Header */}
-        <div className="post-header">
-          <img
-            src={
-              user.user.image_url
-                ? user.user.image_url
-                : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
-            }
-            alt="avatar"
-            className="avatar-post"
-            onError={(e) => {
-              e.target.src =
-                "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
-            }}
-          />
-          <div>
-            <div className="post-user-info">
-              <h4 className="name">{post.author.username}</h4>
-            </div>
-            <span className="time">{dayjs(post.created_at).fromNow()}</span>
+        <div key={post.id} className="post">
+          <div className="post-type">
+            <p>Escribio una reseña</p>
           </div>
-        </div>
-
-        {/* Texto */}
-        <div className="titulo-pelicula">
-          <h3>{post.movie.movie.titulo}</h3>
-          <StarRating puntuacion={post.rating} />{" "}
-        </div>
-        <div className="post-body">
-          <div className="post-text-container">
-            <p className="post-text">{post.content}</p>
-          </div>
-          <div className="post-image-container">
-            {/* Imagen (si existe) */}
-            {hasPoster && (
-              <img
-                src={post.movie.movie.poster}
-                alt="post"
-                className="post-image"
-                onClick={() => setExpandedPoster(post.id)}
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Reacciones */}
-        <div className="post-actions">
-          <div className="actions">
-            <div className="action">
-              <button
-                className="like-post-btn"
-                aria-label="Like post"
-                onClick={() => handleLike(post)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill={likesByPost[post.id]?.liked ? "red" : "currentColor"}
-                  class="bi bi-heart-fill"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
-                  />
-                </svg>
-              </button>
-              <span>{likesByPost[post.id]?.total_likes ?? 0}</span>
-            </div>
-            <div className="action">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-chat-dots-fill"
-                viewBox="0 0 16 16"
-              >
-                <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
-              </svg>
-              <span>{(commentsByPost[post.id] || []).length}</span>
-            </div>
-          </div>
-
-          <div className="comment-post">
+          {/* Header */}
+          <div className="post-header">
             <img
               src={
                 user.user.image_url
@@ -550,148 +466,225 @@ function PostMiActividad({ post }) {
                   : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
               }
               alt="avatar"
-              className="user-logo-post"
+              className="avatar-post"
+              onError={(e) => {
+                e.target.src =
+                  "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+              }}
             />
-            <form
-              className="comment-post-wrap"
-              onSubmit={(e) => handleSubmit(e, post)}
-            >
-              <textarea
-                className="comment-post-input"
-                placeholder="Escribe un comentario..."
-                aria-label="Comentario"
-                value={commentByPost?.[post.id] ?? ""} // 👈 siempre string
-                onChange={(e) =>
-                  setCommentByPost((prev) => ({
-                    ...prev,
-                    [post.id]: e.target.value, // 👈 escribimos en la misma key
-                  }))
-                }
-                rows={1}
-                onInput={(e) => {
-                  e.target.style.height = "auto";
-                  e.target.style.height = `${e.target.scrollHeight}px`;
-                }}
-              />
-            </form>
-            <button
-              className="comment-post-btn"
-              aria-label="Comment"
-              onClick={(e) => handleSubmit(e, post)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-arrow-right-circle"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"
+            <div>
+              <div className="post-user-info">
+                <h4 className="name">{post.author.username}</h4>
+              </div>
+              <span className="time">{dayjs(post.created_at).fromNow()}</span>
+            </div>
+          </div>
+
+          {/* Texto */}
+          <div className="titulo-pelicula">
+            <h3>{post.movie.movie.titulo}</h3>
+            <StarRating puntuacion={post.rating} />{" "}
+          </div>
+          <div className="post-body">
+            <div className="post-text-container">
+              <p className="post-text">{post.content}</p>
+            </div>
+            <div className="post-image-container">
+              {/* Imagen (si existe) */}
+              {hasPoster && (
+                <img
+                  src={post.movie.movie.poster}
+                  alt="post"
+                  className="post-image"
+                  onClick={() => setExpandedPoster(post.id)}
                 />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Comentarios (solo si hay) */}
-        {(commentsByPost[post.id] || []).length > 0 ? (
-          <>
-            <hr />
-            {/* Depuración: Mostrar datos de los comentarios */}
-            <div style={{ display: "none" }}>
-              {console.log(
-                `📄 Renderizando ${
-                  (commentsByPost[post.id] || []).length
-                } comentarios para post ${post.id}:`,
-                commentsByPost[post.id]
               )}
             </div>
-            {(commentsByPost[post.id] || [])
-              .slice() // copia para no mutar el original
-              .slice(0, showAllComments[post.id] ? undefined : 2) // muestra 2 más recientes
-              .map((c) => (
-                <div key={c.id} className="comment">
-                  <img
-                    src={c.user?.avatar_url || "https://i.pravatar.cc/60?img=1"}
-                    alt="user"
-                    className="avatar-comment"
-                    onError={(e) => {
-                      e.target.src =
-                        "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
-                    }}
-                  />
-                  <div className="comment-body">
-                    <div>
-                      <strong>
-                        {c.user?.username || "Usuario"}{" "}
-                        <span className="comment-time">
-                          {c.created_at
-                            ? dayjs(c.created_at).fromNow()
-                            : "hace un momento"}
-                        </span>
-                      </strong>
-                      <p className="comment-text">{c.comment}</p>
-                    </div>
-                    {String(c.user.id) === String(perfil?.id) && (
-                      <button
-                        className="delete-comment-btn"
-                        aria-label="Delete comment"
-                        onClick={() => handleDeleteComment(c.id, post.id)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-trash3"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-                  {/* Opciones adicionales de comentarios que se pueden agregar en el futuro */}
-                </div>
-              ))}
+          </div>
 
-            {/* Botón para ver todos los comentarios */}
-            <div className="view-all">
-              {(commentsByPost[post.id] || []).length > 2 && (
+          {/* Reacciones */}
+          <div className="post-actions">
+            <div className="actions">
+              <div className="action">
                 <button
-                  className="view-all-btn"
-                  onClick={() =>
-                    setShowAllComments((prev) => {
-                      console.log(
-                        `🔄 Cambiando estado 'showAllComments' para post ${
-                          post.id
-                        }: ${!prev[post.id]}`
-                      );
-                      return {
-                        ...prev,
-                        [post.id]: !prev[post.id], // toggle por post
-                      };
-                    })
-                  }
+                  className="like-post-btn"
+                  aria-label="Like post"
+                  onClick={() => handleLike(post)}
                 >
-                  {showAllComments[post.id]
-                    ? "Ver menos comentarios"
-                    : "Ver todos los comentarios"}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill={likesByPost[post.id]?.liked ? "red" : "currentColor"}
+                    class="bi bi-heart-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                    />
+                  </svg>
                 </button>
-              )}
+                <span>{likesByPost[post.id]?.total_likes ?? 0}</span>
+              </div>
+              <div className="action">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-chat-dots-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                </svg>
+                <span>{(commentsByPost[post.id] || []).length}</span>
+              </div>
             </div>
-          </>
-        ) : (
-          // No hay comentarios
-          <div className="no-comments" style={{ display: "none" }}>
-            {console.log(
-              `❌ No hay comentarios para mostrar en post ${post.id}`
-            )}
+
+            <div className="comment-post">
+              <img
+                src={
+                  user.user.image_url
+                    ? user.user.image_url
+                    : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+                }
+                alt="avatar"
+                className="user-logo-post"
+              />
+              <form
+                className="comment-post-wrap"
+                onSubmit={(e) => handleSubmit(e, post)}
+              >
+                <textarea
+                  className="comment-post-input"
+                  placeholder="Escribe un comentario..."
+                  aria-label="Comentario"
+                  value={commentByPost?.[post.id] ?? ""} // 👈 siempre string
+                  onChange={(e) =>
+                    setCommentByPost((prev) => ({
+                      ...prev,
+                      [post.id]: e.target.value, // 👈 escribimos en la misma key
+                    }))
+                  }
+                  rows={1}
+                  onInput={(e) => {
+                    e.target.style.height = "auto";
+                    e.target.style.height = `${e.target.scrollHeight}px`;
+                  }}
+                />
+              </form>
+              <button
+                className="comment-post-btn"
+                aria-label="Comment"
+                onClick={(e) => handleSubmit(e, post)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-arrow-right-circle"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
-        )}
+
+          {/* Comentarios (solo si hay) */}
+          {(commentsByPost[post.id] || []).length > 0 ? (
+            <>
+              <hr />
+              {(commentsByPost[post.id] || [])
+                .slice() // copia para no mutar el original
+                .slice(0, showAllComments[post.id] ? undefined : 2) // muestra 2 más recientes
+                .map((c) => (
+                  <div key={c.id} className="comment">
+                    <img
+                      src={
+                        c.user?.avatar_url || "https://i.pravatar.cc/60?img=1"
+                      }
+                      alt="user"
+                      className="avatar-comment"
+                      onError={(e) => {
+                        e.target.src =
+                          "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+                      }}
+                    />
+                    <div className="comment-body">
+                      <div>
+                        <strong>
+                          {c.user?.username || "Usuario"}{" "}
+                          <span className="comment-time">
+                            {c.created_at
+                              ? dayjs(c.created_at).fromNow()
+                              : "hace un momento"}
+                          </span>
+                        </strong>
+                        <p className="comment-text">{c.comment}</p>
+                      </div>
+                      {String(c.user.id) === String(perfil?.id) && (
+                        <button
+                          className="delete-comment-btn"
+                          aria-label="Delete comment"
+                          onClick={() => handleDeleteComment(c.id, post.id)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-trash3"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                    {/* Opciones adicionales de comentarios que se pueden agregar en el futuro */}
+                  </div>
+                ))}
+
+              {/* Botón para ver todos los comentarios */}
+              <div className="view-all">
+                {(commentsByPost[post.id] || []).length > 2 && (
+                  <button
+                    className="view-all-btn"
+                    onClick={() =>
+                      setShowAllComments((prev) => {
+                        console.log(
+                          `🔄 Cambiando estado 'showAllComments' para post ${
+                            post.id
+                          }: ${!prev[post.id]}`
+                        );
+                        return {
+                          ...prev,
+                          [post.id]: !prev[post.id], // toggle por post
+                        };
+                      })
+                    }
+                  >
+                    {showAllComments[post.id]
+                      ? "Ver menos comentarios"
+                      : "Ver todos los comentarios"}
+                  </button>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="no-comments">
+              <hr />
+              <div>
+                <p>No hay comentarios para mostrar</p>
+              </div>
+            </div>
+          )}
         </div>
         {/* Lightbox simple para poster ampliado */}
         {expandedPoster === post.id && hasPoster && (

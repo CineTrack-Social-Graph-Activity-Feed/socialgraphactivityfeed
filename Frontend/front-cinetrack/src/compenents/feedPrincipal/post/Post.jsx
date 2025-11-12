@@ -325,8 +325,6 @@ function Post({}) {
   // 🔹 traer likes y estado actualizado desde el back
   const refreshLikes = async (postId) => {
     try {
-      console.log(`Obteniendo likes para post ${postId}`);
-
       try {
         const res = await fetchWithAuth(
           `http://localhost:3000/api/like/publication/${postId}`
@@ -335,8 +333,6 @@ function Post({}) {
         if (!res.ok) return;
 
         const data = await res.json();
-
-        console.log("Post", postId, "-> Likes:", data);
 
         const backendLikes = Array.isArray(data.likes) ? data.likes : [];
         const total =
@@ -635,15 +631,6 @@ function Post({}) {
           {(commentsByPost[post._doc._id] || []).length > 0 ? (
             <>
               <hr />
-              {/* Depuración: Mostrar datos de los comentarios */}
-              <div style={{ display: "none" }}>
-                {console.log(
-                  `📄 Renderizando ${
-                    (commentsByPost[post._doc._id] || []).length
-                  } comentarios para post ${post._doc._id}:`,
-                  commentsByPost[post._doc._id]
-                )}
-              </div>
               {(commentsByPost[post._doc._id] || [])
                 .slice() // copia para no mutar el original
                 .slice(0, showAllComments[post._doc._id] ? undefined : 2) // muestra 2 más recientes
@@ -730,9 +717,6 @@ function Post({}) {
               <div>
                 <p>No hay comentarios para mostrar</p>
               </div>
-              {console.log(
-                `❌ No hay comentarios para mostrar en post ${post._doc._id}`
-              )}
             </div>
           )}
         </div>

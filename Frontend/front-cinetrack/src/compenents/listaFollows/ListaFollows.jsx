@@ -106,6 +106,10 @@ function ListaFollows() {
     };
   }, [perfil?.id, fetchWithAuth]);
 
+  const seguidoresOrd = [...seguidores].sort((a, b) =>
+    a.username.localeCompare(b.username)
+  );
+
   if (loading) {
     return <div className="loading">Cargando seguidos...</div>;
   }
@@ -124,13 +128,13 @@ function ListaFollows() {
     <div className="container">
       <div className="list-table">
         <div className="user-list">
-          {seguidores.length === 0 ? (
+          {seguidoresOrd.length === 0 ? (
             <p className="no-following">
               Usted no sigue a nadie. Busque a tus amigos y comience a
               seguirlos!
             </p>
           ) : (
-            seguidores.map((user) => (
+            seguidoresOrd.map((user) => (
               <div key={user._id} className="user-row">
                 <div>
                   <a className="followed-user">

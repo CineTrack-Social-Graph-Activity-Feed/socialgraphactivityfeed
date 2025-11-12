@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import "./Navbar.css";
 import { useAuth } from "../../config/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const { user, fetchWithAuth, signOut } = useAuth(); // <- user de /me
@@ -16,6 +17,7 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [followVersion, setFollowVersion] = useState(0);
   const searchRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onFollowersUpdated = () => setFollowVersion((v) => v + 1);
@@ -69,6 +71,7 @@ function Navbar() {
       setShowDropdown(false);
       return;
     }
+    setShowDropdown(true);
     const delay = setTimeout(async () => {
       try {
         setLoading(true);
@@ -87,11 +90,10 @@ function Navbar() {
           }))
           .filter((u) => u._normId !== String(perfil?.id)); // filtro: no mostrarme a mí
         setResults(filtered);
-        setShowDropdown(filtered.length > 0);
       } catch (err) {
         console.error("Error al buscar usuarios:", err);
         setResults([]);
-        setShowDropdown(false);
+        setShowDropdown(true);
       } finally {
         setLoading(false);
       }
@@ -147,7 +149,7 @@ function Navbar() {
 
   return (
     <div className="navbar" data-testid="navbar">
-      <button className="logo">
+      <button className="logo" onClick={() => navigate("/feed")}>
         <div className="icon">
           <div className="triangle left"></div>
           <div className="triangle right"></div>
@@ -206,6 +208,7 @@ function Navbar() {
               )}
 
               {!loading &&
+                results.length > 0 &&
                 results.map((u) => {
                   const normId = String(u.id);
                   const isFollowing = seguidores.includes(normId);

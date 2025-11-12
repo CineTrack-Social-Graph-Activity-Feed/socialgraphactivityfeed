@@ -1,6 +1,8 @@
 .followed-container {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  min-height: 0;
 }
 
 .followed-title {
@@ -8,21 +10,31 @@
   margin-top: 25px;
 }
 
+.followed-list {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-right: 6px;
+  -webkit-overflow-scrolling: touch; 
+}
+
+.followed-list::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 .no-followed {
   color: lightgray;
   margin-top: 15px;
 }
+
 .followed-user {
   display: flex;
   align-items: center;
   margin: 10px 0;
   text-decoration: none;
   gap: 10px;
-}
-
-.followed-user:hover {
-  scale: 1.02;
-  transition: all 0.3s ease;
 }
 
 .followed-user-name {
@@ -40,6 +52,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   gap: 35px;
   margin-top: 25px;
 }
@@ -59,13 +72,18 @@
   position: relative;
 }
 
+.unfollow-button:hover {
+  scale: 1.1;
+  transition: 0.3s;
+}
 .unfollow-button svg {
   width: 25px;
   height: 25px;
 }
 
 .followed-actions {
-  position: relative; /* importante para que el menú se posicione relativo al botón */
+  position: relative;
+  margin-right: 40px;
 }
 
 .unfollow-menu {
@@ -73,9 +91,10 @@
   margin-top: 5px; /* espacio entre botón y menú */
   background: white;
   border-radius: 6px;
-  padding: 6px 10px;
+  padding-bottom: 5px;
+  padding-top: 5px;
   z-index: 10;
-  left: -40px;
+  left: -70px;
   width: 120px;
 }
 

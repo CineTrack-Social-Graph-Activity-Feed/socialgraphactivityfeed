@@ -101,6 +101,10 @@ const ListaFollowers = () => {
     }
   };
 
+  const seguidoresOrd = [...seguidores].sort((a, b) =>
+    a.username.localeCompare(b.username)
+  );
+
   if (loading) {
     return <div className="loading">Cargando seguidores...</div>;
   }
@@ -111,12 +115,12 @@ const ListaFollowers = () => {
       <div className="list-table">
         {/* Rows */}
         <div className="user-list">
-          {seguidores.length === 0 ? (
+          {seguidoresOrd.length === 0 ? (
             <p className="no-following">
               Por el momento nadie te esta siguiendo
             </p>
           ) : (
-            seguidores.map((user) => (
+            seguidoresOrd.map((user) => (
               <div key={user._id} className="user-row">
                 <div>
                   <a className="followed-user">
