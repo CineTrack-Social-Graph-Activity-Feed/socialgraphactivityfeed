@@ -23,7 +23,7 @@ function Post({}) {
   const [commentByPost, setCommentByPost] = useState({});
   const [revealedPosts, setRevealedPosts] = useState({});
   const [followVersion, setFollowVersion] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [expandedPoster, setExpandedPoster] = useState(null); // postId del poster ampliado
 
   useEffect(() => {
     const onFollowersUpdated = () => setFollowVersion((v) => v + 1);
@@ -37,7 +37,9 @@ function Post({}) {
     if (!userId) return;
     (async () => {
       try {
-        const res = await fetchWithAuth(`/api/user/${userId}`);
+        const res = await fetchWithAuth(
+          `http://localhost:3000/api/user/${userId}`
+        );
         if (!res.ok) throw new Error("Error al traer usuario");
         const data = await res.json();
         setPerfil(data.user || data); // depende de tu shape
@@ -54,12 +56,11 @@ function Post({}) {
     const objectId = perfil?.id;
     if (!objectId) return;
 
-    setLoading(true);
     (async () => {
       try {
         console.log("Trayendo las reviews de mis amigos...");
         const res = await fetchWithAuth(
-          `/api/feed?user_id=${objectId}`
+          `http://localhost:3000/api/feed?user_id=${objectId}`
         );
         if (!res.ok) throw new Error(`Error ${res.status}`);
 
@@ -80,7 +81,9 @@ function Post({}) {
         const peliculas = await Promise.all(
           idsUnicos.map(async (id) => {
             try {
-              const r = await fetchWithAuth(`/api/movie/${id}`);
+              const r = await fetchWithAuth(
+                `http://localhost:3000/api/movie/${id}`
+              );
               if (!r.ok) throw new Error(`Movie ${id}: ${r.status}`);
               const movieData = await r.json();
               return { id, movie: movieData };
@@ -107,8 +110,6 @@ function Post({}) {
         if (err.name !== "AbortError") {
           console.error("❌ Error al cargar posts o películas:", err);
         }
-      } finally {
-        setLoading(false);
       }
     })();
   }, [perfil?.id, fetchWithAuth, followVersion]);
@@ -124,7 +125,7 @@ function Post({}) {
     if (!text) return;
 
     try {
-      const res = await fetchWithAuth(`/api/comment`, {
+      const res = await fetchWithAuth(`http://localhost:3000/api/comment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -137,7 +138,7 @@ function Post({}) {
       if (!res.ok) throw new Error(`Error ${res.status}`);
 
       const resComments = await fetchWithAuth(
-        `/api/comment/publication/${String(publicationId)}`
+        `http://localhost:3000/api/comment/publication/${String(publicationId)}`
       );
       const dataComments = await resComments.json();
 
@@ -166,7 +167,7 @@ function Post({}) {
           posts.map(async (p) => {
             try {
               const res = await fetchWithAuth(
-                `/api/like/publication/${p._doc._id}`
+                `http://localhost:3000/api/like/publication/${p._doc._id}`
               );
 
               if (!res.ok) throw new Error(`GET likes failed: ${res.status}`);
@@ -220,7 +221,7 @@ function Post({}) {
         const results = await Promise.all(
           posts.map((p) =>
             fetchWithAuth(
-              `/api/comment/publication/${String(
+              `http://localhost:3000/api/comment/publication/${String(
                 p._doc._id
               )}`
             )
@@ -263,7 +264,7 @@ function Post({}) {
             target_type: post._doc.type,
           });
 
-          const res = await fetchWithAuth(`/api/like`, {
+          const res = await fetchWithAuth(`http://localhost:3000/api/like`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -294,7 +295,7 @@ function Post({}) {
           });
 
           const res = await fetchWithAuth(
-            `/api/like/${state.like_id}`,
+            `http://localhost:3000/api/like/${state.like_id}`,
             {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
@@ -324,18 +325,14 @@ function Post({}) {
   // 🔹 traer likes y estado actualizado desde el back
   const refreshLikes = async (postId) => {
     try {
-      console.log(`Obteniendo likes para post ${postId}`);
-
       try {
         const res = await fetchWithAuth(
-          `/api/like/publication/${postId}`
+          `http://localhost:3000/api/like/publication/${postId}`
         );
 
         if (!res.ok) return;
 
         const data = await res.json();
-
-        console.log("Post", postId, "-> Likes:", data);
 
         const backendLikes = Array.isArray(data.likes) ? data.likes : [];
         const total =
@@ -369,7 +366,7 @@ function Post({}) {
     // Si no es local, intentar con el backend
     try {
       const res = await fetchWithAuth(
-        `/api/comment/${commentId}`,
+        `http://localhost:3000/api/comment/${commentId}`,
         {
           method: "DELETE",
           headers: {
@@ -388,7 +385,7 @@ function Post({}) {
 
       // 👇 refrescar comentarios del post
       const resComments = await fetchWithAuth(
-        `/api/comment/publication/${postId}`
+        `http://localhost:3000/api/comment/publication/${postId}`
       );
       const dataComments = await resComments.json();
 
@@ -464,14 +461,9 @@ function Post({}) {
   }
 
   function renderPostByType(post) {
-    // Validar que el post tenga película
-    if (!post.movie || !post.movie.movie) {
-      console.warn(`Post ${post._doc._id} no tiene película asociada, se omite del feed`);
-      return null;
-    }
-
     const pid = post._doc._id;
     const isSpoiler = post._doc.has_spoilers && !revealedPosts[pid];
+    const hasPoster = !!post?.movie?.movie?.poster;
 
     return (
       <div className="post-spoiler" key={pid}>
@@ -497,11 +489,12 @@ function Post({}) {
           {/* Header */}
           <div className="post-header">
             <img
-              src={post.author.avatar_url || "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"}
+              src={post.author.avatar_url}
               alt="avatar"
               className="avatar-post"
               onError={(e) => {
-                e.target.src = "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+                e.target.src =
+                  "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
               }}
             />
             <div>
@@ -526,11 +519,12 @@ function Post({}) {
             </div>
             <div className="post-image-container">
               {/* Imagen (si existe) */}
-              {post.movie.movie.poster && (
+              {hasPoster && (
                 <img
                   src={post.movie.movie.poster}
                   alt="post"
                   className="post-image"
+                  onClick={() => setExpandedPoster(pid)}
                 />
               )}
             </div>
@@ -581,13 +575,12 @@ function Post({}) {
             <div className="comment-post">
               <img
                 src={
-                  user.user.avatar_url || user.user.image_url || "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+                  user.user.image_url
+                    ? user.user.image_url
+                    : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
                 }
                 alt="avatar"
                 className="user-logo-post"
-                onError={(e) => {
-                  e.target.src = "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
-                }}
               />
               <form
                 className="comment-post-wrap"
@@ -638,26 +631,21 @@ function Post({}) {
           {(commentsByPost[post._doc._id] || []).length > 0 ? (
             <>
               <hr />
-              {/* Depuración: Mostrar datos de los comentarios */}
-              <div style={{ display: "none" }}>
-                {console.log(
-                  `📄 Renderizando ${
-                    (commentsByPost[post._doc._id] || []).length
-                  } comentarios para post ${post._doc._id}:`,
-                  commentsByPost[post._doc._id]
-                )}
-              </div>
               {(commentsByPost[post._doc._id] || [])
                 .slice() // copia para no mutar el original
                 .slice(0, showAllComments[post._doc._id] ? undefined : 2) // muestra 2 más recientes
                 .map((c) => (
                   <div key={c.id} className="comment">
                     <img
-                      src={c.user?.avatar_url || "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"}
+                      src={
+                        c.user?.avatar_url ||
+                        "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+                      }
                       alt="user"
                       className="avatar-comment"
                       onError={(e) => {
-                        e.target.src = "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+                        e.target.src =
+                          "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
                       }}
                     />
                     <div className="comment-body">
@@ -729,49 +717,38 @@ function Post({}) {
               <div>
                 <p>No hay comentarios para mostrar</p>
               </div>
-              {console.log(
-                `❌ No hay comentarios para mostrar en post ${post._doc._id}`
-              )}
             </div>
           )}
         </div>
+        {/* Lightbox simple para poster ampliado */}
+        {expandedPoster === pid && hasPoster && (
+          <div
+            className="poster-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Vista ampliada del poster de ${post.movie.movie.titulo}`}
+            onClick={() => setExpandedPoster(null)}
+          >
+            <img
+              src={post.movie.movie.poster}
+              alt={`Poster de ${post.movie.movie.titulo}`}
+              className="poster-lightbox-image"
+            />
+          </div>
+        )}
       </div>
     );
   }
 
   return (
     <div style={{ display: "grid", gap: "20px" }}>
-      {loading ? (
-        <div style={{ textAlign: "center", padding: "40px", color: "#ccc" }}>
-          <div className="spinner" style={{
-            border: "4px solid rgba(255,255,255,0.1)",
-            borderTop: "4px solid #fff",
-            borderRadius: "50%",
-            width: "40px",
-            height: "40px",
-            animation: "spin 1s linear infinite",
-            margin: "0 auto 20px"
-          }}></div>
-          <p>Cargando actividad...</p>
-        </div>
-      ) : (() => {
-        // Filtrar posts que tienen película válida
-        const postsValidos = postsConPeli.filter(post => post.movie && post.movie.movie);
-        
-        console.log(`📊 Feed - Posts totales: ${postsConPeli.length}, Posts válidos: ${postsValidos.length}`);
-        
-        if (postsValidos.length === 0) {
-          return (
-            <p style={{ color: "#ccc", textAlign: "center", marginTop: "20px" }}>
-              {postsConPeli.length === 0 
-                ? "No hay actividad para mostrar por el momento!"
-                : "Las publicaciones no pueden mostrarse porque faltan datos de películas."}
-            </p>
-          );
-        }
-        
-        return postsValidos.map((post) => renderPostByType(post));
-      })()}
+      {postsConPeli.length === 0 ? (
+        <p style={{ color: "#ccc", textAlign: "center", marginTop: "20px" }}>
+          No hay actividad para mostrar por el momento!
+        </p>
+      ) : (
+        postsConPeli.map((post) => renderPostByType(post))
+      )}
     </div>
   );
 }

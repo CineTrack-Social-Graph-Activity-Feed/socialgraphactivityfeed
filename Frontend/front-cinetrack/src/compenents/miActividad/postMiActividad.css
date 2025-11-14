@@ -1,0 +1,44 @@
+.post-image {
+    width: 100%;
+    border-radius: 10px;
+    margin: 10px 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: zoom-in;
+}
+
+.post-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 13px rgba(0, 0, 0, 0.35);
+}
+
+/* Lightbox para ver el poster más grande al hacer click */
+.poster-lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.poster-lightbox-image {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+    cursor: zoom-out;
+    animation: lightboxIn 0.18s ease;
+}
+
+@keyframes lightboxIn {
+    from {
+        transform: scale(0.96);
+        opacity: 0.6;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

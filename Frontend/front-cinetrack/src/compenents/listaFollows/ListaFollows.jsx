@@ -20,7 +20,9 @@ function ListaFollows() {
     if (!userId) return;
     (async () => {
       try {
-        const res = await fetchWithAuth(`/api/user/${userId}`);
+        const res = await fetchWithAuth(
+          `http://localhost:3000/api/user/${userId}`
+        );
         if (!res.ok) throw new Error("Error al traer usuario");
         const data = await res.json();
         setPerfil(data.user || data); // depende de tu shape
@@ -33,7 +35,7 @@ function ListaFollows() {
   const unfollowUser = async (targetId) => {
     try {
       console.log(`Enviando solicitud unfollow a ${API_URL}/api/unfollow`);
-      const res = await fetchWithAuth("/api/unfollow", {
+      const res = await fetchWithAuth("http://localhost:3000/api/unfollow", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,7 +76,7 @@ function ListaFollows() {
           `Fetching from: ${API_URL}/api/followed?user_id=${objectId}`
         );
         const res = await fetchWithAuth(
-          `/api/followed?user_id=${objectId}`
+          `http://localhost:3000/api/followed?user_id=${objectId}`
         );
 
         console.log("Status de respuesta:", res.status);
@@ -104,6 +106,10 @@ function ListaFollows() {
     };
   }, [perfil?.id, fetchWithAuth]);
 
+  const seguidoresOrd = [...seguidores].sort((a, b) =>
+    a.username.localeCompare(b.username)
+  );
+
   if (loading) {
     return <div className="loading">Cargando seguidos...</div>;
   }
@@ -122,13 +128,13 @@ function ListaFollows() {
     <div className="container">
       <div className="list-table">
         <div className="user-list">
-          {seguidores.length === 0 ? (
+          {seguidoresOrd.length === 0 ? (
             <p className="no-following">
               Usted no sigue a nadie. Busque a tus amigos y comience a
               seguirlos!
             </p>
           ) : (
-            seguidores.map((user) => (
+            seguidoresOrd.map((user) => (
               <div key={user._id} className="user-row">
                 <div>
                   <a className="followed-user">
@@ -141,6 +147,10 @@ function ListaFollows() {
                       alt="avatar user"
                       className="avatar-post"
                       style={{ width: "50px", height: "50px" }}
+                      onError={(e) => {
+                        e.target.src =
+                          "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+                      }}
                     />
                     <div className="user-info">
                       <h2 className="username">{user.username}</h2>

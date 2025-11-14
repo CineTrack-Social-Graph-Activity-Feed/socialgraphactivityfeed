@@ -20,7 +20,7 @@ function PostMiActividad({ post }) {
   const [showAllComments, setShowAllComments] = useState({});
   const [likesByPost, setLikesByPost] = useState({});
   const [commentByPost, setCommentByPost] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [expandedPoster, setExpandedPoster] = useState(null); // postId ampliado
 
   // Sin datos locales: todo viene del backend
 
@@ -29,13 +29,12 @@ function PostMiActividad({ post }) {
     if (!userId) return;
     (async () => {
       try {
-        const res = await fetchWithAuth(`/api/user/${userId}`);
+        const res = await fetchWithAuth(
+          `http://localhost:3000/api/user/${userId}`
+        );
         if (!res.ok) throw new Error("Error al traer usuario");
         const data = await res.json();
-        const userData = data.user || data;
-        console.log("📸 Datos del perfil cargados:", userData);
-        console.log("📸 avatar_url:", userData?.avatar_url);
-        setPerfil(userData);
+        setPerfil(data.user || data); // depende de tu shape
       } catch (err) {
         console.error("Error al traer usuario:", err);
       }
@@ -49,13 +48,12 @@ function PostMiActividad({ post }) {
   useEffect(() => {
     if (!userId) return;
 
-    setLoading(true);
     (async () => {
       try {
         console.log("Trayendo las reviews de mis amigos...");
         const idUser = String(userId);
         const res = await fetchWithAuth(
-          `/api/publication/user/${idUser}`
+          `http://localhost:3000/api/publication/user/${idUser}`
         );
         if (!res.ok) throw new Error(`Error ${res.status}`);
 
@@ -78,7 +76,9 @@ function PostMiActividad({ post }) {
         const peliculas = await Promise.all(
           idsUnicos.map(async (id) => {
             try {
-              const r = await fetchWithAuth(`/api/movie/${id}`);
+              const r = await fetchWithAuth(
+                `http://localhost:3000/api/movie/${id}`
+              );
               if (!r.ok) throw new Error(`Movie ${id}: ${r.status}`);
               const movieData = await r.json();
               return { id, movie: movieData };
@@ -104,8 +104,6 @@ function PostMiActividad({ post }) {
         if (err.name !== "AbortError") {
           console.error("❌ Error al cargar posts o películas:", err);
         }
-      } finally {
-        setLoading(false);
       }
     })();
   }, [userId, fetchWithAuth]);
@@ -122,7 +120,7 @@ function PostMiActividad({ post }) {
     if (!text) return;
 
     try {
-      const res = await fetchWithAuth(`/api/comment`, {
+      const res = await fetchWithAuth(`http://localhost:3000/api/comment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -135,7 +133,7 @@ function PostMiActividad({ post }) {
       if (!res.ok) throw new Error(`Error ${res.status}`);
 
       const resComments = await fetchWithAuth(
-        `/api/comment/publication/${String(publicationId)}`
+        `http://localhost:3000/api/comment/publication/${String(publicationId)}`
       );
       const dataComments = await resComments.json();
 
@@ -164,7 +162,7 @@ function PostMiActividad({ post }) {
           posts.map(async (p) => {
             try {
               const res = await fetchWithAuth(
-                `/api/like/publication/${p.id}`
+                `http://localhost:3000/api/like/publication/${p.id}`
               );
 
               if (!res.ok) throw new Error(`GET likes failed: ${res.status}`);
@@ -212,7 +210,7 @@ function PostMiActividad({ post }) {
         const results = await Promise.all(
           posts.map((p) =>
             fetchWithAuth(
-              `/api/comment/publication/${String(p.id)}`
+              `http://localhost:3000/api/comment/publication/${String(p.id)}`
             )
               .then((res) => res.json())
               .then((data) => {
@@ -251,7 +249,7 @@ function PostMiActividad({ post }) {
             target_type: post.type,
           });
 
-          const res = await fetchWithAuth(`/api/like`, {
+          const res = await fetchWithAuth(`http://localhost:3000/api/like`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -282,7 +280,7 @@ function PostMiActividad({ post }) {
           });
 
           const res = await fetchWithAuth(
-            `/api/like/${state.like_id}`,
+            `http://localhost:3000/api/like/${state.like_id}`,
             {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
@@ -316,7 +314,7 @@ function PostMiActividad({ post }) {
 
       try {
         const res = await fetchWithAuth(
-          `/api/like/publication/${postId}`
+          `http://localhost:3000/api/like/publication/${postId}`
         );
 
         if (!res.ok) return;
@@ -357,7 +355,7 @@ function PostMiActividad({ post }) {
     // Si no es local, intentar con el backend
     try {
       const res = await fetchWithAuth(
-        `/api/comment/${commentId}`,
+        `http://localhost:3000/api/comment/${commentId}`,
         {
           method: "DELETE",
           headers: {
@@ -376,7 +374,7 @@ function PostMiActividad({ post }) {
 
       // 👇 refrescar comentarios del post
       const resComments = await fetchWithAuth(
-        `/api/comment/publication/${postId}`
+        `http://localhost:3000/api/comment/publication/${postId}`
       );
       const dataComments = await resComments.json();
 
@@ -452,102 +450,15 @@ function PostMiActividad({ post }) {
   }
 
   function renderPostByType(post) {
-    // Validar que el post tenga película
-    if (!post.movie || !post.movie.movie) {
-      console.warn(`Post ${post.id} no tiene película asociada, se omite`);
-      return null;
-    }
-
+    const hasPoster = !!post?.movie?.movie?.poster;
     return (
-      <div key={post.id} className="post">
-        <div className="post-type">
-          <p>Escribio una reseña</p>
-        </div>
-        {/* Header */}
-        <div className="post-header">
-          <img 
-            src={
-              perfil?.avatar_url || 
-              user?.user?.avatar_url || 
-              "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
-            } 
-            alt="avatar" 
-            className="avatar-post" 
-            onError={(e) => {
-              console.error("❌ Error cargando imagen:", e.target.src);
-              e.target.src = "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
-            }}
-          />
-          <div>
-            <div className="post-user-info">
-              <h4 className="name">{perfil?.username || user?.user?.username || "Usuario"}</h4>
-            </div>
-            <span className="time">{dayjs(post.created_at).fromNow()}</span>
+      <div>
+        <div key={post.id} className="post">
+          <div className="post-type">
+            <p>Escribio una reseña</p>
           </div>
-        </div>
-
-        {/* Texto */}
-        <div className="titulo-pelicula">
-          <h3>{post.movie.movie.titulo}</h3>
-          <StarRating puntuacion={post.rating} />{" "}
-        </div>
-        <div className="post-body">
-          <div className="post-text-container">
-            <p className="post-text">{post.content}</p>
-          </div>
-          <div className="post-image-container">
-            {/* Imagen (si existe) */}
-            {post.movie.movie.poster && (
-              <img
-                src={post.movie.movie.poster}
-                alt="post"
-                className="post-image"
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Reacciones */}
-        <div className="post-actions">
-          <div className="actions">
-            <div className="action">
-              <button
-                className="like-post-btn"
-                aria-label="Like post"
-                onClick={() => handleLike(post)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill={likesByPost[post.id]?.liked ? "red" : "currentColor"}
-                  class="bi bi-heart-fill"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
-                  />
-                </svg>
-              </button>
-              <span>{likesByPost[post.id]?.total_likes ?? 0}</span>
-            </div>
-            <div className="action">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-chat-dots-fill"
-                viewBox="0 0 16 16"
-              >
-                <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
-              </svg>
-              <span>{(commentsByPost[post.id] || []).length}</span>
-            </div>
-          </div>
-
-          <div className="comment-post">
+          {/* Header */}
+          <div className="post-header">
             <img
               src={
                 user.user.image_url
@@ -555,142 +466,240 @@ function PostMiActividad({ post }) {
                   : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
               }
               alt="avatar"
-              className="user-logo-post"
+              className="avatar-post"
+              onError={(e) => {
+                e.target.src =
+                  "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+              }}
             />
-            <form
-              className="comment-post-wrap"
-              onSubmit={(e) => handleSubmit(e, post)}
-            >
-              <textarea
-                className="comment-post-input"
-                placeholder="Escribe un comentario..."
-                aria-label="Comentario"
-                value={commentByPost?.[post.id] ?? ""} // 👈 siempre string
-                onChange={(e) =>
-                  setCommentByPost((prev) => ({
-                    ...prev,
-                    [post.id]: e.target.value, // 👈 escribimos en la misma key
-                  }))
-                }
-                rows={1}
-                onInput={(e) => {
-                  e.target.style.height = "auto";
-                  e.target.style.height = `${e.target.scrollHeight}px`;
-                }}
-              />
-            </form>
-            <button
-              className="comment-post-btn"
-              aria-label="Comment"
-              onClick={(e) => handleSubmit(e, post)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-arrow-right-circle"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"
-                />
-              </svg>
-            </button>
+            <div>
+              <div className="post-user-info">
+                <h4 className="name">{post.author.username}</h4>
+              </div>
+              <span className="time">{dayjs(post.created_at).fromNow()}</span>
+            </div>
           </div>
-        </div>
 
-        {/* Comentarios (solo si hay) */}
-        {(commentsByPost[post.id] || []).length > 0 ? (
-          <>
-            <hr />
-            {/* Depuración: Mostrar datos de los comentarios */}
-            <div style={{ display: "none" }}>
-              {console.log(
-                `📄 Renderizando ${
-                  (commentsByPost[post.id] || []).length
-                } comentarios para post ${post.id}:`,
-                commentsByPost[post.id]
+          {/* Texto */}
+          <div className="titulo-pelicula">
+            <h3>{post.movie.movie.titulo}</h3>
+            <StarRating puntuacion={post.rating} />{" "}
+          </div>
+          <div className="post-body">
+            <div className="post-text-container">
+              <p className="post-text">{post.content}</p>
+            </div>
+            <div className="post-image-container">
+              {/* Imagen (si existe) */}
+              {hasPoster && (
+                <img
+                  src={post.movie.movie.poster}
+                  alt="post"
+                  className="post-image"
+                  onClick={() => setExpandedPoster(post.id)}
+                />
               )}
             </div>
-            {(commentsByPost[post.id] || [])
-              .slice() // copia para no mutar el original
-              .slice(0, showAllComments[post.id] ? undefined : 2) // muestra 2 más recientes
-              .map((c) => (
-                <div key={c.id} className="comment">
-                  <img
-                    src={c.user?.avatar_url || "https://i.pravatar.cc/60?img=1"}
-                    alt="user"
-                    className="avatar-comment"
-                  />
-                  <div className="comment-body">
-                    <div>
-                      <strong>
-                        {c.user?.username || "Usuario"}{" "}
-                        <span className="comment-time">
-                          {c.created_at
-                            ? dayjs(c.created_at).fromNow()
-                            : "hace un momento"}
-                        </span>
-                      </strong>
-                      <p className="comment-text">{c.comment}</p>
-                    </div>
-                    {String(c.user.id) === String(perfil?.id) && (
-                      <button
-                        className="delete-comment-btn"
-                        aria-label="Delete comment"
-                        onClick={() => handleDeleteComment(c.id, post.id)}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="bi bi-trash3"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
-                  {/* Opciones adicionales de comentarios que se pueden agregar en el futuro */}
-                </div>
-              ))}
+          </div>
 
-            {/* Botón para ver todos los comentarios */}
-            <div className="view-all">
-              {(commentsByPost[post.id] || []).length > 2 && (
+          {/* Reacciones */}
+          <div className="post-actions">
+            <div className="actions">
+              <div className="action">
                 <button
-                  className="view-all-btn"
-                  onClick={() =>
-                    setShowAllComments((prev) => {
-                      console.log(
-                        `🔄 Cambiando estado 'showAllComments' para post ${
-                          post.id
-                        }: ${!prev[post.id]}`
-                      );
-                      return {
-                        ...prev,
-                        [post.id]: !prev[post.id], // toggle por post
-                      };
-                    })
-                  }
+                  className="like-post-btn"
+                  aria-label="Like post"
+                  onClick={() => handleLike(post)}
                 >
-                  {showAllComments[post.id]
-                    ? "Ver menos comentarios"
-                    : "Ver todos los comentarios"}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill={likesByPost[post.id]?.liked ? "red" : "currentColor"}
+                    class="bi bi-heart-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+                    />
+                  </svg>
                 </button>
-              )}
+                <span>{likesByPost[post.id]?.total_likes ?? 0}</span>
+              </div>
+              <div className="action">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-chat-dots-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                </svg>
+                <span>{(commentsByPost[post.id] || []).length}</span>
+              </div>
             </div>
-          </>
-        ) : (
-          // No hay comentarios
-          <div className="no-comments" style={{ display: "none" }}>
-            {console.log(
-              `❌ No hay comentarios para mostrar en post ${post.id}`
-            )}
+
+            <div className="comment-post">
+              <img
+                src={
+                  user.user.image_url
+                    ? user.user.image_url
+                    : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+                }
+                alt="avatar"
+                className="user-logo-post"
+              />
+              <form
+                className="comment-post-wrap"
+                onSubmit={(e) => handleSubmit(e, post)}
+              >
+                <textarea
+                  className="comment-post-input"
+                  placeholder="Escribe un comentario..."
+                  aria-label="Comentario"
+                  value={commentByPost?.[post.id] ?? ""} // 👈 siempre string
+                  onChange={(e) =>
+                    setCommentByPost((prev) => ({
+                      ...prev,
+                      [post.id]: e.target.value, // 👈 escribimos en la misma key
+                    }))
+                  }
+                  rows={1}
+                  onInput={(e) => {
+                    e.target.style.height = "auto";
+                    e.target.style.height = `${e.target.scrollHeight}px`;
+                  }}
+                />
+              </form>
+              <button
+                className="comment-post-btn"
+                aria-label="Comment"
+                onClick={(e) => handleSubmit(e, post)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-arrow-right-circle"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Comentarios (solo si hay) */}
+          {(commentsByPost[post.id] || []).length > 0 ? (
+            <>
+              <hr />
+              {(commentsByPost[post.id] || [])
+                .slice() // copia para no mutar el original
+                .slice(0, showAllComments[post.id] ? undefined : 2) // muestra 2 más recientes
+                .map((c) => (
+                  <div key={c.id} className="comment">
+                    <img
+                      src={
+                        c.user?.avatar_url || "https://i.pravatar.cc/60?img=1"
+                      }
+                      alt="user"
+                      className="avatar-comment"
+                      onError={(e) => {
+                        e.target.src =
+                          "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+                      }}
+                    />
+                    <div className="comment-body">
+                      <div>
+                        <strong>
+                          {c.user?.username || "Usuario"}{" "}
+                          <span className="comment-time">
+                            {c.created_at
+                              ? dayjs(c.created_at).fromNow()
+                              : "hace un momento"}
+                          </span>
+                        </strong>
+                        <p className="comment-text">{c.comment}</p>
+                      </div>
+                      {String(c.user.id) === String(perfil?.id) && (
+                        <button
+                          className="delete-comment-btn"
+                          aria-label="Delete comment"
+                          onClick={() => handleDeleteComment(c.id, post.id)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-trash3"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                    {/* Opciones adicionales de comentarios que se pueden agregar en el futuro */}
+                  </div>
+                ))}
+
+              {/* Botón para ver todos los comentarios */}
+              <div className="view-all">
+                {(commentsByPost[post.id] || []).length > 2 && (
+                  <button
+                    className="view-all-btn"
+                    onClick={() =>
+                      setShowAllComments((prev) => {
+                        console.log(
+                          `🔄 Cambiando estado 'showAllComments' para post ${
+                            post.id
+                          }: ${!prev[post.id]}`
+                        );
+                        return {
+                          ...prev,
+                          [post.id]: !prev[post.id], // toggle por post
+                        };
+                      })
+                    }
+                  >
+                    {showAllComments[post.id]
+                      ? "Ver menos comentarios"
+                      : "Ver todos los comentarios"}
+                  </button>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="no-comments">
+              <hr />
+              <div>
+                <p>No hay comentarios para mostrar</p>
+              </div>
+            </div>
+          )}
+        </div>
+        {/* Lightbox simple para poster ampliado */}
+        {expandedPoster === post.id && hasPoster && (
+          <div
+            className="poster-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Vista ampliada del poster de ${post.movie.movie.titulo}`}
+            onClick={() => setExpandedPoster(null)}
+          >
+            <img
+              src={post.movie.movie.poster}
+              alt={`Poster de ${post.movie.movie.titulo}`}
+              className="poster-lightbox-image"
+            />
           </div>
         )}
       </div>
@@ -699,37 +708,14 @@ function PostMiActividad({ post }) {
 
   return (
     <div style={{ display: "grid", gap: "20px" }}>
-      {loading ? (
-        <div style={{ textAlign: "center", padding: "40px", color: "#ccc" }}>
-          <div className="spinner" style={{
-            border: "4px solid rgba(255,255,255,0.1)",
-            borderTop: "4px solid #fff",
-            borderRadius: "50%",
-            width: "40px",
-            height: "40px",
-            animation: "spin 1s linear infinite",
-            margin: "0 auto 20px"
-          }}></div>
-          <p>Cargando tus reseñas...</p>
-        </div>
-      ) : (() => {
-        // Filtrar posts que tienen película válida
-        const postsValidos = postsConPeli.filter(post => post.movie && post.movie.movie);
-        
-        console.log(`📊 Posts totales: ${postsConPeli.length}, Posts válidos: ${postsValidos.length}`);
-        
-        if (postsValidos.length === 0) {
-          return (
-            <p style={{ color: "#ccc", textAlign: "center", marginTop: "20px" }}>
-              {postsConPeli.length === 0 
-                ? "Por el momento no has realizado ninguna reseña, anímate a escribir una!"
-                : "Tus reseñas no pueden mostrarse porque faltan datos de películas. Por favor, contacta al administrador."}
-            </p>
-          );
-        }
-        
-        return postsValidos.map((post) => renderPostByType(post));
-      })()}
+      {postsConPeli.length === 0 ? (
+        <p style={{ color: "#ccc", textAlign: "center", marginTop: "20px" }}>
+          Por el momento no has realizado ninguna reseña, anímate a escribir
+          una!
+        </p>
+      ) : (
+        postsConPeli.map((post) => renderPostByType(post))
+      )}
     </div>
   );
 }

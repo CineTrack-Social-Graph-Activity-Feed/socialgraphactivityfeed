@@ -123,7 +123,7 @@
   gap: 10px;
   padding: 8px 5px;
   font-size: 0.9rem;
-  color: #222; /* 👈 forzamos texto oscuro */
+  color: #626262; /* 👈 forzamos texto oscuro */
   background: #fff; /* 👈 fondo blanco por ítem */
   cursor: default;
   transition: background 0.2s ease;
@@ -282,78 +282,5 @@
   to {
     opacity: 1;
     transform: scale(1);
-  }
-}
-
-/* ====== RESPONSIVE NAVBAR ====== */
-
-/* Tablets */
-@media (max-width: 1024px) {
-  .navbar {
-    padding: 5px 15px;
-  }
-  
-  .logo {
-    margin-left: 10px;
-    font-size: 1.3rem;
-  }
-  
-  .search-wrap {
-    width: 200px;
-  }
-  
-  .username {
-    margin-right: 15px;
-  }
-}
-
-/* Móviles */
-@media (max-width: 768px) {
-  .navbar {
-    padding: 5px 10px;
-    flex-wrap: wrap;
-  }
-  
-  .logo {
-    margin-left: 5px;
-    font-size: 1.1rem;
-  }
-  
-  .logo p {
-    display: none; /* Ocultar texto del logo en móvil */
-  }
-  
-  .search-wrap {
-    width: 150px;
-  }
-  
-  .username {
-    display: none; /* Ocultar nombre de usuario en móvil */
-  }
-  
-  .user-logo {
-    width: 35px;
-    height: 35px;
-  }
-}
-
-/* Móviles pequeños */
-@media (max-width: 480px) {
-  .navbar {
-    padding: 5px;
-  }
-  
-  .search-wrap {
-    width: 120px;
-  }
-  
-  .search-input {
-    padding: 8px 36px 8px 10px;
-    font-size: 12px;
-  }
-  
-  .icon {
-    width: 30px;
-    height: 22px;
   }
 }

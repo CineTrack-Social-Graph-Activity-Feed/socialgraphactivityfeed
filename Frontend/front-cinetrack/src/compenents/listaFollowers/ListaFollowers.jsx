@@ -18,7 +18,9 @@ const ListaFollowers = () => {
     if (!userId) return;
     (async () => {
       try {
-        const res = await fetchWithAuth(`/api/user/${userId}`);
+        const res = await fetchWithAuth(
+          `http://localhost:3000/api/user/${userId}`
+        );
         if (!res.ok) throw new Error("Error al traer usuario");
         const data = await res.json();
         setPerfil(data.user || data); // depende de tu shape
@@ -34,7 +36,7 @@ const ListaFollowers = () => {
     if (!objectId) return;
     const fetchData = () => {
       setLoading(true);
-      fetchWithAuth(`/api/followers?user_id=${objectId}`)
+      fetchWithAuth(`http://localhost:3000/api/followers?user_id=${objectId}`)
         .then((res) => res.json())
         .then((data) => setSeguidores(data.followers));
       setLoading(false);
@@ -55,7 +57,7 @@ const ListaFollowers = () => {
   useEffect(() => {
     if (!objectId) return;
 
-    fetchWithAuth(`/api/followed?user_id=${objectId}`)
+    fetchWithAuth(`http://localhost:3000/api/followed?user_id=${objectId}`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Followers data:", data);
@@ -69,7 +71,9 @@ const ListaFollowers = () => {
     const targetId = String(targetIdRaw);
     const isFollowing = seguidos.includes(targetId);
 
-    const url = isFollowing ? "/api/unfollow" : "/api/follow";
+    const url = isFollowing
+      ? "http://localhost:3000/api/unfollow"
+      : "http://localhost:3000/api/follow";
 
     try {
       const res = await fetchWithAuth(url, {
@@ -97,6 +101,10 @@ const ListaFollowers = () => {
     }
   };
 
+  const seguidoresOrd = [...seguidores].sort((a, b) =>
+    a.username.localeCompare(b.username)
+  );
+
   if (loading) {
     return <div className="loading">Cargando seguidores...</div>;
   }
@@ -107,20 +115,28 @@ const ListaFollowers = () => {
       <div className="list-table">
         {/* Rows */}
         <div className="user-list">
-          {seguidores.length === 0 ? (
+          {seguidoresOrd.length === 0 ? (
             <p className="no-following">
               Por el momento nadie te esta siguiendo
             </p>
           ) : (
-            seguidores.map((user) => (
+            seguidoresOrd.map((user) => (
               <div key={user._id} className="user-row">
                 <div>
                   <a className="followed-user">
                     <img
-                      src={user.avatar_url}
+                      src={
+                        user.avatar_url
+                          ? user.avatar_url
+                          : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+                      }
                       alt="avatar user"
                       className="avatar-post"
                       style={{ width: "50px", height: "50px" }}
+                      onError={(e) => {
+                        e.target.src =
+                          "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+                      }}
                     />
                     <div className="user-info">
                       <h2 className="username">{user.username}</h2>

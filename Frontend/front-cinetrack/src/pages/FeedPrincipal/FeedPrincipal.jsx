@@ -22,7 +22,7 @@ function FeedPrincipal() {
         <main className="main bkg-especial">
           <div className="title-section">
             <h2>
-              ¡Bienvenido! Estos es lo que tus amigos han estado viendo...
+              ¡Bienvenido! Esto es lo que tus amigos han estado viendo...
             </h2>
           </div>
           <div className="feed-stack">

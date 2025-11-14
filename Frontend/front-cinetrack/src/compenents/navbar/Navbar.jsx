@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import "./Navbar.css";
 import { useAuth } from "../../config/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const { user, fetchWithAuth, signOut } = useAuth(); // <- user de /me
@@ -16,6 +17,7 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [followVersion, setFollowVersion] = useState(0);
   const searchRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onFollowersUpdated = () => setFollowVersion((v) => v + 1);
@@ -29,7 +31,9 @@ function Navbar() {
     if (!userId) return;
     (async () => {
       try {
-        const res = await fetchWithAuth(`/api/user/${userId}`);
+        const res = await fetchWithAuth(
+          `http://localhost:3000/api/user/${userId}`
+        );
         if (!res.ok) throw new Error("Error al traer usuario");
         const data = await res.json();
         setPerfil(data.user || data); // depende de tu shape
@@ -47,7 +51,7 @@ function Navbar() {
     (async () => {
       try {
         const res = await fetchWithAuth(
-          `/api/followed?user_id=${objectId}`
+          `http://localhost:3000/api/followed?user_id=${objectId}`
         );
         if (!res.ok) throw new Error("Error al traer followed");
         const data = await res.json();
@@ -67,11 +71,12 @@ function Navbar() {
       setShowDropdown(false);
       return;
     }
+    setShowDropdown(true);
     const delay = setTimeout(async () => {
       try {
         setLoading(true);
         const res = await fetchWithAuth(
-          `/api/user/search?q=${encodeURIComponent(
+          `http://localhost:3000/api/user/search?q=${encodeURIComponent(
             query
           )}&limit=5`
         );
@@ -85,11 +90,10 @@ function Navbar() {
           }))
           .filter((u) => u._normId !== String(perfil?.id)); // filtro: no mostrarme a mí
         setResults(filtered);
-        setShowDropdown(filtered.length > 0);
       } catch (err) {
         console.error("Error al buscar usuarios:", err);
         setResults([]);
-        setShowDropdown(false);
+        setShowDropdown(true);
       } finally {
         setLoading(false);
       }
@@ -113,7 +117,9 @@ function Navbar() {
     const targetId = String(targetIdRaw);
     const isFollowing = seguidores.includes(targetId);
 
-    const url = isFollowing ? "/api/unfollow" : "/api/follow";
+    const url = isFollowing
+      ? "http://localhost:3000/api/unfollow"
+      : "http://localhost:3000/api/follow";
 
     try {
       const res = await fetchWithAuth(url, {
@@ -143,7 +149,7 @@ function Navbar() {
 
   return (
     <div className="navbar" data-testid="navbar">
-      <button className="logo">
+      <button className="logo" onClick={() => navigate("/feed")}>
         <div className="icon">
           <div className="triangle left"></div>
           <div className="triangle right"></div>
@@ -158,6 +164,10 @@ function Navbar() {
               ? user.user.image_url
               : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
           }
+          onError={(e) => {
+            e.target.src =
+              "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+          }}
           alt="Logo Usuario"
           className="user-logo"
         />
@@ -198,6 +208,7 @@ function Navbar() {
               )}
 
               {!loading &&
+                results.length > 0 &&
                 results.map((u) => {
                   const normId = String(u.id);
                   const isFollowing = seguidores.includes(normId);

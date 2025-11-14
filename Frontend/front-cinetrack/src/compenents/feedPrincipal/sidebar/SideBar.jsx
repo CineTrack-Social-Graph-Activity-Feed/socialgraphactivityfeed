@@ -16,12 +16,12 @@ function SideBar() {
       <div className="profile">
         <img
           className="avatar"
-          src={
-            user.user.image_url
-              ? user.user.image_url
-              : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
-          }
+          src={user.user.image_url}
           alt="Avatar user"
+          onError={(e) => {
+            e.target.src =
+              "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+          }}
         />
         <div className="username-sidebar">{user.user.full_name}</div>
         <p className="user-sub-sidebar">@{user.user.sub}</p>
