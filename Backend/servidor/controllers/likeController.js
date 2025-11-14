@@ -46,6 +46,15 @@ const addLike = async (req, res) => {
       return res.status(403).json({ error: "No puedes actuar en nombre de otro usuario" });
     }
 
+      // Bloquear acciones de usuarios desactivados
+      const actingUser = await User.findOne({ _id: user_id });
+      if (!actingUser) {
+        return res.status(404).json({ error: "Usuario no encontrado" });
+      }
+      if (actingUser.activated === false) {
+        return res.status(403).json({ error: "Usuario desactivado" });
+      }
+
     // Validar target_type
     const validTargetTypes = ["review", "rating", "list"];
     if (!validTargetTypes.includes(target_type)) {
@@ -77,10 +86,18 @@ const addLike = async (req, res) => {
         console.log(`❌ addLike - Usuario no encontrado: ${user_id}`);
         return res.status(404).json({ error: "Usuario no encontrado" });
       }
+      if (user.activated === false) {
+        return res.status(403).json({ error: "Usuario desactivado" });
+      }
       console.log(`✅ addLike - Usuario encontrado: ${user.username}`);
     } else {
       // Para DEMO, no bloqueamos si el usuario no existe; enriquecemos si está
-      if (user) console.log(`ℹ️ addLike[DEMO] - Usuario encontrado para enriquecer: ${user.username}`);
+      if (user) {
+        if (user.activated === false) {
+          return res.status(403).json({ error: "Usuario desactivado" });
+        }
+        console.log(`ℹ️ addLike[DEMO] - Usuario encontrado para enriquecer: ${user.username}`);
+      }
       else console.log(`ℹ️ addLike[DEMO] - Usuario no existe, continuamos igualmente`);
     }
 
@@ -327,12 +344,13 @@ const getPublicationLikes = async (req, res) => {
       const mem = ensureDemoArray(String(publication_id));
       // También traemos likes de DB y fusionamos
       const dbLikes = await Like.find({ target_id: publication_id })
-        .populate("user_id", "username avatar_url")
+        .populate("user_id", "username avatar_url activated")
         .sort({ created_at: -1 });
 
       const memEnriched = await Promise.all(
         mem.map(async (l) => {
-          const u = await User.findById(l.user_id).select("username avatar_url");
+          const u = await User.findById(l.user_id).select("username avatar_url activated");
+          if (u && u.activated === false) return null;
           return {
             id: l.id,
             user: {
@@ -345,7 +363,9 @@ const getPublicationLikes = async (req, res) => {
         })
       );
 
-      const dbNormalized = dbLikes.map((like) => ({
+      const dbNormalized = dbLikes
+        .filter((like) => like.user_id && like.user_id.activated !== false)
+        .map((like) => ({
         id: like._id,
         user: {
           id: like.user_id._id,
@@ -356,7 +376,7 @@ const getPublicationLikes = async (req, res) => {
       }));
 
       // Merge memoria + DB, ordenado desc por fecha
-      const merged = [...memEnriched, ...dbNormalized].sort(
+      const merged = [...memEnriched.filter(Boolean), ...dbNormalized].sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
 
@@ -375,15 +395,16 @@ const getPublicationLikes = async (req, res) => {
     } else {
       // DB path
       const likes = await Like.find({ target_id: publication_id })
-        .populate("user_id", "username avatar_url")
+        .populate("user_id", "username avatar_url activated")
         .sort({ created_at: -1 })
         .skip(skip)
         .limit(limit);
 
-      const totalLikes = await Like.countDocuments({ target_id: publication_id });
+      const filteredLikes = likes.filter((like) => like.user_id && like.user_id.activated !== false);
+      const totalLikes = filteredLikes.length;
 
       return res.status(200).json({
-        likes: likes.map((like) => ({
+        likes: filteredLikes.map((like) => ({
           id: like._id,
           user: {
             id: like.user_id._id,

@@ -49,6 +49,9 @@ const createPublication = async (req, res) => {
         error: 'Usuario autor no encontrado'
       });
     }
+    if (author.activated === false) {
+      return res.status(403).json({ error: 'Usuario desactivado' });
+    }
 
     // Crear la publicación con el modelo unificado
     const publicationData = {
@@ -130,7 +133,7 @@ const getPublication = async (req, res) => {
     }
 
     const publication = await Publication.findById(publication_id)
-      .populate('author_id', 'username avatar_url')
+      .populate('author_id', 'username avatar_url activated')
       .populate('movie', 'movie_id poster titulo');
 
     if (!publication) {
@@ -166,6 +169,9 @@ const getPublication = async (req, res) => {
 
     // Manejar autor (puede ser author_id o user_id)
     if (publication.author_id) {
+      if (publication.author_id.activated === false) {
+        return res.status(404).json({ error: 'Publicación no encontrada' });
+      }
       response.author = {
         id: publication.author_id._id,
         username: publication.author_id.username,
@@ -173,7 +179,7 @@ const getPublication = async (req, res) => {
       };
     } else if (publication.user_id) {
       // Si solo tiene user_id (del Core), buscar el usuario
-      const user = await User.findOne({ user_id: publication.user_id });
+      const user = await User.findOne({ user_id: publication.user_id, activated: true });
       if (user) {
         response.author = {
           user_id: publication.user_id,
@@ -181,7 +187,8 @@ const getPublication = async (req, res) => {
           avatar_url: user.avatar_url
         };
       } else {
-        response.user_id = publication.user_id;
+        // Si el usuario no existe o está desactivado, ocultar la publicación
+        return res.status(404).json({ error: 'Publicación no encontrada' });
       }
     }
 
@@ -217,10 +224,10 @@ const getUserPublications = async (req, res) => {
     let user;
     if (user_id.match(/^[0-9a-fA-F]{24}$/)) {
       // Es un ObjectId válido
-      user = await User.findOne({ user_id: user_id });
+      user = await User.findOne({ user_id: user_id, activated: true });
     } else {
       // Buscar por user_id del Core
-      user = await User.findOne({ user_id: user_id });
+      user = await User.findOne({ user_id: user_id, activated: true });
     }
 
     if (!user) {
@@ -249,17 +256,24 @@ const getUserPublications = async (req, res) => {
 
     // Obtener publicaciones
     const publications = await Publication.find(filter)
-      .populate('author_id', 'username avatar_url')
+      .populate('author_id', 'username avatar_url activated')
       .populate('movie', 'movie_id poster titulo')
       .sort({ created_at: -1 })
       .skip(skip)
       .limit(limit);
 
+    // Filtrar publicaciones de autores desactivados
+    const filteredPublications = publications.filter(pub => {
+      if (pub.author_id) return pub.author_id.activated !== false;
+      if (pub.user_id) return true; // Se resolverá por user_id más abajo si es necesario
+      return true;
+    });
+
     // Obtener total
-    const totalPublications = await Publication.countDocuments(filter);
+    const totalPublications = filteredPublications.length;
 
     // Mapear publicaciones con formato compatible
-    const mappedPublications = publications.map(pub => {
+    const mappedPublications = filteredPublications.map(pub => {
       const pubData = {
         id: pub._id,
         type: pub.type,
@@ -357,17 +371,34 @@ const getMoviePublications = async (req, res) => {
 
     // Obtener publicaciones
     const publications = await Publication.find(filter)
-      .populate('author_id', 'username avatar_url')
+      .populate('author_id', 'username avatar_url activated')
       .populate('movie', 'movie_id poster titulo')
       .sort({ created_at: -1 })
       .skip(skip)
       .limit(limit);
 
+    // Filtrar publicaciones de autores desactivados
+    const filteredPublications = [];
+    for (const pub of publications) {
+      if (pub.author_id) {
+        if (pub.author_id.activated === false) continue;
+        filteredPublications.push(pub);
+      } else if (pub.user_id) {
+        const u = await User.findOne({ user_id: pub.user_id, activated: true });
+        if (!u) continue; // Ocultar publicaciones con autor desactivado/no existente
+        // Adjuntar usuario para evitar doble búsqueda
+        pub._coreUser = u;
+        filteredPublications.push(pub);
+      } else {
+        filteredPublications.push(pub);
+      }
+    }
+
     // Obtener total
-    const totalPublications = await Publication.countDocuments(filter);
+    const totalPublications = filteredPublications.length;
 
     // Mapear publicaciones
-    const mappedPublications = await Promise.all(publications.map(async (pub) => {
+    const mappedPublications = await Promise.all(filteredPublications.map(async (pub) => {
       const pubData = {
         id: pub._id,
         type: pub.type,
@@ -399,8 +430,9 @@ const getMoviePublications = async (req, res) => {
           avatar_url: pub.author_id.avatar_url
         };
       } else if (pub.user_id) {
-        // Buscar usuario del Core
-        const user = await User.findOne({ user_id: pub.user_id });
+        // Usar el usuario cargado (activado) o buscarlo activado si no está
+        const user = pub._coreUser || await User.findOne({ user_id: pub.user_id, activated: true });
+        if (!user) return null; // seguridad; no debería pasar
         pubData.author = {
           user_id: pub.user_id,
           username: user ? (user.username || user.nombre) : 'Usuario desconocido'
@@ -411,7 +443,7 @@ const getMoviePublications = async (req, res) => {
     }));
 
     res.status(200).json({
-      publications: mappedPublications,
+      publications: mappedPublications.filter(Boolean),
       pagination: {
         current_page: page,
         total_pages: Math.ceil(totalPublications / limit),
@@ -454,6 +486,15 @@ const deletePublication = async (req, res) => {
     }
     if (String(req.actor.mongo_id) !== String(user_id)) {
       return res.status(403).json({ error: 'No puedes actuar en nombre de otro usuario' });
+    }
+
+    // Bloquear acciones si el usuario está desactivado
+    const actingUser = await User.findOne({ _id: user_id });
+    if (!actingUser) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    if (actingUser.activated === false) {
+      return res.status(403).json({ error: 'Usuario desactivado' });
     }
 
     // Buscar la publicación

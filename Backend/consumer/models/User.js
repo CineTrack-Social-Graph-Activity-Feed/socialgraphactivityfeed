@@ -25,6 +25,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  // Activación / estado lógico (no hard delete)
+  activated: {
+    type: Boolean,
+    default: true,
+    index: true
+  },
+  deletedAt: {
+    type: Date,
+    default: null
+  },
+  reactivatedAt: {
+    type: Date,
+    default: null
+  },
   // Presencia/sesiones
   lastSeenAt: { type: Date, default: null },
   lastLoginAt: { type: Date, default: null },
@@ -62,6 +76,7 @@ const userSchema = new mongoose.Schema({
 userSchema.index({ user_id: 1 });
 userSchema.index({ username: 1 });
 userSchema.index({ fechaRegistro: -1 });
+userSchema.index({ activated: 1, user_id: 1 });
 
 /**
  * Crear o actualizar usuario desde evento del Core
@@ -154,6 +169,95 @@ userSchema.statics.markSessionFinished = async function({ userId, sessionId, end
     await user.save();
   }
 
+  return user;
+};
+
+/**
+ * Desactivar usuario (marcar como eliminado lógico)
+ */
+userSchema.statics.deactivateUser = async function(userId, fechaEliminacion) {
+  const when = fechaEliminacion ? new Date(fechaEliminacion) : new Date();
+  const user = await this.findOneAndUpdate(
+    { user_id: userId },
+    {
+      $set: {
+        activated: false,
+        deletedAt: when,
+        reactivatedAt: null,
+        syncedAt: new Date()
+      },
+      $setOnInsert: { fechaRegistro: new Date() }
+    },
+    { upsert: true, new: true }
+  );
+  return user;
+};
+
+/**
+ * Reactivar usuario (revivir)
+ */
+userSchema.statics.reactivateUser = async function(userId, fechaReactivacion) {
+  const when = fechaReactivacion ? new Date(fechaReactivacion) : new Date();
+  const user = await this.findOneAndUpdate(
+    { user_id: userId },
+    {
+      $set: {
+        activated: true,
+        reactivatedAt: when,
+        // No borramos deletedAt para conservar histórico
+        syncedAt: new Date()
+      },
+      $setOnInsert: { fechaRegistro: new Date() }
+    },
+    { upsert: true, new: true }
+  );
+  return user;
+};
+
+/**
+ * Actualización parcial de campos según lista recibida
+ */
+userSchema.statics.partialUpdate = async function(userId, fields, fechaActualizacion) {
+  const allowedFieldsMap = {
+    nombre: 'username',
+    name: 'username',
+    // last_name se combina con name si está presente
+    email: 'email', // no existe en schema; se ignorará si no se añade
+    pais: 'pais',
+    avatar_url: 'avatar_url',
+    image_url: 'avatar_url',
+    bio: 'bio', // no existe; se ignorará si no se añade
+    location: 'location', // idem
+    website: 'website', // idem
+    birth_date: 'birth_date', // idem
+    gender: 'gender', // idem
+    experience: 'experience' // idem
+  };
+
+  const setObj = { syncedAt: new Date() };
+  if (fechaActualizacion) setObj.lastSeenAt = new Date(fechaActualizacion);
+
+  // Componer username a partir de name/last_name si ambos existen
+  const usernameParts = [];
+  if (fields && fields.name) usernameParts.push(String(fields.name));
+  if (fields && fields.last_name) usernameParts.push(String(fields.last_name));
+  if (usernameParts.length > 0) {
+    setObj.username = usernameParts.join(' ').replace(/\s+/g, ' ').trim();
+  }
+
+  Object.entries(fields || {}).forEach(([k, v]) => {
+    if (k === 'name' || k === 'last_name') return; // ya lo gestionamos arriba
+    const mapped = allowedFieldsMap[k];
+    if (mapped) {
+      setObj[mapped] = v;
+    }
+  });
+
+  const user = await this.findOneAndUpdate(
+    { user_id: userId },
+    { $set: setObj, $setOnInsert: { fechaRegistro: new Date() } },
+    { upsert: true, new: true }
+  );
   return user;
 };
 

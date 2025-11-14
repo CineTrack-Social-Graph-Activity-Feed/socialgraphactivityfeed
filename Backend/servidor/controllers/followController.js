@@ -38,8 +38,8 @@ const followUser = async (req, res) => {
 
     // Verificar que ambos usuarios existan
     const [follower, followed] = await Promise.all([
-      User.findById(follower_user_id),
-      User.findById(followed_user_id),
+      User.findOne({ _id: follower_user_id, activated: { $ne: false } }),
+      User.findOne({ _id: followed_user_id, activated: { $ne: false } }),
     ]);
 
     if (!follower || !followed) {
@@ -142,8 +142,8 @@ const unfollowUser = async (req, res) => {
     }
 
     // Publicar evento con ids EXTERNOS si están disponibles
-    const follower = await User.findById(follower_user_id).select("user_id");
-    const followed = await User.findById(followed_user_id).select("user_id");
+    const follower = await User.findOne({ _id: follower_user_id }).select("user_id");
+    const followed = await User.findOne({ _id: followed_user_id }).select("user_id");
     const followerExternalId =
       follower && follower.user_id !== undefined && follower.user_id !== null
         ? follower.user_id
@@ -183,7 +183,7 @@ const getFeed = async (req, res) => {
     }
 
     // Verificar que el usuario exista
-    const user = await User.findOne({ _id: user_id });
+    const user = await User.findOne({ _id: user_id, activated: { $ne: false } });
     if (!user) {
       return res.status(404).json({
         error: "Usuario no encontrado",
@@ -202,6 +202,7 @@ const getFeed = async (req, res) => {
 
     const userIdNumber = await User.find({
       _id: { $in: followedUserIds },
+      activated: { $ne: false },
     }).select("user_id");
 
     const userIdNumberMapped = userIdNumber.map((u) => u.user_id);
@@ -278,6 +279,7 @@ const getFollowedUsers = async (req, res) => {
     // Obtener los datos de los usuarios seguidos
     const users = await User.find({
       _id: { $in: followedUserIds },
+      activated: { $ne: false },
     })
       .select("username avatar_url")
       .sort({ created_at: -1 })
@@ -285,8 +287,9 @@ const getFollowedUsers = async (req, res) => {
       .limit(limit);
 
     // Obtener total de seguidos para paginación
-    const totalFollowedUsers = await Follow.countDocuments({
-      follower_user_id: user_id,
+    const totalFollowedUsers = await User.countDocuments({
+      _id: { $in: followedUserIds },
+      activated: { $ne: false },
     });
 
     const totalPages = Math.ceil(totalFollowedUsers / limit);
@@ -335,6 +338,7 @@ const getFollowersUsers = async (req, res) => {
     // Obtener los datos de los usuarios seguidos
     const users = await User.find({
       _id: { $in: followerUserIds },
+      activated: { $ne: false },
     })
       .select("username avatar_url")
       .sort({ created_at: -1 })
@@ -342,8 +346,9 @@ const getFollowersUsers = async (req, res) => {
       .limit(limit);
 
     // Obtener total de seguidos para paginación
-    const totalFollowersUsers = await Follow.countDocuments({
-      follower_user_id: user_id,
+    const totalFollowersUsers = await User.countDocuments({
+      _id: { $in: followerUserIds },
+      activated: { $ne: false },
     });
 
     const totalPages = Math.ceil(totalFollowersUsers / limit);

@@ -69,6 +69,9 @@ npm start
 - `usuarios.usuario.creado` - Nuevo usuario registrado
 - `usuarios.sesion.iniciada` - Usuario inició sesión
 - `usuarios.sesion.finalizada` - Usuario cerró sesión
+- `usuarios.usuario.eliminado` - Usuario se dio de baja
+- `usuarios.usuario.actualizado` - Usuario actualizado
+- `usuarios.usuario.reactivado` - Usuario reactivo su cuenta
 
 ### Eventos de Reseñas
 - `resenas.resena.creada` - Nueva reseña creada

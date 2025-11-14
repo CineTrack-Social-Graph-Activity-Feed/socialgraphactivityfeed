@@ -74,7 +74,7 @@ const getUser = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ user_id: user_id });
+    const user = await User.findOne({ user_id: user_id, activated: { $ne: false } });
 
     if (!user) {
       return res.status(404).json({
@@ -120,7 +120,8 @@ const searchUsers = async (req, res) => {
 
     // Buscar usuarios que contengan el texto en el username
     const users = await User.find({
-      username: { $regex: q.trim(), $options: 'i' }
+      username: { $regex: q.trim(), $options: 'i' },
+      activated: { $ne: false }
     })
     .select('username email avatar_url created_at')
     .sort({ username: 1 })
@@ -129,7 +130,8 @@ const searchUsers = async (req, res) => {
 
     // Obtener total de resultados
     const totalUsers = await User.countDocuments({
-      username: { $regex: q.trim(), $options: 'i' }
+      username: { $regex: q.trim(), $options: 'i' },
+      activated: { $ne: false }
     });
 
     res.status(200).json({
@@ -186,7 +188,7 @@ const updateUser = async (req, res) => {
     if (avatar_url !== undefined) updateData.avatar_url = avatar_url;
 
     // Buscar usuario
-    const user = await User.findOne({ _id: user_id });
+    const user = await User.findOne({ _id: user_id, activated: { $ne: false } });
 
     if (!user) {
       return res.status(404).json({
@@ -285,7 +287,7 @@ const getUserByUsername = async (req, res) => {
   try {
     const { username } = req.params;
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username, activated: { $ne: false } });
     
     if (!user) {
       return res.status(404).json({
@@ -314,7 +316,7 @@ const getUserByUsername = async (req, res) => {
  */
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}).select('-__v');
+    const users = await User.find({ activated: { $ne: false } }).select('-__v');
     
     res.status(200).json({
       users: users.map(user => ({

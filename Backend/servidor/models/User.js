@@ -29,6 +29,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  // Visibilidad del usuario en el sistema
+  activated: {
+    type: Boolean,
+    default: true,
+    index: true
+  },
+  deletedAt: {
+    type: Date,
+    default: null
+  },
+  reactivatedAt: {
+    type: Date,
+    default: null
+  },
   created_at: {
     type: Date,
     default: Date.now
@@ -41,5 +55,6 @@ const userSchema = new mongoose.Schema({
 userSchema.index({ username: 1 });
 userSchema.index({ email: 1 });
 userSchema.index({ user_id: 1 });
+userSchema.index({ activated: 1 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -47,6 +47,15 @@ const addComment = async (req, res) => {
       return res.status(403).json({ error: "No puedes actuar en nombre de otro usuario" });
     }
 
+    // Bloquear acciones si el usuario está desactivado
+    const actingUser = await User.findOne({ _id: user_id });
+    if (!actingUser) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    if (actingUser.activated === false) {
+      return res.status(403).json({ error: "Usuario desactivado" });
+    }
+
     // Validar target_type
     const validTargetTypes = ["review", "rating", "list"];
     if (!validTargetTypes.includes(target_type)) {
@@ -93,9 +102,17 @@ const addComment = async (req, res) => {
         console.log(`❌ addComment - Usuario no encontrado: ${user_id}`);
         return res.status(404).json({ error: "Usuario no encontrado" });
       }
+      if (user.activated === false) {
+        return res.status(403).json({ error: "Usuario desactivado" });
+      }
       console.log(`✅ addComment - Usuario encontrado: ${user.username}`);
     } else {
-      if (user) console.log(`ℹ️ addComment[DEMO] - Usuario encontrado para enriquecer: ${user.username}`);
+      if (user) {
+        if (user.activated === false) {
+          return res.status(403).json({ error: "Usuario desactivado" });
+        }
+        console.log(`ℹ️ addComment[DEMO] - Usuario encontrado para enriquecer: ${user.username}`);
+      }
       else console.log(`ℹ️ addComment[DEMO] - Usuario no existe, continuamos igualmente`);
     }
 
@@ -336,7 +353,8 @@ const getPublicationComments = async (req, res) => {
 
       const memEnriched = await Promise.all(
         mem.map(async (c) => {
-          const u = await User.findById(c.user_id).select("username avatar_url");
+          const u = await User.findById(c.user_id).select("username avatar_url activated");
+          if (u && u.activated === false) return null;
           return {
             id: c.id,
             user: {
@@ -350,7 +368,9 @@ const getPublicationComments = async (req, res) => {
         })
       );
 
-      const dbNormalized = dbComments.map((comment) => ({
+      const dbNormalized = dbComments
+        .filter((comment) => comment.user_id && comment.user_id.activated !== false)
+        .map((comment) => ({
         id: comment._id,
         user: {
           id: comment.user_id._id,
@@ -362,7 +382,7 @@ const getPublicationComments = async (req, res) => {
       }));
 
       // Merge memoria + DB y paginar
-      const merged = [...memEnriched, ...dbNormalized].sort(
+      const merged = [...memEnriched.filter(Boolean), ...dbNormalized].sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
       const totalComments = merged.length;
@@ -379,15 +399,16 @@ const getPublicationComments = async (req, res) => {
       });
     } else {
       const comments = await Comment.find({ target_id: publication_id })
-        .populate("user_id", "username avatar_url")
+        .populate("user_id", "username avatar_url activated")
         .sort({ created_at: -1 })
         .skip(skip)
         .limit(limit);
 
-      const totalComments = await Comment.countDocuments({ target_id: publication_id });
+      const filteredComments = comments.filter((c) => c.user_id && c.user_id.activated !== false);
+      const totalComments = filteredComments.length;
 
       return res.status(200).json({
-        comments: comments.map((comment) => ({
+        comments: filteredComments.map((comment) => ({
           id: comment._id,
           user: {
             id: comment.user_id._id,
