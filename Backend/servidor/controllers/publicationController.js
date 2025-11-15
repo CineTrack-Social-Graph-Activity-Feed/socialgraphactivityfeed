@@ -142,6 +142,11 @@ const getPublication = async (req, res) => {
       });
     }
 
+    // Ocultar publicaciones marcadas como eliminadas (soft delete)
+    if (publication.isDeleted === true) {
+      return res.status(404).json({ error: 'Publicación no encontrada' });
+    }
+
     // Construir respuesta compatible con ambos formatos
     const response = {
       id: publication._id,

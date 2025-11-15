@@ -217,6 +217,7 @@ const getFeed = async (req, res) => {
     // Obtener publicaciones de usuarios seguidos (incluyendo el propio)
     const publications = await Publication.find({
       user_id: { $in: userIdNumberMapped },
+      isDeleted: { $ne: true },
     })
       .populate("user_id", "username avatar_url")
       .sort({ created_at: -1 })
@@ -231,6 +232,7 @@ const getFeed = async (req, res) => {
     // Obtener total de publicaciones para paginación
     const totalPublications = await Publication.countDocuments({
       user_id: { $in: userIdNumberMapped },
+      isDeleted: { $ne: true },
     });
 
     const totalPages = Math.ceil(totalPublications / limit);
