@@ -31,10 +31,14 @@ class UserHandler {
       logger.success('UserHandler', `Usuario creado/actualizado: ${user.user_id}`, {
         userId: user.user_id,
         username: user.username,
-        pais: user.pais
+        pais: user.pais,
+        avatar_url: user.avatar_url,
+        email: user.email,
+        activated: user.activated
       });
 
       return user;
+      
     } catch (error) {
       logger.error('UserHandler', `Error al crear usuario: ${error.message}`, {
         eventData,
@@ -160,23 +164,21 @@ async handleUserReactivated(eventData) {
 */
 async handleUserUpdated(eventData) {
   try {
-    const actualData = (eventData.data && eventData.data.data) || eventData.data || eventData;
-    const idUsuarioRaw = actualData.idUsuario || eventData.idUsuario;
-    const camposActualizados = actualData.camposActualizados || actualData.updatedFields || [];
-    const fechaActualizacion = actualData.fechaActualizacion || actualData.fecha_actualizacion;
+    const actualData = eventData.data || eventData;
+    const idUsuarioRaw = actualData.idUsuario || actualData.user_id;
     const idUsuario = normalizeExternalUserId(idUsuarioRaw);
-    logger.info('UserHandler', `Procesando usuario actualizado: raw=${idUsuarioRaw} normalizado=${idUsuario} campos=${JSON.stringify(camposActualizados)}`);
-    
-    // Construir objeto con los valores presentes únicamente de camposActualizados
-    const fieldValues = {};
-    (camposActualizados || []).forEach((campo) => {
-      if (campo in actualData) {
-        fieldValues[campo] = actualData[campo];
-      }
+    logger.info('UserHandler', `Procesando usuario actualizado (full overwrite): raw=${idUsuarioRaw} normalizado=${idUsuario}`);
+
+    // Ejecutar overwrite completo (sin tocar activated si no viene)
+    const user = await User.overwriteFromFullUpdateEvent({ data: { ...actualData, idUsuario } });
+    logger.success('UserHandler', `Usuario sobreescrito: ${user.user_id}`, {
+      userId: user.user_id,
+      username: user.username,
+      pais: user.pais,
+      avatar_url: user.avatar_url,
+      email: user.email,
+      activated: user.activated
     });
-    
-    const user = await User.partialUpdate(idUsuario, fieldValues, fechaActualizacion);
-    logger.success('UserHandler', `Usuario actualizado: ${user.user_id}`, { userId: user.user_id, updatedFields: Object.keys(fieldValues) });
     return user;
   } catch (error) {
     logger.error('UserHandler', `Error al actualizar usuario: ${error.message}`, { eventData, error: error.stack });

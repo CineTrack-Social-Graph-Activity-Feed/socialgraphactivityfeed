@@ -21,6 +21,15 @@ const userSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 30
   },
+  // Email opcional (lo usamos, pero no agregamos campos extra del evento)
+  email: {
+    type: String,
+    unique: true,
+    sparse: true,
+    lowercase: true,
+    trim: true,
+    default: null
+  },
   avatar_url: {
     type: String,
     default: null
@@ -56,6 +65,7 @@ const userSchema = new mongoose.Schema({
     default: null,
     trim: true
   },
+  // (Ignoramos campos avanzados del evento como bio, location, etc.)
   fechaRegistro: {
     type: Date,
     default: Date.now
@@ -77,6 +87,7 @@ userSchema.index({ user_id: 1 });
 userSchema.index({ username: 1 });
 userSchema.index({ fechaRegistro: -1 });
 userSchema.index({ activated: 1, user_id: 1 });
+userSchema.index({ email: 1 });
 
 /**
  * Crear o actualizar usuario desde evento del Core
@@ -86,9 +97,11 @@ userSchema.statics.createOrUpdateFromEvent = async function(eventData) {
   // Extraer datos del formato del Core (pueden estar anidados)
   const actualData = eventData.data || eventData;
   const idUsuario = actualData.idUsuario || eventData.idUsuario || eventData.user_id;
-  const nombre = actualData.nombre || eventData.nombre || actualData.name;
+  const username = actualData.username || eventData.username;
   const pais = actualData.pais || eventData.pais || actualData.country;
   const fechaRegistro = actualData.fechaRegistro || eventData.fechaRegistro || actualData.created_at;
+  const avatar_url = actualData.imageUrl || eventData.imageUrl || actualData.avatar_url || eventData.avatar_url;
+  const email = actualData.email || eventData.email;
 
   if (!idUsuario) {
     throw new Error('No se pudo extraer idUsuario del evento');
@@ -97,9 +110,11 @@ userSchema.statics.createOrUpdateFromEvent = async function(eventData) {
   // Construir set solo con campos definidos para evitar duplicados en índices únicos (email=null)
   const userData = {
     user_id: idUsuario,
-    username: nombre || undefined,
+    username: username || undefined,
+    email: email ? String(email).toLowerCase().trim() : undefined,
     pais: pais || undefined,
     fechaRegistro: fechaRegistro ? new Date(fechaRegistro) : new Date(),
+    avatar_url: avatar_url || undefined,
     syncedAt: new Date()
   };
 
@@ -109,6 +124,49 @@ userSchema.statics.createOrUpdateFromEvent = async function(eventData) {
     { upsert: true, new: true, runValidators: false }
   );
 
+  return user;
+};
+
+/**
+ * Sobrescribir usuario desde evento completo de actualización (usuarios.usuario.actualizado)
+ * No borra activated si no viene en el evento.
+ */
+userSchema.statics.overwriteFromFullUpdateEvent = async function(eventData) {
+  const actualData = eventData.data || eventData;
+  const idUsuario = actualData.idUsuario || actualData.user_id || eventData.idUsuario || eventData.user_id;
+  if (!idUsuario) throw new Error('No se pudo extraer idUsuario del evento actualizado');
+  const normalizedId = Number(String(idUsuario).replace(/\D+/g, ''));
+  if (!normalizedId) throw new Error('idUsuario inválido en evento actualizado');
+
+  // Seleccionar sólo los campos que usamos
+  const username = actualData.username;
+  const pais = actualData.pais;
+  const fechaRegistro = actualData.fechaRegistro || actualData.fechaRegistroUsuario || actualData.created_at;
+  const avatar_url = actualData.imageUrl || actualData.avatar_url;
+  const email = actualData.email;
+  const baseSet = {
+    user_id: normalizedId,
+    username: username || undefined,
+    pais: pais || undefined,
+    fechaRegistro: fechaRegistro ? new Date(fechaRegistro) : undefined,
+    avatar_url: avatar_url || undefined,
+    email: email ? String(email).toLowerCase().trim() : undefined,
+    syncedAt: new Date()
+  };
+
+  // Upsert conservando activated si no viene
+  const current = await this.findOne({ user_id: normalizedId });
+  if (current && !Object.prototype.hasOwnProperty.call(actualData, 'activated')) {
+    baseSet.activated = current.activated; // mantener estado
+  } else if (Object.prototype.hasOwnProperty.call(actualData, 'activated')) {
+    baseSet.activated = !!actualData.activated;
+  }
+
+  const user = await this.findOneAndUpdate(
+    { user_id: normalizedId },
+    { $set: baseSet },
+    { upsert: true, new: true }
+  );
   return user;
 };
 
