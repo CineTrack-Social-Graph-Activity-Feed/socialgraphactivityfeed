@@ -499,6 +499,127 @@ describe('Post Component - Comprehensive Tests', () => {
 
       consoleWarnSpy.mockRestore();
     });
+
+    it('debe aplicar optimistic update al dar like', async () => {
+      const mockPosts = [
+        {
+          _doc: {
+            _id: 'post1',
+            movie_id: 1,
+            content: 'Test',
+            type: 'review',
+            rating: 5,
+            has_spoilers: false,
+            createdAt: new Date().toISOString(),
+          },
+          author: { username: 'User1', avatar_url: 'avatar.jpg' },
+        },
+      ];
+
+      mockFetchWithAuth
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ user: { id: 'user123', username: 'TestUser' } }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ feed: mockPosts }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ movie: { titulo: 'Movie', poster: 'poster.jpg' } }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ likes: [], total_likes: 0 }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ comments: [] }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ like: { id: 'like123' } }),
+        });
+
+      render(<Post />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Movie')).toBeInTheDocument();
+      });
+
+      const likeButton = screen.getByLabelText('Like post');
+      await userEvent.click(likeButton);
+
+      // Verificar que se llamó al endpoint de like
+      await waitFor(() => {
+        expect(mockFetchWithAuth).toHaveBeenCalledWith(
+          expect.stringContaining('/api/like'),
+          expect.objectContaining({ method: 'POST' })
+        );
+      });
+    });
+
+    it('debe revertir optimistic update si falla el like', async () => {
+      const mockPosts = [
+        {
+          _doc: {
+            _id: 'post1',
+            movie_id: 1,
+            content: 'Test',
+            type: 'review',
+            rating: 5,
+            has_spoilers: false,
+            createdAt: new Date().toISOString(),
+          },
+          author: { username: 'User1', avatar_url: 'avatar.jpg' },
+        },
+      ];
+
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+      mockFetchWithAuth
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ user: { id: 'user123', username: 'TestUser' } }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ feed: mockPosts }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ movie: { titulo: 'Movie', poster: 'poster.jpg' } }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ likes: [], total_likes: 0 }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ comments: [] }),
+        })
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 500,
+        });
+
+      render(<Post />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Movie')).toBeInTheDocument();
+      });
+
+      const likeButton = screen.getByLabelText('Like post');
+      await userEvent.click(likeButton);
+
+      // El estado debe revertirse tras el error
+      await waitFor(() => {
+        expect(consoleWarnSpy).toHaveBeenCalled();
+      });
+
+      consoleWarnSpy.mockRestore();
+    });
   });
 
   describe('Funcionalidad de Comentarios', () => {
@@ -616,6 +737,82 @@ describe('Post Component - Comprehensive Tests', () => {
         expect(mockFetchWithAuth).toHaveBeenCalledWith(
           expect.stringContaining('/api/comment'),
           expect.objectContaining({ method: 'POST' })
+        );
+      });
+    });
+
+    it('debe aplicar optimistic update al agregar comentario', async () => {
+      const mockPosts = [
+        {
+          _doc: {
+            _id: 'post1',
+            movie_id: 1,
+            content: 'Test',
+            type: 'review',
+            rating: 5,
+            has_spoilers: false,
+            createdAt: new Date().toISOString(),
+          },
+          author: { username: 'User1', avatar_url: 'avatar.jpg' },
+        },
+      ];
+
+      mockFetchWithAuth
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ user: { id: 'user123', username: 'TestUser' } }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ feed: mockPosts }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ movie: { titulo: 'Movie', poster: 'poster.jpg' } }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ likes: [], total_likes: 0 }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ comments: [] }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ comment: { id: 'comment123' } }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: async () => ({ 
+            comments: [{ 
+              id: 'comment123', 
+              comment: 'Optimistic!', 
+              user: { id: 'user123', username: 'TestUser' }
+            }] 
+          }),
+        });
+
+      render(<Post />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Movie')).toBeInTheDocument();
+      });
+
+      const commentInput = screen.getByPlaceholderText('Escribe un comentario...');
+      await userEvent.type(commentInput, 'Optimistic!');
+      
+      const commentButton = screen.getByLabelText('Comment');
+      await userEvent.click(commentButton);
+
+      // El comentario debe aparecer inmediatamente (optimistic update)
+      await waitFor(() => {
+        expect(mockFetchWithAuth).toHaveBeenCalledWith(
+          expect.stringContaining('/api/comment'),
+          expect.objectContaining({ 
+            method: 'POST',
+            body: expect.stringContaining('Optimistic!')
+          })
         );
       });
     });
