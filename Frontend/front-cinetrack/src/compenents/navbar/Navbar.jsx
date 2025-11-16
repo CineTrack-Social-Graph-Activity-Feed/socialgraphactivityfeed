@@ -217,12 +217,15 @@ function Navbar() {
                     <li key={normId} className="search-item">
                       <img
                         src={
-                          u.avatar_url
-                            ? u.avatar_url
-                            : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+                          u.avatar_url ||
+                          "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
                         }
                         alt={u.username}
                         className="avatar"
+                        onError={(e) => {
+                          e.target.src =
+                            "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg";
+                        }}
                       />
                       <span className="username-dropdown">{u.username}</span>
 
