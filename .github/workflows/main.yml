@@ -150,12 +150,19 @@ jobs:
           # Create deployment directory
           mkdir -p deployment
           
-          # Copy backend files
-          cp -r Backend/servidor/* deployment/
+          # Copy backend files (including hidden files)
+          cp -r Backend/servidor/. deployment/
+          
+          # Remove test files and unnecessary files
+          rm -rf deployment/__tests__
+          rm -rf deployment/coverage
+          rm -f deployment/*.test.js
+          rm -f deployment/jest.config.js
+          rm -f deployment/jest.setup.js
           
           # Install production dependencies
           cd deployment
-          npm install --omit=dev
+          npm ci --only=production
   
 
       # Nota: La configuración del entorno (env vars, healthcheck, CORS) la gestiona Terraform
