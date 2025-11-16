@@ -184,7 +184,7 @@ describe('MovieController', () => {
 
   describe('deleteMovie', () => {
     it('should delete movie successfully', async () => {
-      Movie.deleteOne = jest.fn().mockResolvedValue({ deletedCount: 1 });
+      Movie.markInactive = jest.fn().mockResolvedValue({ movie_id: 12345, activa: false });
 
       const req = mockRequest({}, { movie_id: '12345' });
       const res = mockResponse();
@@ -192,11 +192,11 @@ describe('MovieController', () => {
       await movieController.deleteMovie(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(Movie.deleteOne).toHaveBeenCalledWith({ movie_id: 12345 });
+      expect(Movie.markInactive).toHaveBeenCalledWith(12345);
     });
 
     it('should return 404 if movie not found', async () => {
-      Movie.deleteOne = jest.fn().mockResolvedValue({ deletedCount: 0 });
+      Movie.markInactive = jest.fn().mockResolvedValue(null);
 
       const req = mockRequest({}, { movie_id: '99999' });
       const res = mockResponse();
@@ -216,7 +216,7 @@ describe('MovieController', () => {
     });
 
     it('should handle errors', async () => {
-      Movie.deleteOne = jest.fn().mockRejectedValue(new Error('Database error'));
+      Movie.markInactive = jest.fn().mockRejectedValue(new Error('Database error'));
 
       const req = mockRequest({}, { movie_id: '12345' });
       const res = mockResponse();

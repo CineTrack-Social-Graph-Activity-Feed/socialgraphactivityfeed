@@ -159,7 +159,7 @@ describe('Movie Model', () => {
 
         const result = await Movie.getByMovieIds(movieIds);
 
-        expect(Movie.find).toHaveBeenCalledWith({ movie_id: { $in: movieIds } });
+        expect(Movie.find).toHaveBeenCalledWith({ movie_id: { $in: movieIds }, activa: { $ne: false } });
         expect(result).toHaveLength(3);
       });
     });
