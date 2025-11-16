@@ -128,8 +128,30 @@ function Post({}) {
     const publicationId = post?._doc?._id ?? post?.id;
     const targetType = post?._doc?.type ?? post?.type;
 
-    const text = (commentByPost?.[publicationId] || "").trim(); // 👈 de commentByPost
+    const text = (commentByPost?.[publicationId] || "").trim();
     if (!text) return;
+
+    // 🚀 OPTIMISTIC UPDATE: agregar comentario inmediatamente
+    const optimisticComment = {
+      id: `temp-${Date.now()}`,
+      _id: `temp-${Date.now()}`,
+      comment: text,
+      user: {
+        id: perfil.id,
+        username: perfil.username,
+        avatar_url: perfil.avatar_url,
+      },
+      created_at: new Date().toISOString(),
+      isPending: true, // flag para styling opcional
+    };
+
+    setCommentsByPost((prev) => ({
+      ...prev,
+      [publicationId]: [...(prev[publicationId] || []), optimisticComment],
+    }));
+
+    // Limpiar textarea inmediatamente
+    setCommentByPost((prev) => ({ ...prev, [publicationId]: "" }));
 
     try {
       const res = await fetchWithAuth(`http://localhost:3000/api/comment`, {
@@ -142,8 +164,10 @@ function Post({}) {
           comment: text,
         }),
       });
+      
       if (!res.ok) throw new Error(`Error ${res.status}`);
 
+      // Recargar comentarios con IDs reales del backend
       const resComments = await fetchWithAuth(
         `http://localhost:3000/api/comment/publication/${String(publicationId)}`
       );
@@ -156,11 +180,20 @@ function Post({}) {
         );
         return { ...prev, [publicationId]: unique };
       });
-
-      // limpiar SOLO este textarea (misma key)
-      setCommentByPost((prev) => ({ ...prev, [publicationId]: "" }));
     } catch (err) {
       console.error("❌ Error al guardar comentario:", err);
+      
+      // Revertir optimistic update en caso de error
+      setCommentsByPost((prev) => ({
+        ...prev,
+        [publicationId]: (prev[publicationId] || []).filter(
+          (c) => c.id !== optimisticComment.id
+        ),
+      }));
+      
+      // Restaurar el texto en el textarea
+      setCommentByPost((prev) => ({ ...prev, [publicationId]: text }));
+      
       alert(`Error al guardar comentario: ${err.message}`);
     }
   };
@@ -261,46 +294,52 @@ function Post({}) {
         like_id: null,
       };
 
-      // Intento primero con el backend
+      const postId = post._doc._id;
+      
+      // 🚀 OPTIMISTIC UPDATE: actualizar UI inmediatamente
+      setLikesByPost((prev) => ({
+        ...prev,
+        [postId]: {
+          total_likes: (prev[postId]?.total_likes || 0) + (!state.liked ? 1 : -1),
+          liked: !state.liked,
+          like_id: state.like_id,
+        },
+      }));
+
+      // Intento con el backend en background
       try {
         if (!state.liked) {
           // 👉 Dar like
-          console.log("Enviando like:", {
-            user_id: perfil.id,
-            target_id: post._doc._id,
-            target_type: post._doc.type,
-          });
-
           const res = await fetchWithAuth(`http://localhost:3000/api/like`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               user_id: perfil.id,
-              target_id: post._doc._id,
+              target_id: postId,
               target_type: post._doc.type,
             }),
           });
 
-          // Procesar respuesta
-          const data = await res.json();
-          console.log("Respuesta al dar like:", {
-            status: res.status,
-            ok: res.ok,
-            data: data,
-          });
-
-          if (res.ok) {
-            // Éxito con el backend
-            refreshLikes(post._doc._id);
-            return;
+          if (!res.ok) {
+            // Revertir optimistic update si falla
+            setLikesByPost((prev) => ({
+              ...prev,
+              [postId]: state,
+            }));
+            throw new Error("Error al dar like");
           }
+
+          const data = await res.json();
+          // Actualizar con el like_id real del backend
+          setLikesByPost((prev) => ({
+            ...prev,
+            [postId]: {
+              ...prev[postId],
+              like_id: data.like?.id || data.id,
+            },
+          }));
         } else {
           // 👉 Quitar like
-          console.log("Eliminando like:", {
-            like_id: state.like_id,
-            user_id: userId,
-          });
-
           const res = await fetchWithAuth(
             `http://localhost:3000/api/like/${state.like_id}`,
             {
@@ -310,22 +349,33 @@ function Post({}) {
             }
           );
 
-          if (res.ok) {
-            // Éxito con el backend
-            refreshLikes(post._doc._id);
-            return;
+          if (!res.ok) {
+            // Revertir optimistic update si falla
+            setLikesByPost((prev) => ({
+              ...prev,
+              [postId]: state,
+            }));
+            throw new Error("Error al quitar like");
           }
+
+          // Limpiar like_id
+          setLikesByPost((prev) => ({
+            ...prev,
+            [postId]: {
+              ...prev[postId],
+              like_id: null,
+            },
+          }));
         }
       } catch (backendErr) {
         console.warn(
           "Error con el backend al procesar like:",
           backendErr.message
         );
-        alert(`No se pudo procesar el like: ${backendErr.message}`);
+        // El optimistic update ya fue revertido en los catch anteriores
       }
     } catch (err) {
       console.error("Error en handleLike:", err);
-      alert(`Error al procesar like: ${err.message}`);
     }
   };
 

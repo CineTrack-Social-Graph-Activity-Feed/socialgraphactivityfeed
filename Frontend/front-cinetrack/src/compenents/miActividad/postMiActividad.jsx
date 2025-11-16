@@ -129,6 +129,27 @@ function PostMiActividad() {
     const publicationId = post?.id;
     const text = (commentByPost[publicationId] || '').trim();
     if (!text) return;
+
+    // 🚀 OPTIMISTIC UPDATE: agregar comentario inmediatamente
+    const optimisticComment = {
+      id: `temp-${Date.now()}`,
+      _id: `temp-${Date.now()}`,
+      comment: text,
+      user: {
+        id: perfil?.id || perfil?._id,
+        username: perfil?.username,
+        avatar_url: perfil?.avatar_url,
+      },
+      created_at: new Date().toISOString(),
+      isPending: true,
+    };
+
+    setCommentsByPost(prev => ({
+      ...prev,
+      [publicationId]: [...(prev[publicationId] || []), optimisticComment]
+    }));
+    setCommentByPost(prev => ({ ...prev, [publicationId]: '' }));
+
     try {
       const res = await fetchWithAuth(`http://localhost:3000/api/comment`, {
         method: 'POST',
@@ -136,34 +157,74 @@ function PostMiActividad() {
         body: JSON.stringify({ user_id: perfil?.id || perfil?._id, target_type: post.type, target_id: publicationId, comment: text })
       });
       if (!res.ok) throw new Error(`Error ${res.status}`);
+      
+      // Recargar con IDs reales
       const resComments = await fetchWithAuth(`http://localhost:3000/api/comment/publication/${String(publicationId)}`);
       const dataComments = await resComments.json();
       setCommentsByPost(prev => ({ ...prev, [publicationId]: (dataComments.comments || []).filter((c,i,arr)=> i===arr.findIndex(x=> (x._id??x.id)===(c._id??c.id)) ) }));
-      setCommentByPost(prev => ({ ...prev, [publicationId]: '' }));
     } catch (err) {
       console.error('❌ Error guardar comentario:', err);
+      
+      // Revertir optimistic update
+      setCommentsByPost(prev => ({
+        ...prev,
+        [publicationId]: (prev[publicationId] || []).filter(c => c.id !== optimisticComment.id)
+      }));
+      setCommentByPost(prev => ({ ...prev, [publicationId]: text }));
+      
       alert(`Error al guardar comentario: ${err.message}`);
     }
   };
 
   const handleLike = async (post) => {
     const state = likesByPost[post.id] || { liked: false, like_id: null };
+    
+    // 🚀 OPTIMISTIC UPDATE: actualizar UI inmediatamente
+    setLikesByPost(prev => ({
+      ...prev,
+      [post.id]: {
+        total_likes: (prev[post.id]?.total_likes || 0) + (!state.liked ? 1 : -1),
+        liked: !state.liked,
+        like_id: state.like_id,
+      }
+    }));
+
     try {
       if (!state.liked) {
         const res = await fetchWithAuth(`http://localhost:3000/api/like`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: perfil?.id || perfil?._id, target_id: post.id, target_type: post.type })
         });
-        if (!res.ok) return;
+        if (!res.ok) {
+          // Revertir si falla
+          setLikesByPost(prev => ({ ...prev, [post.id]: state }));
+          return;
+        }
+        const data = await res.json();
+        // Actualizar con like_id real
+        setLikesByPost(prev => ({
+          ...prev,
+          [post.id]: { ...prev[post.id], like_id: data.like?.id || data.id }
+        }));
       } else {
         const res = await fetchWithAuth(`http://localhost:3000/api/like/${state.like_id}`, {
           method: 'DELETE', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: perfil?.id || perfil?._id })
         });
-        if (!res.ok) return;
+        if (!res.ok) {
+          // Revertir si falla
+          setLikesByPost(prev => ({ ...prev, [post.id]: state }));
+          return;
+        }
+        // Limpiar like_id
+        setLikesByPost(prev => ({
+          ...prev,
+          [post.id]: { ...prev[post.id], like_id: null }
+        }));
       }
-      refreshLikes(post.id);
     } catch (err) {
+      // Revertir en caso de error
+      setLikesByPost(prev => ({ ...prev, [post.id]: state }));
       alert(`Error like: ${err.message}`);
     }
   };
