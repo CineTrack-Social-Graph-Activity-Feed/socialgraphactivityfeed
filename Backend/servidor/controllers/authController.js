@@ -109,9 +109,14 @@ async function me(req, res) {
             dbUser = await User.findOne({ user_id: userId });
         }
         
-        // Si encontramos el usuario en DB, devolver sus datos serializados
+        // Si encontramos el usuario en DB, mergear con los claims del JWT
         if (dbUser) {
-            return res.status(200).json({ user: serializeUser(dbUser) });
+            return res.status(200).json({ 
+                user: {
+                    ...claims, // Mantener todos los campos del JWT (sub, email, role, etc.)
+                    ...serializeUser(dbUser), // Sobrescribir con datos actualizados de MongoDB
+                }
+            });
         }
         
         // Fallback: devolver solo los claims del JWT
