@@ -14,7 +14,7 @@ class Database {
    */
   async connect() {
     try {
-      const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/socialgraphactivityfeed';
+      const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/socialgraphactivityfeed';
       
       await mongoose.connect(mongoUri, {
         useNewUrlParser: true,
