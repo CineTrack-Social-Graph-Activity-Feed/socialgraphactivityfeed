@@ -1,0 +1,17 @@
+# Ignorar archivos innecesarios en la imagen Docker
+node_modules
+npm-debug.log
+.env
+.env.local
+.env.*.local
+.git
+.gitignore
+*.md
+docker-compose.yml
+.vscode
+.idea
+*.log
+coverage
+.nyc_output
+dist
+build

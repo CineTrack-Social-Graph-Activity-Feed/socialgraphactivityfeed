@@ -46,6 +46,25 @@ variable "enable_random_suffix" {
   default     = true
 }
 
+# Consumer ECS Configuration
+variable "consumer_cpu" {
+  description = "CPU units for the consumer ECS task (256, 512, 1024, 2048, 4096)"
+  type        = string
+  default     = "256"
+}
+
+variable "consumer_memory" {
+  description = "Memory for the consumer ECS task in MB (512, 1024, 2048, etc.)"
+  type        = string
+  default     = "512"
+}
+
+variable "consumer_desired_count" {
+  description = "Desired number of consumer tasks to run"
+  type        = number
+  default     = 1
+}
+
 # NOTE: Terraform appends a random suffix when enable_random_suffix=true. Override the base
 # names above (or set enable_random_suffix=false) if you need predictable names for an existing
 # stack or a migration scenario.

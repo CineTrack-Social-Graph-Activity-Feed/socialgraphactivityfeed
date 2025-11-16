@@ -109,7 +109,9 @@ async function me(req, res) {
 module.exports = {
     login,
     refresh,
-    me
+    me,
+    normalizeProfile,
+    serializeUser
 };
 
 // ===== Helpers =====

@@ -362,6 +362,7 @@ const getPublicationLikes = async (req, res) => {
           };
         })
       );
+      console.log('DEBUG memEnriched:', JSON.stringify(memEnriched, null, 2));
 
       const dbNormalized = dbLikes
         .filter((like) => like.user_id && like.user_id.activated !== false)
@@ -393,35 +394,41 @@ const getPublicationLikes = async (req, res) => {
         },
       });
     } else {
-      // DB path
-      const likes = await Like.find({ target_id: publication_id })
-        .populate("user_id", "username avatar_url activated")
-        .sort({ created_at: -1 })
-        .skip(skip)
-        .limit(limit);
+      // DB path (CORREGIDO)
+      
+      // 1. Obtener TODOS los likes sin paginar
+      const allLikes = await Like.find({ target_id: publication_id })
+        .populate("user_id", "username avatar_url activated")
+        .sort({ created_at: -1 });
 
-      const filteredLikes = likes.filter((like) => like.user_id && like.user_id.activated !== false);
-      const totalLikes = filteredLikes.length;
+      // 2. Filtrar por usuarios activos
+      const filteredLikes = allLikes.filter((like) => like.user_id && like.user_id.activated !== false);
 
-      return res.status(200).json({
-        likes: filteredLikes.map((like) => ({
-          id: like._id,
-          user: {
-            id: like.user_id._id,
-            username: like.user_id.username,
-            avatar_url: like.user_id.avatar_url,
-          },
-          created_at: like.created_at,
-        })),
-        total_likes: totalLikes,
-        pagination: {
-          current_page: page,
-          total_pages: Math.ceil(totalLikes / limit),
-          total_items: totalLikes,
-          items_per_page: limit,
-        },
-      });
-    }
+      // 3. Calcular el total (ahora es correcto)
+      const totalLikes = filteredLikes.length;
+
+      // 4. Aplicar paginación manualmente
+      const paginatedLikes = filteredLikes.slice(skip, skip + limit);
+
+      return res.status(200).json({
+        likes: paginatedLikes.map((like) => ({ // Mapear solo la página
+          id: like._id,
+          user: {
+            id: like.user_id._id,
+            username: like.user_id.username,
+            avatar_url: like.user_id.avatar_url,
+          },
+          created_at: like.created_at,
+        })),
+        total_likes: totalLikes, // <-- Este total es correcto
+        pagination: {
+          current_page: page,
+          total_pages: Math.ceil(totalLikes / limit), // <-- Cálculo correcto
+          total_items: totalLikes,
+          items_per_page: limit,
+        },
+      });
+    }
   } catch (error) {
     console.error("Error en getPublicationLikes:", error);
     res.status(500).json({
