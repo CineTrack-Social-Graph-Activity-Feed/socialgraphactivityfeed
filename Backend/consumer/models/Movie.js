@@ -22,6 +22,12 @@ const movieSchema = new mongoose.Schema({
         trim: true,
         maxlength: 500
     },
+    // Estado de actividad (si la película está disponible / no eliminada)
+    activa: {
+        type: Boolean,
+        default: true,
+        index: true
+    },
     created_at: { type: Date, default: Date.now },
     updated_at: { type: Date, default: Date.now },
     syncedAt: { type: Date, default: Date.now }
@@ -31,6 +37,7 @@ const movieSchema = new mongoose.Schema({
 
 movieSchema.index({ movie_id: 1 });
 movieSchema.index({ titulo: 1 });
+movieSchema.index({ activa: 1, movie_id: 1 });
 
 /**
  * Normaliza el evento del Core y hace upsert por movie_id
@@ -43,6 +50,7 @@ movieSchema.statics.upsertFromEvent = async function (eventData) {
     const id = movieData.id ?? movieData.movie_id;
     const poster = movieData.poster || movieData.portada || movieData.poster_path;
     const titulo = movieData.titulo || movieData.title;
+    const activa = movieData.activa; // puede venir true/false
 
     if (id === undefined || poster === undefined || titulo === undefined) {
         throw new Error('Evento de película incompleto: se requieren id, poster y titulo');
@@ -55,6 +63,9 @@ movieSchema.statics.upsertFromEvent = async function (eventData) {
         updated_at: new Date(),
         syncedAt: new Date()
     };
+    if (activa !== undefined) {
+        update.activa = Boolean(activa);
+    }
 
     const movie = await this.findOneAndUpdate(
         { movie_id: Number(id) },
@@ -71,7 +82,7 @@ movieSchema.statics.getByMovieId = async function (movieId) {
 };
 
 /**
- * Eliminar película desde evento del Core
+ * Desactivar película (soft delete) desde evento del Core
  */
 movieSchema.statics.deleteFromEvent = async function (eventData) {
     const actualData = eventData?.data || eventData || {};
@@ -80,7 +91,11 @@ movieSchema.statics.deleteFromEvent = async function (eventData) {
     if (id === undefined || id === null) {
         throw new Error('Evento de borrado de película sin id');
     }
-    return await this.deleteOne({ movie_id: Number(id) });
+    return await this.findOneAndUpdate(
+        { movie_id: Number(id) },
+        { activa: false, updated_at: new Date(), syncedAt: new Date() },
+        { new: true }
+    );
 };
 
 module.exports = mongoose.model('Movie', movieSchema);

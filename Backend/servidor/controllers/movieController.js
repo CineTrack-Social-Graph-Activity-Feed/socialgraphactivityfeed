@@ -6,7 +6,7 @@ const Movie = require('../models/Movie');
  */
 const upsertMovie = async (req, res) => {
   try {
-    const { id, poster, titulo } = req.body;
+    const { id, poster, titulo, activa } = req.body;
 
     // Validaciones básicas
     if (!id || !poster || !titulo) {
@@ -27,7 +27,8 @@ const upsertMovie = async (req, res) => {
     const movie = await Movie.upsertFromMovieData({
       id: movieId,
       poster,
-      titulo
+      titulo,
+      activa
     });
 
     res.status(200).json({
@@ -36,6 +37,7 @@ const upsertMovie = async (req, res) => {
         id: movie.movie_id,
         poster: movie.poster,
         titulo: movie.titulo,
+        activa: movie.activa,
         created_at: movie.created_at,
         updated_at: movie.updated_at
       }
@@ -73,7 +75,7 @@ const getMovie = async (req, res) => {
 
     const movie = await Movie.getByMovieId(movieId);
 
-    if (!movie) {
+    if (!movie || movie.activa === false) {
       return res.status(404).json({
         error: 'Película no encontrada'
       });
@@ -84,6 +86,7 @@ const getMovie = async (req, res) => {
         id: movie.movie_id,
         poster: movie.poster,
         titulo: movie.titulo,
+        activa: movie.activa,
         created_at: movie.created_at,
         updated_at: movie.updated_at
       }
@@ -127,6 +130,7 @@ const getMovies = async (req, res) => {
         id: movie.movie_id,
         poster: movie.poster,
         titulo: movie.titulo,
+        activa: movie.activa,
         created_at: movie.created_at,
         updated_at: movie.updated_at
       })),
@@ -162,17 +166,14 @@ const deleteMovie = async (req, res) => {
       });
     }
 
-    const result = await Movie.deleteOne({ movie_id: movieId });
-
-    if (result.deletedCount === 0) {
-      return res.status(404).json({
-        error: 'Película no encontrada'
-      });
+    const movie = await Movie.markInactive(movieId);
+    if (!movie) {
+      return res.status(404).json({ error: 'Película no encontrada' });
     }
-
     res.status(200).json({
-      message: 'Película eliminada exitosamente',
-      movie_id: movieId
+      message: 'Película marcada como inactiva',
+      movie_id: movieId,
+      activa: movie.activa
     });
 
   } catch (error) {

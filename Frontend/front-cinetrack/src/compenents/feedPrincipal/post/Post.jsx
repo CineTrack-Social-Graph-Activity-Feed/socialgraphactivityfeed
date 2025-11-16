@@ -101,11 +101,18 @@ function Post({}) {
 
         const enriquecidos = feed.map((post) => ({
           ...post,
-          movie: movieMap.get(post._doc?.movie_id) ?? null, // <-- usar _doc.movie_id
+          movie: movieMap.get(post._doc?.movie_id) ?? null,
         }));
 
-        setPostsConPeli(enriquecidos);
-        console.log("Publicaciones enriquecidas:", enriquecidos);
+        // Si el post referencia una película y no la tenemos (404/inactiva), no se muestra
+        const filtrados = enriquecidos.filter((p) => {
+          const mid = p._doc?.movie_id;
+          if (mid === null || mid === undefined) return true; // posts sin película siguen
+          return !!p.movie; // solo mantener si la movie existe
+        });
+
+        setPostsConPeli(filtrados);
+        console.log("Publicaciones enriquecidas:", filtrados);
       } catch (err) {
         if (err.name !== "AbortError") {
           console.error("❌ Error al cargar posts o películas:", err);
@@ -463,7 +470,8 @@ function Post({}) {
   function renderPostByType(post) {
     const pid = post._doc._id;
     const isSpoiler = post._doc.has_spoilers && !revealedPosts[pid];
-    const hasPoster = !!post?.movie?.movie?.poster;
+    const movieData = post?.movie?.movie || null;
+    const hasPoster = !!movieData?.poster;
 
     return (
       <div className="post-spoiler" key={pid}>
@@ -510,7 +518,9 @@ function Post({}) {
 
           {/* Texto */}
           <div className="titulo-pelicula">
-            <h3>{post.movie.movie.titulo}</h3>
+            <h3>
+              {movieData ? movieData.titulo : "Película no disponible"}
+            </h3>
             <StarRating puntuacion={post._doc.rating} />{" "}
           </div>
           <div className="post-body">
@@ -521,7 +531,7 @@ function Post({}) {
               {/* Imagen (si existe) */}
               {hasPoster && (
                 <img
-                  src={post.movie.movie.poster}
+                  src={movieData.poster}
                   alt="post"
                   className="post-image"
                   onClick={() => setExpandedPoster(pid)}
@@ -726,12 +736,12 @@ function Post({}) {
             className="poster-lightbox"
             role="dialog"
             aria-modal="true"
-            aria-label={`Vista ampliada del poster de ${post.movie.movie.titulo}`}
+            aria-label={`Vista ampliada del poster de ${movieData?.titulo || "Película no disponible"}`}
             onClick={() => setExpandedPoster(null)}
           >
             <img
-              src={post.movie.movie.poster}
-              alt={`Poster de ${post.movie.movie.titulo}`}
+              src={movieData.poster}
+              alt={`Poster de ${movieData?.titulo || "Película no disponible"}`}
               className="poster-lightbox-image"
             />
           </div>

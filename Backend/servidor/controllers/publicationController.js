@@ -225,14 +225,15 @@ const getUserPublications = async (req, res) => {
       });
     }
 
-    // Intentar buscar usuario por ObjectId o por user_id (Core)
+    // Intentar buscar usuario por ObjectId (Mongo) o por user_id (Core numérico)
     let user;
     if (user_id.match(/^[0-9a-fA-F]{24}$/)) {
-      // Es un ObjectId válido
-      user = await User.findOne({ user_id: user_id, activated: true });
+      // Buscar por _id de Mongo
+      user = await User.findOne({ _id: user_id, activated: { $ne: false } });
     } else {
-      // Buscar por user_id del Core
-      user = await User.findOne({ user_id: user_id, activated: true });
+      // Buscar por user_id del Core (convertir a número si aplica)
+      const coreId = isNaN(Number(user_id)) ? user_id : Number(user_id);
+      user = await User.findOne({ user_id: coreId, activated: { $ne: false } });
     }
 
     if (!user) {
@@ -244,8 +245,8 @@ const getUserPublications = async (req, res) => {
     // Construir filtro flexible (buscar por author_id O user_id)
     const filter = {
       $or: [
-        { author_id: user._id }, // Publicaciones locales
-        { user_id: user.user_id } // Publicaciones del Core
+        { author_id: user._id },
+        { user_id: user.user_id }
       ]
     };
 

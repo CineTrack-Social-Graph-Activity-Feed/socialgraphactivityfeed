@@ -34,12 +34,27 @@ class MovieHandler {
         try {
             const id = (eventData?.data?.data?.id) || (eventData?.data?.id) || eventData?.id;
             logger.info('MovieHandler', `Procesando película actualizada${id ? `: ${id}` : ''}`);
-
+            // Obtener estado previo para detectar reactivaciones
+            const previous = id ? await Movie.getByMovieId(Number(id)) : null;
             const movie = await Movie.upsertFromEvent(eventData);
+
+            let restored = null;
+            // Si antes estaba inactiva y ahora activa => restaurar publicaciones soft-deleted
+            if (previous && previous.activa === false && movie.activa === true) {
+                try {
+                    const Publication = require('../models/Publication');
+                    const r = await Publication.restoreByMovieId(movie.movie_id);
+                    restored = { restoredCount: r.modifiedCount ?? r.nModified };
+                } catch (e) {
+                    logger.warn('MovieHandler', 'Error al restaurar publicaciones en reactivación', { error: e.message });
+                }
+            }
 
             logger.success('MovieHandler', 'Película actualizada', {
                 movie_id: movie.movie_id,
-                titulo: movie.titulo
+                titulo: movie.titulo,
+                activa: movie.activa,
+                restored
             });
             return movie;
         } catch (error) {
@@ -51,7 +66,7 @@ class MovieHandler {
         }
     }
 
-    /** Procesa peliculas.pelicula.borrada (hard delete) */
+    /** Procesa peliculas.pelicula.borrada (soft delete => activa:false) */
     async handleMovieDeleted(eventData) {
         try {
             const id = (eventData?.data?.data?.id) || (eventData?.data?.id) || eventData?.id;
@@ -60,30 +75,20 @@ class MovieHandler {
             if (id === undefined || id === null) {
                 throw new Error('Evento de borrado sin id');
             }
+            const movie = await Movie.deleteFromEvent(eventData); // marca activa:false
 
-            const result = await Movie.deleteFromEvent(eventData);
-
-            if (result?.deletedCount === 0) {
-                logger.warn('MovieHandler', `Película a borrar no encontrada: ${id}`);
-                // Aunque no exista la película, podemos seguir con el borrado de publicaciones si así se desea
-            }
-
-            // Eliminación en cascada de publicaciones
-            const cascadeEnabled = String(process.env.PUBLICATION_CASCADE_ON_MOVIE_DELETE || 'true').toLowerCase() === 'true';
+            // Cascada: soft delete publicaciones asociadas
             let cascadeInfo = undefined;
-            if (cascadeEnabled) {   // Utilizamos SOFT DELETE por defecto
-                const mode = String(process.env.PUBLICATION_CASCADE_MODE || 'soft').toLowerCase();
-                if (mode === 'hard') {
-                    const r = await Publication.hardDeleteByMovieId(Number(id));
-                    cascadeInfo = { mode: 'hard', deleted: r.deletedCount };
-                } else {
-                    const r = await Publication.softDeleteByMovieId(Number(id));
-                    cascadeInfo = { mode: 'soft', matched: r.matchedCount ?? r.n, modified: r.modifiedCount ?? r.nModified };
-                }
+            try {
+                const mode = 'soft';
+                const r = await Publication.softDeleteByMovieId(Number(id));
+                cascadeInfo = { mode, matched: r.matchedCount ?? r.n, modified: r.modifiedCount ?? r.nModified };
+            } catch (e) {
+                logger.warn('MovieHandler', 'Error en soft delete de publicaciones en cascada', { error: e.message });
             }
 
-            logger.success('MovieHandler', 'Película eliminada', { movie_id: Number(id), cascade: cascadeInfo });
-            return { movie_id: Number(id), deleted: true, cascade: cascadeInfo };
+            logger.success('MovieHandler', 'Película desactivada', { movie_id: Number(id), activa: movie?.activa === false, cascade: cascadeInfo });
+            return { movie_id: Number(id), activa: false, cascade: cascadeInfo };
         } catch (error) {
             logger.error('MovieHandler', `Error al borrar película: ${error.message}`, {
                 eventData,

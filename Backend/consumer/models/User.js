@@ -226,7 +226,6 @@ userSchema.statics.markSessionFinished = async function({ userId, sessionId, end
     user.activeSessions = 0;
     await user.save();
   }
-
   return user;
 };
 

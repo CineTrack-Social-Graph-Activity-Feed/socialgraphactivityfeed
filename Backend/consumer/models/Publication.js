@@ -264,8 +264,10 @@ publicationSchema.statics.updateFromEvent = async function(eventData) {
  * Marcar publicación como eliminada (soft delete)
  */
 publicationSchema.statics.markAsDeleted = async function(reviewId) {
+  const rid = Number(reviewId);
+  const query = Number.isNaN(rid) ? { review_id: reviewId } : { review_id: rid };
   return await this.findOneAndUpdate(
-    { review_id: reviewId },
+    query,
     {
       isDeleted: true,
       deletedAt: new Date(),
@@ -279,7 +281,9 @@ publicationSchema.statics.markAsDeleted = async function(reviewId) {
  * Eliminar publicación permanentemente (hard delete)
  */
 publicationSchema.statics.deleteFromEvent = async function(reviewId) {
-  return await this.findOneAndDelete({ review_id: reviewId });
+  const rid = Number(reviewId);
+  const query = Number.isNaN(rid) ? { review_id: reviewId } : { review_id: rid };
+  return await this.findOneAndDelete(query);
 };
 
 /**
@@ -299,6 +303,17 @@ publicationSchema.statics.softDeleteByMovieId = async function(movieId) {
 publicationSchema.statics.hardDeleteByMovieId = async function(movieId) {
   const mid = Number(movieId);
   return await this.deleteMany({ movie_id: mid });
+};
+
+/**
+ * Restaurar publicaciones soft-deleted por movie_id (reactivación de película)
+ */
+publicationSchema.statics.restoreByMovieId = async function(movieId) {
+  const mid = Number(movieId);
+  return await this.updateMany(
+    { movie_id: mid, isDeleted: true },
+    { isDeleted: false, deletedAt: null, syncedAt: new Date() }
+  );
 };
 
 module.exports = mongoose.model('Publication', publicationSchema);
