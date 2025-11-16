@@ -87,14 +87,14 @@ describe('PostMiActividad Component', () => {
     
     mockFetchWithAuth.mockResolvedValueOnce({
       ok: false,
-      status: 404,
+      status: 500,
     });
 
     render(<PostMiActividad />);
 
     await waitFor(() => {
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Error al traer usuario:',
+        '❌ Error cargando publicaciones propias:',
         expect.any(Error)
       );
     });
@@ -187,13 +187,7 @@ describe('PostMiActividad Component', () => {
   it('debe manejar error al cargar película', async () => {
     const mockPosts = [createMockPost({ movie_id: 999 })];
 
-    const consoleErrorSpy = vi.spyOn(console, 'error');
-
     mockFetchWithAuth
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ user: { id: 'user123', username: 'TestUser' } }),
-      })
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({ publications: mockPosts }),
@@ -205,12 +199,10 @@ describe('PostMiActividad Component', () => {
 
     render(<PostMiActividad />);
 
+    // El componente ahora maneja películas inactivas/con error silenciosamente
+    // simplemente no las muestra en postsConPeli
     await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Error trayendo película'),
-        expect.anything(),
-        expect.any(Error)
-      );
+      expect(screen.queryByTestId('post-item')).not.toBeInTheDocument();
     });
   });
 
