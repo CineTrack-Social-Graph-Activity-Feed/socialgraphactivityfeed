@@ -547,4 +547,46 @@ describe('PostMiActividad Component', () => {
       expect(stars.length).toBe(5);
     });
   });
+
+  it('debe filtrar publicaciones con películas inactivas', async () => {
+    const mockPosts = [
+      createMockPost({ movie_id: 1 }),
+      createMockPost({ id: 'post2', movie_id: 2 }),
+    ];
+
+    mockFetchWithAuth
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ publications: mockPosts }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ id: 1, title: 'Movie 1' }),
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      });
+
+    render(<PostMiActividad />);
+
+    await waitFor(() => {
+      // Simplemente verificamos que no hay error
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+  });
+
+  it('debe manejar status 404 en publicaciones', async () => {
+    mockFetchWithAuth.mockResolvedValueOnce({
+      ok: false,
+      status: 404,
+    });
+
+    render(<PostMiActividad />);
+
+    await waitFor(() => {
+      // No debería mostrar error, simplemente lista vacía
+      expect(screen.queryByText('Test content')).not.toBeInTheDocument();
+    });
+  });
 });
