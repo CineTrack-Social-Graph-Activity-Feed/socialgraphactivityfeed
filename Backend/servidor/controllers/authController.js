@@ -99,9 +99,25 @@ async function refresh(req, res) {
 // GET /api/auth/me - validate current token and return claims
 async function me(req, res) {
     try {
-        // Will be populated by authenticateJWT middleware
+        // req.user tiene los claims del JWT
+        const claims = req.user || {};
+        const userId = claims.user_id != null ? Number(claims.user_id) : null;
+        
+        // Buscar el usuario en MongoDB para obtener datos actualizados (incluyendo avatar_url)
+        let dbUser = null;
+        if (userId != null) {
+            dbUser = await User.findOne({ user_id: userId });
+        }
+        
+        // Si encontramos el usuario en DB, devolver sus datos serializados
+        if (dbUser) {
+            return res.status(200).json({ user: serializeUser(dbUser) });
+        }
+        
+        // Fallback: devolver solo los claims del JWT
         return res.status(200).json({ user: req.user });
     } catch (err) {
+        console.error('me error:', err);
         return res.status(500).json({ error: 'Error interno' });
     }
 }
