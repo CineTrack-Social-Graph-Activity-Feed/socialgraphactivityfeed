@@ -55,6 +55,7 @@ jobs:
         id: plan
         env:
           TF_VAR_mongodb_uri: ${{ secrets.MONGODB_URI }}
+          TF_VAR_rabbit_url: ${{ secrets.RABBIT_URL }}
         run: terraform plan -out=plan.tfplan
 
       - name: Upload Plan
@@ -68,6 +69,7 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           TF_VAR_mongodb_uri: ${{ secrets.MONGODB_URI }}
+          TF_VAR_rabbit_url: ${{ secrets.RABBIT_URL }}
         run: terraform apply -auto-approve plan.tfplan
 
       - name: Export Terraform Outputs

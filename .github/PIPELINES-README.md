@@ -185,6 +185,7 @@ Este proyecto tiene **4 pipelines automatizados** que gestionan el ciclo de vida
 - `TF_BACKEND_BUCKET` - S3 para Terraform state
 - `TF_LOCK_TABLE` - DynamoDB para locking
 - `TF_VAR_mongodb_uri` - URI de MongoDB
+- `TF_VAR_rabbit_url` - URL de RabbitMQ
 
 ---
 

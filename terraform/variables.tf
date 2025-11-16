@@ -34,6 +34,12 @@ variable "mongodb_uri" {
   sensitive   = true
 }
 
+variable "rabbit_url" {
+  description = "RabbitMQ connection URL"
+  type        = string
+  sensitive   = true
+}
+
 variable "enable_random_suffix" {
   description = "If true, append a random suffix to core resource names so brand-new infrastructure can be created without clashes."
   type        = bool

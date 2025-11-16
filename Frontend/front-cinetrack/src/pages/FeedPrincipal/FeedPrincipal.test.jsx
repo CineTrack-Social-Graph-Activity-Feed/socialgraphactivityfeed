@@ -36,7 +36,7 @@ describe('FeedPrincipal', () => {
   it('should render the welcome message', () => {
     render(<FeedPrincipal />);
     
-    expect(screen.getByText(/¡Bienvenido! Estos es lo que tus amigos han estado viendo.../i)).toBeInTheDocument();
+    expect(screen.getByText(/¡Bienvenido! Esto es lo que tus amigos han estado viendo.../i)).toBeInTheDocument();
   });
 
   it('should render Post components', () => {

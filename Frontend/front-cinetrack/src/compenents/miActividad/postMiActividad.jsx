@@ -482,7 +482,7 @@ function PostMiActividad({ post }) {
 
           {/* Texto */}
           <div className="titulo-pelicula">
-            <h3>{post.movie.movie.titulo}</h3>
+            <h3>{post.movie?.movie?.titulo ?? 'Sin título'}</h3>
             <StarRating puntuacion={post.rating} />{" "}
           </div>
           <div className="post-body">
@@ -493,7 +493,7 @@ function PostMiActividad({ post }) {
               {/* Imagen (si existe) */}
               {hasPoster && (
                 <img
-                  src={post.movie.movie.poster}
+                  src={post.movie?.movie?.poster ?? ''}
                   alt="post"
                   className="post-image"
                   onClick={() => setExpandedPoster(post.id)}
@@ -692,12 +692,12 @@ function PostMiActividad({ post }) {
             className="poster-lightbox"
             role="dialog"
             aria-modal="true"
-            aria-label={`Vista ampliada del poster de ${post.movie.movie.titulo}`}
+            aria-label={`Vista ampliada del poster de ${post.movie?.movie?.titulo ?? ''}`}
             onClick={() => setExpandedPoster(null)}
           >
             <img
-              src={post.movie.movie.poster}
-              alt={`Poster de ${post.movie.movie.titulo}`}
+              src={post.movie?.movie?.poster ?? ''}
+              alt={`Poster de ${post.movie?.movie?.titulo ?? ''}`}
               className="poster-lightbox-image"
             />
           </div>

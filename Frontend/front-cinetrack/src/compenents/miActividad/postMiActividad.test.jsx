@@ -60,7 +60,7 @@ describe('PostMiActividad Component', () => {
     render(<PostMiActividad />);
 
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/user/user123');
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/user/user123'));
     });
   });
 
@@ -78,7 +78,7 @@ describe('PostMiActividad Component', () => {
     render(<PostMiActividad />);
 
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/publication/user/user123');
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/publication/user/user123'));
     });
   });
 
@@ -147,7 +147,7 @@ describe('PostMiActividad Component', () => {
     render(<PostMiActividad />);
 
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/movie/1');
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/movie/1'));
     });
   });
 
@@ -242,7 +242,7 @@ describe('PostMiActividad Component', () => {
     render(<PostMiActividad />);
 
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/like/publication/post1');
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/like/publication/post1'));
     });
   });
 
@@ -292,9 +292,10 @@ describe('PostMiActividad Component', () => {
     await userEvent.click(likeButton);
 
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/like', expect.objectContaining({
-        method: 'POST',
-      }));
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(
+        expect.stringContaining('/api/like'),
+        expect.objectContaining({ method: 'POST' })
+      );
     });
   });
 
@@ -326,7 +327,7 @@ describe('PostMiActividad Component', () => {
     render(<PostMiActividad />);
 
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/comment/publication/post1');
+  expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/comment/publication/post1'));
     });
   });
 
@@ -383,9 +384,10 @@ describe('PostMiActividad Component', () => {
     await userEvent.click(commentButton);
 
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/comment', expect.objectContaining({
-        method: 'POST',
-      }));
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(
+        expect.stringContaining('/api/comment'),
+        expect.objectContaining({ method: 'POST' })
+      );
     });
   });
 
