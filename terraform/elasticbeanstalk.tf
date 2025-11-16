@@ -85,6 +85,6 @@ resource "aws_elastic_beanstalk_environment" "app_env" {
   }
  
   lifecycle {
-    ignore_changes = [tags, tags_all, setting, wait_for_ready_timeout]
+    ignore_changes = [tags, tags_all, wait_for_ready_timeout]
   }
 }
