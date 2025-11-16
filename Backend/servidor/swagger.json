@@ -5,613 +5,373 @@
     "description": "API para módulo de feed de actividad social estilo Letterboxd, desarrollado con Node.js, Express y MongoDB. Permite a los usuarios seguirse entre sí, comentar, dar likes y ver las actividades de sus seguidores",
     "version": "1.0.0"
   },
-  "tags": [
-    { "name": "Health", "description": "Estado del servicio" },
-    { "name": "Auth", "description": "Autenticación y sesión" },
-    { "name": "Follow", "description": "Seguimientos, seguidores y feed" },
-    { "name": "Publication", "description": "Publicaciones y reseñas" },
-    { "name": "Like", "description": "Likes en publicaciones" },
-    { "name": "Comment", "description": "Comentarios en publicaciones" },
-    { "name": "User", "description": "Gestión de usuarios" },
-    { "name": "Movie", "description": "Gestión de películas" }
-  ],
   "host": "localhost:3000",
   "basePath": "/",
   "schemes": [
     "http"
   ],
+  "tags": [
+    { "name": "Health", "description": "Estado del servicio" },
+    { "name": "Auth", "description": "Autenticación y sesión" },
+    { "name": "Users", "description": "Usuarios y perfiles" },
+    { "name": "Follow", "description": "Seguimientos, seguidos y seguidores" },
+    { "name": "Feed", "description": "Feed de actividad" },
+    { "name": "Likes", "description": "Reacciones de me gusta" },
+    { "name": "Comments", "description": "Comentarios en publicaciones" },
+    { "name": "Publications", "description": "Publicaciones y reseñas" },
+    { "name": "Movies", "description": "Películas" }
+  ],
   "paths": {
     "/health": {
       "get": {
         "tags": ["Health"],
-        "description": "",
+        "summary": "Healthcheck",
+        "description": "Devuelve 200 si el servicio está operativo",
         "responses": {
-          "200": {
-            "description": "OK"
-          }
+          "200": { "description": "OK" }
         }
       }
     },
     "/api/auth/login": {
       "post": {
         "tags": ["Auth"],
-        "description": "",
+        "summary": "Iniciar sesión",
+        "description": "Autentica un usuario y retorna tokens de acceso",
         "parameters": [
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
+              "required": ["username", "password"],
               "properties": {
-                "username": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                },
-                "grant_type": {
-                  "example": "any"
-                }
+                "username": { "type": "string", "example": "any" },
+                "password": { "type": "string", "example": "any" },
+                "grant_type": { "type": "string", "example": "password" }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/auth/refresh": {
       "post": {
         "tags": ["Auth"],
-        "description": "",
+        "summary": "Refrescar token",
+        "description": "Recibe un refresh_token y entrega un nuevo access_token",
         "parameters": [
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
+              "required": ["refresh_token"],
               "properties": {
-                "refresh_token": {
-                  "example": "any"
-                }
+                "refresh_token": { "type": "string", "example": "any" }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/auth/me": {
       "get": {
         "tags": ["Auth"],
-        "description": "",
+        "summary": "Usuario actual",
+        "description": "Obtiene la información del usuario autenticado",
         "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
+          { "name": "authorization", "in": "header", "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/follow": {
       "post": {
         "tags": ["Follow"],
-        "description": "",
+        "summary": "Seguir usuario",
+        "description": "Genera una relación de seguimiento entre usuarios",
         "parameters": [
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
+              "required": ["follower_user_id", "followed_user_id"],
               "properties": {
-                "follower_user_id": {
-                  "example": "any"
-                },
-                "followed_user_id": {
-                  "example": "any"
-                }
+                "follower_user_id": { "type": "string", "example": "any" },
+                "followed_user_id": { "type": "string", "example": "any" }
               }
             }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "201": { "description": "Created" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not Found" },
+          "409": { "description": "Conflict" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/unfollow": {
       "post": {
         "tags": ["Follow"],
-        "description": "",
+        "summary": "Dejar de seguir",
+        "description": "Elimina una relación de seguimiento",
         "parameters": [
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
+              "required": ["follower_user_id", "followed_user_id"],
               "properties": {
-                "follower_user_id": {
-                  "example": "any"
-                },
-                "followed_user_id": {
-                  "example": "any"
-                }
+                "follower_user_id": { "type": "string", "example": "any" },
+                "followed_user_id": { "type": "string", "example": "any" }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not Found" },
+          "409": { "description": "Conflict" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/feed": {
       "get": {
-        "tags": ["Follow"],
-        "description": "",
+        "tags": ["Feed"],
+        "summary": "Feed de actividades",
+        "description": "Devuelve actividades de los usuarios seguidos",
         "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "user_id",
-            "in": "query",
-            "type": "string"
-          }
+          { "name": "page", "in": "query", "type": "string" },
+          { "name": "limit", "in": "query", "type": "string" },
+          { "name": "user_id", "in": "query", "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/followed": {
       "get": {
         "tags": ["Follow"],
-        "description": "",
+        "summary": "Usuarios seguidos",
+        "description": "Lista de usuarios a los que un usuario sigue",
         "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "user_id",
-            "in": "query",
-            "type": "string"
-          }
+          { "name": "page", "in": "query", "type": "string" },
+          { "name": "limit", "in": "query", "type": "string" },
+          { "name": "user_id", "in": "query", "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/followers": {
       "get": {
         "tags": ["Follow"],
-        "description": "",
+        "summary": "Seguidores",
+        "description": "Lista de usuarios que siguen a un usuario",
         "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "user_id",
-            "in": "query",
-            "type": "string"
-          }
+          { "name": "page", "in": "query", "type": "string" },
+          { "name": "limit", "in": "query", "type": "string" },
+          { "name": "user_id", "in": "query", "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/like": {
       "post": {
-        "tags": ["Like"],
-        "description": "",
+        "tags": ["Likes"],
+        "summary": "Dar like",
+        "description": "Crea una reacción de like sobre una publicación",
         "parameters": [
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
+              "required": ["user_id", "target_id", "target_type"],
               "properties": {
-                "user_id": {
-                  "example": "any"
-                },
-                "target_id": {
-                  "example": "any"
-                },
-                "target_type": {
-                  "example": "any"
-                }
+                "user_id": { "type": "string", "example": "any" },
+                "target_id": { "type": "string", "example": "any" },
+                "target_type": { "type": "string", "example": "publication" }
               }
             }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "201": { "description": "Created" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not Found" },
+          "409": { "description": "Conflict" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/like/{like_id}": {
       "delete": {
-        "tags": ["Like"],
-        "description": "",
+        "tags": ["Likes"],
+        "summary": "Quitar like",
+        "description": "Elimina una reacción de like por ID",
         "parameters": [
-          {
-            "name": "like_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
+          { "name": "like_id", "in": "path", "required": true, "type": "string" },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                }
-              }
+              "properties": { "user_id": { "type": "string", "example": "any" } }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not Found" },
+          "409": { "description": "Conflict" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/like/publication/{publication_id}": {
       "get": {
-        "tags": ["Like"],
-        "description": "",
+        "tags": ["Likes"],
+        "summary": "Likes de una publicación",
+        "description": "Lista de likes para una publicación",
         "parameters": [
-          {
-            "name": "publication_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          }
+          { "name": "publication_id", "in": "path", "required": true, "type": "string" },
+          { "name": "page", "in": "query", "type": "string" },
+          { "name": "limit", "in": "query", "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/comment": {
       "post": {
-        "tags": ["Comment"],
-        "description": "",
+        "tags": ["Comments"],
+        "summary": "Crear comentario",
+        "description": "Agrega un comentario a una publicación",
         "parameters": [
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
+              "required": ["user_id", "target_id", "target_type", "comment"],
               "properties": {
-                "user_id": {
-                  "example": "any"
-                },
-                "target_id": {
-                  "example": "any"
-                },
-                "target_type": {
-                  "example": "any"
-                },
-                "comment": {
-                  "example": "any"
-                }
+                "user_id": { "type": "string", "example": "any" },
+                "target_id": { "type": "string", "example": "any" },
+                "target_type": { "type": "string", "example": "publication" },
+                "comment": { "type": "string", "example": "any" }
               }
             }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "201": { "description": "Created" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not Found" },
+          "409": { "description": "Conflict" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/comment/{comment_id}": {
       "delete": {
-        "tags": ["Comment"],
-        "description": "",
+        "tags": ["Comments"],
+        "summary": "Eliminar comentario",
+        "description": "Elimina un comentario por ID",
         "parameters": [
-          {
-            "name": "comment_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
+          { "name": "comment_id", "in": "path", "required": true, "type": "string" },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                }
-              }
+              "properties": { "user_id": { "type": "string", "example": "any" } }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not Found" },
+          "409": { "description": "Conflict" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/comment/publication/{publication_id}": {
       "get": {
-        "tags": ["Comment"],
-        "description": "",
+        "tags": ["Comments"],
+        "summary": "Comentarios de una publicación",
+        "description": "Lista comentarios de una publicación",
         "parameters": [
-          {
-            "name": "publication_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          }
+          { "name": "publication_id", "in": "path", "required": true, "type": "string" },
+          { "name": "page", "in": "query", "type": "string" },
+          { "name": "limit", "in": "query", "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/publication": {
       "post": {
-        "tags": ["Publication"],
-        "description": "",
+        "tags": ["Publications"],
+        "summary": "Crear publicación",
+        "description": "Crea una publicación/reseña",
         "parameters": [
           {
             "name": "body",
@@ -619,240 +379,114 @@
             "schema": {
               "type": "object",
               "properties": {
-                "author_id": {
-                  "example": "any"
-                },
-                "type": {
-                  "example": "any"
-                },
-                "target_id": {
-                  "example": "any"
-                },
-                "content": {
-                  "example": "any"
-                },
-                "rating": {
-                  "example": "any"
-                },
-                "title": {
-                  "example": "any"
-                },
-                "has_spoilers": {
-                  "example": "any"
-                },
-                "tags": {
-                  "example": "any"
-                }
+                "author_id": { "example": "any" },
+                "type": { "example": "review" },
+                "target_id": { "example": "any" },
+                "content": { "example": "any" },
+                "rating": { "example": 5 },
+                "title": { "example": "any" },
+                "has_spoilers": { "example": false },
+                "tags": { "example": ["drama", "cine"] }
               }
             }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "201": { "description": "Created" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not Found" },
+          "409": { "description": "Conflict" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/publication/{publication_id}": {
       "get": {
-        "tags": ["Publication"],
-        "description": "",
+        "tags": ["Publications"],
+        "summary": "Obtener publicación",
+        "description": "Obtiene una publicación por ID",
         "parameters": [
-          {
-            "name": "publication_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "publication_id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "delete": {
-        "tags": ["Publication"],
-        "description": "",
+        "tags": ["Publications"],
+        "summary": "Eliminar publicación",
+        "description": "Elimina (lógico o físico) una publicación",
         "parameters": [
-          {
-            "name": "publication_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
+          { "name": "publication_id", "in": "path", "required": true, "type": "string" },
           {
             "name": "body",
             "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                }
-              }
-            }
+            "schema": { "type": "object", "properties": { "user_id": { "example": "any" } } }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not Found" },
+          "409": { "description": "Conflict" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/publication/user/{user_id}": {
       "get": {
-        "tags": ["Publication"],
-        "description": "",
+        "tags": ["Publications"],
+        "summary": "Publicaciones por usuario",
+        "description": "Lista publicaciones de un usuario",
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "type",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "include_deleted",
-            "in": "query",
-            "type": "string"
-          }
+          { "name": "user_id", "in": "path", "required": true, "type": "string" },
+          { "name": "page", "in": "query", "type": "string" },
+          { "name": "limit", "in": "query", "type": "string" },
+          { "name": "type", "in": "query", "type": "string" },
+          { "name": "include_deleted", "in": "query", "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/publication/movie/{movie_id}": {
       "get": {
-        "tags": ["Publication"],
-        "description": "",
+        "tags": ["Publications"],
+        "summary": "Publicaciones por película",
+        "description": "Lista publicaciones asociadas a una película",
         "parameters": [
-          {
-            "name": "movie_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "type",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "include_deleted",
-            "in": "query",
-            "type": "string"
-          }
+          { "name": "movie_id", "in": "path", "required": true, "type": "string" },
+          { "name": "page", "in": "query", "type": "string" },
+          { "name": "limit", "in": "query", "type": "string" },
+          { "name": "type", "in": "query", "type": "string" },
+          { "name": "include_deleted", "in": "query", "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/user": {
       "post": {
-        "tags": ["User"],
-        "description": "",
+        "tags": ["Users"],
+        "summary": "Crear usuario",
+        "description": "Crea un usuario local",
         "parameters": [
           {
             "name": "body",
@@ -860,160 +494,90 @@
             "schema": {
               "type": "object",
               "properties": {
-                "username": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "avatar_url": {
-                  "example": "any"
-                }
+                "username": { "example": "any" },
+                "email": { "example": "any" },
+                "avatar_url": { "example": "any" }
               }
             }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "201": { "description": "Created" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "409": { "description": "Conflict" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/user/search": {
       "get": {
-        "tags": ["User"],
-        "description": "",
+        "tags": ["Users"],
+        "summary": "Buscar usuarios",
+        "description": "Busca usuarios por texto",
         "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "type": "string"
-          }
+          { "name": "page", "in": "query", "type": "string" },
+          { "name": "limit", "in": "query", "type": "string" },
+          { "name": "q", "in": "query", "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/user/{user_id}": {
       "get": {
-        "tags": ["User"],
-        "description": "",
+        "tags": ["Users"],
+        "summary": "Obtener usuario",
+        "description": "Obtiene un usuario por ID",
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "user_id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "put": {
-        "tags": ["User"],
-        "description": "",
+        "tags": ["Users"],
+        "summary": "Actualizar usuario",
+        "description": "Actualiza campos de un usuario",
         "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
+          { "name": "user_id", "in": "path", "required": true, "type": "string" },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "username": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "avatar_url": {
-                  "example": "any"
-                }
+                "username": { "example": "any" },
+                "email": { "example": "any" },
+                "avatar_url": { "example": "any" }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" },
+          "409": { "description": "Conflict" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/movie/": {
       "post": {
-        "tags": ["Movie"],
-        "description": "",
+        "tags": ["Movies"],
+        "summary": "Crear/actualizar película",
+        "description": "Crea o actualiza una película",
         "parameters": [
           {
             "name": "body",
@@ -1021,117 +585,65 @@
             "schema": {
               "type": "object",
               "properties": {
-                "id": {
-                  "example": "any"
-                },
-                "poster": {
-                  "example": "any"
-                },
-                "titulo": {
-                  "example": "any"
-                }
+                "id": { "example": 1 },
+                "poster": { "example": "url" },
+                "titulo": { "example": "Mi película" },
+                "activa": { "example": true }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "get": {
-        "tags": ["Movie"],
-        "description": "",
+        "tags": ["Movies"],
+        "summary": "Obtener películas por IDs",
+        "description": "Devuelve películas por lista de IDs",
         "parameters": [
-          {
-            "name": "ids",
-            "in": "query",
-            "type": "string"
-          }
+          { "name": "ids", "in": "query", "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/api/movie/{movie_id}": {
       "get": {
-        "tags": ["Movie"],
-        "description": "",
+        "tags": ["Movies"],
+        "summary": "Obtener película",
+        "description": "Obtiene una película por ID",
         "parameters": [
-          {
-            "name": "movie_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "movie_id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       },
       "delete": {
-        "tags": ["Movie"],
-        "description": "",
+        "tags": ["Movies"],
+        "summary": "Desactivar película",
+        "description": "Marca como inactiva una película",
         "parameters": [
-          {
-            "name": "movie_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "movie_id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     }
