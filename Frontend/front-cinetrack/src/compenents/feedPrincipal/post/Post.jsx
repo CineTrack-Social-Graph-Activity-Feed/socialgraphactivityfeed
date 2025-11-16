@@ -497,7 +497,10 @@ function Post({}) {
           {/* Header */}
           <div className="post-header">
             <img
-              src={post.author.avatar_url}
+              src={
+                post.author.avatar_url ||
+                "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+              }
               alt="avatar"
               className="avatar-post"
               onError={(e) => {
