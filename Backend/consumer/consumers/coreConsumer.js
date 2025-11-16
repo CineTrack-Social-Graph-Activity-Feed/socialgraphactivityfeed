@@ -26,6 +26,9 @@ class CoreConsumer {
       // Por defecto, bindeamos a las keys explícitas para que se vean en el log como en Insomnia
       const routingKeysStr = process.env.ROUTING_KEYS || [
         'usuarios.usuario.creado',
+        'usuarios.usuario.actualizado',
+        'usuarios.usuario.eliminado',
+        'usuarios.usuario.reactivado',
         'usuarios.sesion.iniciada',
         'usuarios.sesion.finalizada',
         'resenas.resena.creada',

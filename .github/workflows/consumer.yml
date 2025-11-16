@@ -1,4 +1,4 @@
-name: Deploy Consumer to ECS
+name: ECS Fargate Consumer
 
 on:
   push:

@@ -239,7 +239,7 @@ resource "aws_ecs_service" "consumer" {
   }
 
   lifecycle {
-    ignore_changes = [desired_count, task_definition]
+    ignore_changes = [desired_count]
   }
 }
 
