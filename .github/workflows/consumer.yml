@@ -2,7 +2,7 @@ name: Deploy Consumer to ECS
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, terraform-iac ]
     paths:
       - 'Backend/consumer/**'
       - '.github/workflows/consumer.yml'
