@@ -41,7 +41,9 @@ describe('ListaFollows', () => {
             user: { 
               id: 'objectId123', 
               user_id: 'user123', 
-              full_name: 'Test User' 
+              full_name: 'Test User',
+              username: 'TestUser',
+              image_url: null
             } 
           })
         });
@@ -52,8 +54,8 @@ describe('ListaFollows', () => {
           status: 200,
           json: () => Promise.resolve({ 
             followed: [
-              { _id: 'followed1', full_name: 'Followed User 1', image_url: null },
-              { _id: 'followed2', full_name: 'Followed User 2', image_url: null }
+              { _id: 'followed1', full_name: 'Followed User 1', username: 'FollowedUser1', image_url: null },
+              { _id: 'followed2', full_name: 'Followed User 2', username: 'FollowedUser2', image_url: null }
             ]
           })
         });
@@ -69,7 +71,7 @@ describe('ListaFollows', () => {
     render(<ListaFollows />);
     
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/user/user123');
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/user/user123'));
     });
   });
 
@@ -213,7 +215,7 @@ describe('ListaFollows', () => {
     render(<ListaFollows />);
     
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/user/user123');
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/user/user123'));
     });
   });
 

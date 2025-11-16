@@ -240,14 +240,19 @@ function PostMiActividad() {
             </div>
           </div>
           <div className="titulo-pelicula">
-            <h3>{movieData ? movieData.titulo : "Película no disponible"}</h3>
-            <StarRating puntuacion={post.rating} />
+            <h3>{post.movie?.movie?.titulo ?? 'Sin título'}</h3>
+            <StarRating puntuacion={post.rating} />{" "}
           </div>
           <div className="post-body">
             <div className="post-text-container"><p className="post-text">{post.content}</p></div>
             <div className="post-image-container">
               {hasPoster && (
-                <img src={movieData.poster} alt="post" className="post-image" onClick={() => setExpandedPoster(post.id)} />
+                <img
+                  src={post.movie?.movie?.poster ?? ''}
+                  alt="post"
+                  className="post-image"
+                  onClick={() => setExpandedPoster(post.id)}
+                />
               )}
             </div>
           </div>
@@ -327,8 +332,18 @@ function PostMiActividad() {
           )}
         </div>
         {expandedPoster === post.id && hasPoster && (
-          <div className="poster-lightbox" role="dialog" aria-modal="true" aria-label={`Vista ampliada del poster de ${movieData?.titulo || 'Película no disponible'}`} onClick={() => setExpandedPoster(null)}>
-            <img src={movieData.poster} alt={`Poster de ${movieData?.titulo || 'Película no disponible'}`} className="poster-lightbox-image" />
+          <div
+            className="poster-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Vista ampliada del poster de ${post.movie?.movie?.titulo ?? ''}`}
+            onClick={() => setExpandedPoster(null)}
+          >
+            <img
+              src={post.movie?.movie?.poster ?? ''}
+              alt={`Poster de ${post.movie?.movie?.titulo ?? ''}`}
+              className="poster-lightbox-image"
+            />
           </div>
         )}
       </div>

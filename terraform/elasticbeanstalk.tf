@@ -48,6 +48,12 @@ resource "aws_elastic_beanstalk_environment" "app_env" {
     name      = "MONGODB_URI"
     value     = var.mongodb_uri
   }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "RABBIT_URL"
+    value     = var.rabbit_url
+  }
  
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"

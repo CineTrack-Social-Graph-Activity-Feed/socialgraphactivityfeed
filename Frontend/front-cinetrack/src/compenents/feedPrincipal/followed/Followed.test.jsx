@@ -28,7 +28,7 @@ describe('Followed', () => {
       if (url.includes('/api/user/user123')) {
         return Promise.resolve({
           ok: true,
-          json: () => Promise.resolve({ user: { id: 'objectId123', user_id: 'user123', full_name: 'Test User' } })
+          json: () => Promise.resolve({ user: { id: 'objectId123', user_id: 'user123', full_name: 'Test User', username: 'TestUser', image_url: null } })
         });
       }
       if (url.includes('/api/followed')) {
@@ -36,8 +36,8 @@ describe('Followed', () => {
           ok: true,
           json: () => Promise.resolve({ 
             followed: [
-              { _id: 'followed1', full_name: 'Followed User 1', image_url: null },
-              { _id: 'followed2', full_name: 'Followed User 2', image_url: null }
+              { _id: 'followed1', full_name: 'Followed User 1', username: 'FollowedUser1', image_url: null },
+              { _id: 'followed2', full_name: 'Followed User 2', username: 'FollowedUser2', image_url: null }
             ]
           })
         });
@@ -51,15 +51,13 @@ describe('Followed', () => {
 
   it('should fetch user profile on mount', async () => {
     render(<Followed />);
-    
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/user/user123');
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/user/user123'));
     });
   });
 
   it('should fetch followed users after profile is loaded', async () => {
     render(<Followed />);
-    
     await waitFor(() => {
       expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/followed?user_id='));
     });

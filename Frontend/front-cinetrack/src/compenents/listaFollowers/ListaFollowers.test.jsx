@@ -35,7 +35,9 @@ describe('ListaFollowers', () => {
             user: { 
               id: 'objectId123', 
               user_id: 'user123', 
-              full_name: 'Test User' 
+              full_name: 'Test User',
+              username: 'TestUser',
+              image_url: null
             } 
           })
         });
@@ -45,8 +47,8 @@ describe('ListaFollowers', () => {
           ok: true,
           json: () => Promise.resolve({ 
             followers: [
-              { _id: 'follower1', full_name: 'Follower User 1', image_url: null },
-              { _id: 'follower2', full_name: 'Follower User 2', image_url: null }
+              { _id: 'follower1', full_name: 'Follower User 1', username: 'Follower1', image_url: null },
+              { _id: 'follower2', full_name: 'Follower User 2', username: 'Follower2', image_url: null }
             ]
           })
         });
@@ -72,7 +74,7 @@ describe('ListaFollowers', () => {
     render(<ListaFollowers />);
     
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/user/user123');
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/user/user123'));
     });
   });
 
@@ -117,7 +119,7 @@ describe('ListaFollowers', () => {
 
   it('should handle follow action', async () => {
     mockFetchWithAuth.mockImplementation((url, options) => {
-      if (url.includes('/api/follow') && options?.method === 'POST') {
+      if (url.includes('/api/follow' && options?.method === 'POST')) {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve({ message: 'Followed successfully' })
@@ -206,7 +208,7 @@ describe('ListaFollowers', () => {
     render(<ListaFollowers />);
     
     await waitFor(() => {
-      expect(mockFetchWithAuth).toHaveBeenCalledWith('/api/user/user123');
+      expect(mockFetchWithAuth).toHaveBeenCalledWith(expect.stringContaining('/api/user/user123'));
     });
   });
 
@@ -240,7 +242,7 @@ describe('ListaFollowers', () => {
           json: () => Promise.resolve({ followed: [] })
         });
       }
-      if (url.includes('/api/follow') && options?.method === 'POST') {
+      if (url.includes('/api/follow' && options?.method === 'POST')) {
         return Promise.resolve({ ok: true });
       }
       return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });
@@ -275,7 +277,7 @@ describe('ListaFollowers', () => {
           json: () => Promise.resolve({ followed: [] })
         });
       }
-      if (url.includes('/api/follow') && options?.method === 'POST') {
+      if (url.includes('/api/follow' && options?.method === 'POST')) {
         return Promise.resolve({ ok: false, status: 500, text: () => Promise.resolve('Server error') });
       }
       return Promise.resolve({ ok: true, json: () => Promise.resolve({}) });

@@ -518,9 +518,7 @@ function Post({}) {
 
           {/* Texto */}
           <div className="titulo-pelicula">
-            <h3>
-              {movieData ? movieData.titulo : "Película no disponible"}
-            </h3>
+            <h3>{post.movie?.movie?.titulo ?? 'Sin título'}</h3>
             <StarRating puntuacion={post._doc.rating} />{" "}
           </div>
           <div className="post-body">
@@ -531,7 +529,7 @@ function Post({}) {
               {/* Imagen (si existe) */}
               {hasPoster && (
                 <img
-                  src={movieData.poster}
+                  src={post.movie?.movie?.poster ?? ''}
                   alt="post"
                   className="post-image"
                   onClick={() => setExpandedPoster(pid)}
@@ -736,12 +734,12 @@ function Post({}) {
             className="poster-lightbox"
             role="dialog"
             aria-modal="true"
-            aria-label={`Vista ampliada del poster de ${movieData?.titulo || "Película no disponible"}`}
+            aria-label={`Vista ampliada del poster de ${post.movie?.movie?.titulo ?? ''}`}
             onClick={() => setExpandedPoster(null)}
           >
             <img
-              src={movieData.poster}
-              alt={`Poster de ${movieData?.titulo || "Película no disponible"}`}
+              src={post.movie?.movie?.poster ?? ''}
+              alt={`Poster de ${post.movie?.movie?.titulo ?? ''}`}
               className="poster-lightbox-image"
             />
           </div>
