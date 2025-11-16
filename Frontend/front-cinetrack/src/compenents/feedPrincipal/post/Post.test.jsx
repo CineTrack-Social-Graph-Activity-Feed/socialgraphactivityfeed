@@ -455,7 +455,7 @@ describe('Post Component - Comprehensive Tests', () => {
         },
       ];
 
-      const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
       mockFetchWithAuth
         .mockResolvedValueOnce({
@@ -478,7 +478,10 @@ describe('Post Component - Comprehensive Tests', () => {
           ok: true,
           json: async () => ({ comments: [] }),
         })
-        .mockRejectedValueOnce(new Error('Network error'));
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 500,
+        });
 
       render(<Post />);
 
@@ -489,11 +492,12 @@ describe('Post Component - Comprehensive Tests', () => {
       const likeButton = screen.getByLabelText('Like post');
       await userEvent.click(likeButton);
 
+      // Con optimistic updates, el error se loguea pero no muestra alert
       await waitFor(() => {
-        expect(alertSpy).toHaveBeenCalled();
+        expect(consoleWarnSpy).toHaveBeenCalled();
       });
 
-      alertSpy.mockRestore();
+      consoleWarnSpy.mockRestore();
     });
   });
 
