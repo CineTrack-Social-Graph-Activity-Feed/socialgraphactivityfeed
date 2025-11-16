@@ -4,7 +4,7 @@ Servicio de mensajería que consume eventos de RabbitMQ desde el Core de CineTra
 
 ## 📋 Descripción
 
-Este servicio actúa como consumer de eventos publicados por otros módulos (Usuarios y Reseñas) a través de RabbitMQ. Procesa automáticamente los eventos y actualiza la base de datos MongoDB del módulo Social Graph & Activity Feed.
+Este servicio actúa como consumer de eventos publicados por otros módulos (Usuarios y Reseñas) a través de RabbitMQ. Procesa automáticamente los eventos y actualiza la base de datos MongoDB del módulo Social Graph & Activity Feed en tiempo real.
 
 ## 🚀 Características
 

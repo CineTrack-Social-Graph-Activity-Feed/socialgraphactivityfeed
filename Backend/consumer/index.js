@@ -1,3 +1,4 @@
+// Consumer Service - Social Graph Activity Feed
 require('dotenv').config();
 const express = require('express');
 const database = require('./config/database');
