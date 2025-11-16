@@ -85,9 +85,9 @@ jobs:
       - name: Build frontend
         run: npm run build
         env: 
-          # API del backend servida por CloudFront backend
-          VITE_API_URL: ${{ secrets.API_URL || needs.get-infra-outputs.outputs.cloudfront_backend_url }}
-          VITE_API_BASE_URL: ${{ secrets.API_URL || needs.get-infra-outputs.outputs.cloudfront_backend_url }}
+          # Usar dominio personalizado del backend
+          VITE_API_URL: https://socialgraphbe.cine-track.com.ar
+          VITE_API_BASE_URL: https://socialgraphbe.cine-track.com.ar
       - name: Verify output directory
         run: |
           if [ -d "dist" ]; then
