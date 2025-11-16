@@ -230,7 +230,7 @@ function PostMiActividad() {
           <div className="post-type"><p>Escribio una reseña</p></div>
           <div className="post-header">
             <img
-              src={user.user.image_url ? user.user.image_url : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"}
+              src={user.user.avatar_url || "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"}
               alt="avatar" className="avatar-post"
               onError={(e) => { e.target.src = "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"; }}
             />
@@ -275,7 +275,7 @@ function PostMiActividad() {
             </div>
             <div className="comment-post">
               <img
-                src={user.user.image_url ? user.user.image_url : "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"}
+                src={user.user.avatar_url || "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"}
                 alt="avatar" className="user-logo-post"
               />
               <form className="comment-post-wrap" onSubmit={(e) => handleSubmit(e, post)}>

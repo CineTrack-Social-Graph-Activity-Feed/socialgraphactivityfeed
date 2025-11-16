@@ -16,7 +16,10 @@ function SideBar() {
       <div className="profile">
         <img
           className="avatar"
-          src={user.user.image_url}
+          src={
+            user.user.avatar_url ||
+            "https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255670-stock-illustration-avatar-people-male-profile-gray.jpg"
+          }
           alt="Avatar user"
           onError={(e) => {
             e.target.src =
