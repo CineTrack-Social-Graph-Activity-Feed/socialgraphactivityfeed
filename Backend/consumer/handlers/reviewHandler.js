@@ -74,8 +74,11 @@ class ReviewHandler {
    */
   async handleReviewDeleted(eventData) {
     try {
-      const reviewId = eventData.id;
-      logger.info('ReviewHandler', `Procesando reseña eliminada: ${reviewId}`);
+      // Algunos eventos llegan anidados: { type, data: { data: { id } } }
+      const actualData = eventData.data || eventData;
+      const reviewData = actualData.data || actualData;
+      const reviewId = reviewData.id || eventData.id;
+      logger.info('ReviewHandler', `Procesando reseña eliminada: ${reviewId}`, { rawEventId: eventData.id });
 
       // Soft delete por defecto (mantener registro histórico)
       const publication = await Publication.markAsDeleted(reviewId);
