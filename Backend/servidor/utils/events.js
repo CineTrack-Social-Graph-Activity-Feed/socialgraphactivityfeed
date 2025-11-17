@@ -129,7 +129,7 @@ const publishEvent = async (event) => {
       // Usa el actor_local o externo (ya normalizado) para el id del evento, evita 'null'
       // Usa actorId para la trazabilidad del id del evento
       id: `${actorId !== null ? actorId : 'anon'}-${Date.now()}`,
-      time: timestamp.toISOString(),
+      sysDate: timestamp.toISOString(),
       data: eventData,
       datacontenttype: 'application/json'
     };
