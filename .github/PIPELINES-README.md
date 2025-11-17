@@ -2,12 +2,13 @@
 
 ## 📋 Resumen Ejecutivo
 
-Este proyecto tiene **4 pipelines automatizados** que gestionan el ciclo de vida completo de la aplicación:
+Este proyecto tiene **5 pipelines automatizados** que gestionan el ciclo de vida completo de la aplicación:
 
 | Pipeline | Propósito | Tecnologías | Coverage |
 |----------|-----------|-------------|----------|
 | **CI/CD Backend** | Infraestructura + Build + Deploy Backend | Terraform, Node.js, Elastic Beanstalk | 83.25% |
 | **CI/CD Frontend** | Build + Deploy Frontend | React, Vite, S3, CloudFront | 89.81% |
+| **ECS Fargate Consumer** | Deploy Consumer RabbitMQ | Docker, ECR, ECS Fargate | N/A |
 | **Tests Unitarios** | Validar utilidades de testing | Python, pytest | 95-100% |
 | **Terraform Infra** | Provisionar infraestructura standalone | Terraform, AWS | N/A |
 
@@ -86,6 +87,7 @@ Este proyecto tiene **4 pipelines automatizados** que gestionan el ciclo de vida
 ```
 ✅ Terraform init (solo lectura, no apply)
 ✅ Extraer outputs: s3_bucket, cloudfront_frontend_id, cloudfront_backend_url
+✅ Validar que la infraestructura exista antes de continuar
 ```
 
 **Nota**: NO modifica infraestructura, solo lee el estado
@@ -96,17 +98,16 @@ Este proyecto tiene **4 pipelines automatizados** que gestionan el ciclo de vida
 ```
 ✅ Setup Node.js 22
 ✅ Install dependencies (npm ci)
-✅ Lint frontend (npm run lint)
 ✅ Test frontend con coverage (npm run test:coverage)
    → 207 tests, 89.81% coverage
    → Componentes React, Contexts, Pages
 ✅ Build producción (npm run build)
-   → VITE_API_URL dinámico desde outputs de infra
+   → VITE_API_URL: https://socialgraphbe.cine-track.com.ar
 ✅ Upload build (artifact)
 ✅ Upload coverage reports
 ```
 
-**Variables de entorno**: `VITE_API_URL` se configura con la URL del backend de CloudFront
+**Variables de entorno**: `VITE_API_URL` configurado con dominio personalizado del backend
 
 ---
 
@@ -114,21 +115,65 @@ Este proyecto tiene **4 pipelines automatizados** que gestionan el ciclo de vida
 ```
 ✅ Download build (artifact)
 ✅ Configurar credenciales AWS
-✅ Sincronizar con S3 (aws s3 sync)
-   → Elimina archivos viejos
-   → Headers optimizados para cache
+✅ Crear estructura de rutas SPA (copiar index.html a /api-test, /mi-actividad, etc.)
+✅ Subir archivos con content-type correcto:
+   → HTML: text/html, no-cache
+   → JS: application/javascript, max-age=31536000
+   → CSS: text/css, max-age=31536000
+   → SVG: image/svg+xml, max-age=31536000
+✅ Sincronizar con S3 (aws s3 sync --delete)
+✅ Fix content-type de index.html
 ✅ Invalidar caché CloudFront
-✅ Verificar deployment (curl)
 ```
 
 **Optimizaciones**:
-- Cache-Control headers configurados
-- Eliminación de archivos obsoletos
+- Cache-Control headers optimizados por tipo de archivo
+- Soporte para React Router (SPA routing)
+- Content-Type headers correctos
 - Invalidación de caché automática
 
 ---
 
-## 🧪 Pipeline 3: Tests Unitarios (`cinetrack-tests.yml`)
+## 🐰 Pipeline 3: ECS Fargate Consumer (`consumer.yml`)
+
+**Trigger**: 
+- Push a `main`/`terraform-iac` en carpeta `Backend/consumer/**`
+- Manual (workflow_dispatch)
+
+### Jobs:
+
+#### 1️⃣ **deploy** - Build y Deploy Consumer
+```
+✅ Checkout código
+✅ Configurar credenciales AWS
+✅ Login a Amazon ECR
+✅ Build imagen Docker
+   → docker build -t <ECR_REGISTRY>/social-graph-app-consumer:<SHA>
+✅ Tag imagen como latest
+✅ Push a ECR (SHA y latest tags)
+✅ Descargar task definition actual de ECS
+✅ Actualizar task definition con nueva imagen
+✅ Deploy a ECS Fargate
+   → Cluster: social-graph-app-consumer-cluster
+   → Service: social-graph-app-consumer-service
+   → Wait for service stability
+✅ Verificar deployment
+   → Status del servicio
+   → Running/Desired count
+   → Eventos recientes
+✅ Mostrar link a CloudWatch Logs
+```
+
+**Propósito**: Consumer de mensajes RabbitMQ que procesa eventos asíncronos del sistema
+
+**Infraestructura**: 
+- Amazon ECR para imágenes Docker
+- ECS Fargate para ejecución serverless de contenedores
+- CloudWatch Logs para logs del consumer
+
+---
+
+## 🧪 Pipeline 4: Tests Unitarios (`cinetrack-tests.yml`)
 
 **Trigger**: Push o PR a `main`/`terraform-iac` en carpeta `tests/**`
 
@@ -153,7 +198,7 @@ Este proyecto tiene **4 pipelines automatizados** que gestionan el ciclo de vida
 
 ---
 
-## 🏗️ Pipeline 4: Terraform Infra (`infra.yml`)
+## 🏗️ Pipeline 5: Terraform Infra (`infra.yml`)
 
 **Trigger**: Push o PR a `main` en carpeta `terraform/**`
 
@@ -187,6 +232,13 @@ Este proyecto tiene **4 pipelines automatizados** que gestionan el ciclo de vida
 - `TF_VAR_mongodb_uri` - URI de MongoDB
 - `TF_VAR_rabbit_url` - URL de RabbitMQ
 
+### Frontend (opcional, usa outputs de Terraform si no están definidos)
+- `S3_BUCKET` - Bucket S3 para frontend
+- `CLOUDFRONT_DISTRIBUTION_ID` - ID de distribución CloudFront
+
+### Backend
+- `MONGODB_URI` - URI de MongoDB para tests
+
 ---
 
 ## 📊 Métricas de Calidad
@@ -194,37 +246,9 @@ Este proyecto tiene **4 pipelines automatizados** que gestionan el ciclo de vida
 ### Coverage Actual
 | Componente | Statements | Functions | Tests |
 |------------|-----------|-----------|-------|
-| **Backend** | 83.25% | 86.3% | 198 |
-| **Frontend** | 89.81% | 79.38% | 207 |
+| **Backend** | 84.26% | 81.01% | 298 |
+| **Frontend** | 88.23% | 79.38% | 212 |
 | **Test Utils** | 95-100% | 95-100% | N/A |
-
-### Objetivos
-- ✅ Backend: >80% (logrado 83.25%)
-- ✅ Frontend: >85% (logrado 89.81%)
-- ✅ Tests Unitarios: >95% (logrado 95-100%)
-
----
-
-## 🔄 Flujo Completo de Deployment
-
-```mermaid
-graph TD
-    A[Push a main/terraform-iac] --> B{¿Cambios en Backend?}
-    B -->|Sí| C[CI/CD Backend]
-    B -->|No| H[CI/CD Frontend]
-    
-    C --> D[1. Provisionar Infra Terraform]
-    D --> E[2. Build + Test Backend]
-    E --> F[3. Deploy a Elastic Beanstalk]
-    F --> G[Health Check]
-    G --> H[CI/CD Frontend]
-    
-    H --> I[1. Leer Outputs de Infra]
-    I --> J[2. Build + Test Frontend]
-    J --> K[3. Deploy a S3]
-    K --> L[4. Invalidar CloudFront]
-    L --> M[✅ Deployment Completo]
-```
 
 ---
 
@@ -249,42 +273,22 @@ graph TD
 - Coverage reports en artifacts
 - Health checks post-deployment
 - Test summaries en GitHub Actions UI
+- CloudWatch Logs para consumer ECS
 
 ### ✅ Eficiencia
 - Concurrency control (evita conflictos Terraform)
 - Dependency caching (npm, pip)
 - Conditional deployments (solo si cambia código relevante)
+- Contenedores Docker optimizados
+
+### ✅ Arquitectura Event-Driven
+- Consumer dedicado para procesamiento asíncrono (ECS Fargate)
+- Desacoplamiento con RabbitMQ
+- Escalabilidad horizontal automática
+- Procesamiento de eventos en background
 
 ---
 
-## 🎯 Puntos Clave para Defender Tu Trabajo
-
-### 1. **Separación de Responsabilidades**
-- Backend y Frontend son pipelines independientes
-- Infraestructura se gestiona antes que aplicación
-- Tests unitarios separados de tests de aplicación
-
-### 2. **Infraestructura como Código (IaC)**
-- Todo en Terraform (reproducible, versionado)
-- State remoto con locking (evita corrupciones)
-- Plan en PRs, Apply solo en main (validación)
-
-### 3. **CI/CD Completo**
-- Lint → Test → Build → Deploy → Verify
-- Coverage tracking automático
-- Artifacts preservados 30 días
-
-### 4. **Alta Disponibilidad**
-- Elastic Beanstalk con auto-scaling
-- CloudFront como CDN global
-- Health checks automáticos
-
-### 5. **Seguridad Primero**
-- Secrets management con GitHub Secrets
-- Credenciales AWS con acciones oficiales
-- Variables de entorno inyectadas en build time
-
----
 
 ## 🚨 Manejo de Errores
 
@@ -308,6 +312,13 @@ graph TD
 - CloudFront: Esperar propagación (5-10 min)
 - Rollback: Cambiar versión en EB Console
 
+### Si falla Consumer Deployment (ECS)
+- Revisar logs en CloudWatch: `/ecs/social-graph-app-consumer`
+- Verificar que la imagen se subió correctamente a ECR
+- Revisar eventos del servicio ECS: `aws ecs describe-services --cluster social-graph-app-consumer-cluster --services social-graph-app-consumer-service`
+- Verificar task definition y variables de entorno
+- Rollback: Deploy una imagen anterior desde ECR
+
 ---
 
 ## 📚 Comandos Útiles
@@ -325,6 +336,11 @@ cd Frontend/front-cinetrack
 npm install
 npm run test:coverage
 npm run build
+
+# Consumer
+cd Backend/consumer
+docker build -t consumer .
+docker run --rm consumer
 
 # Tests Unitarios
 cd tests
@@ -351,19 +367,18 @@ aws cloudfront create-invalidation --distribution-id <ID> --paths "/*"
 
 # Ver objetos en S3
 aws s3 ls s3://<bucket-name>
+
+# Ver imágenes en ECR
+aws ecr list-images --repository-name social-graph-app-consumer
+
+# Ver logs del consumer en CloudWatch
+aws logs tail /ecs/social-graph-app-consumer --follow
+
+# Ver tareas ECS en ejecución
+aws ecs list-tasks --cluster social-graph-app-consumer-cluster
+
+# Describir servicio ECS
+aws ecs describe-services --cluster social-graph-app-consumer-cluster --services social-graph-app-consumer-service
 ```
 
 ---
-
-## 📞 Contacto y Documentación
-
-- **Repositorio**: CineTrack-Social-Graph-Activity-Feed/socialgraphactivityfeed
-- **Branch Principal**: `terraform-iac`
-- **Región AWS**: `us-east-2`
-- **Infraestructura**: AWS (S3, CloudFront, Elastic Beanstalk)
-
----
-
-**Última actualización**: 2025-11-10  
-**Versión**: 1.0  
-**Autor**: DevOps Team
