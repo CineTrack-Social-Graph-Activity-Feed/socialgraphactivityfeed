@@ -108,3 +108,6 @@ El servicio intenta reconectarse automáticamente a RabbitMQ si la conexión se 
 ## 📊 Health Check
 
 Endpoint disponible en `http://localhost:3001/health` para verificar el estado del servicio.
+
+---
+**Última actualización:** 8 de diciembre de 2025
