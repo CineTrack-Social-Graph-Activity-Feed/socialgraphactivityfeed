@@ -215,9 +215,7 @@ No afectados por destroy:
 
 ### RabbitMQ (AWS MQ)
 **NO DESTRUIDO** - sigue corriendo:
-- Broker: `b-0a4abdb3-2999-4dab-aada-d69982950fa5.mq.us-east-2.on.aws`
-- Usuario: `root`
-- Password: `argentina10.`
+- Broker: `b-782deeea-3f05-4f99-a380-77fee35a87a5.mq.us-east-2.on.aws`
 
 ### MongoDB Atlas
 **NO DESTRUIDO** - sigue corriendo:
@@ -279,12 +277,6 @@ Si algo falla durante la recuperación:
 - [ ] Actualizar perfil → aparece evento en consumer
 - [ ] Tests pasando (opcional: run workflows)
 
-## Contactos de Emergencia
-
-- **AWS Console:** https://console.aws.amazon.com/
-- **GitHub Actions:** https://github.com/CineTrack-Social-Graph-Activity-Feed/socialgraphactivityfeed/actions
-- **MongoDB Atlas:** https://cloud.mongodb.com/
-- **CloudAMQP → AWS MQ:** Console AWS MQ
 
 ## Notas Adicionales
 
